@@ -1,0 +1,30 @@
+# Build output
+bin/
+obj/
+
+# Local .NET/NuGet folders created in this workspace
+.dotnet/
+.nuget/
+
+# FTP/deploy artifacts are generated locally, not source
+deploy/
+
+# Local/generated CounterStrikeSharp runtime state
+*.log
+*.sqlite
+*.db
+*.db-shm
+*.db-wal
+
+# Python generator cache
+__pycache__/
+*.pyc
+
+# Local test/reference plugin copied during development
+weapons-1.7.8/
+
+# IDE/editor files
+.vs/
+.vscode/
+*.user
+*.suo

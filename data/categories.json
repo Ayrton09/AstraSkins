@@ -1,0 +1,26 @@
+[
+  {
+    "id": "pistols",
+    "displayName": "Pistols",
+    "order": 10,
+    "enabled": true
+  },
+  {
+    "id": "smgs",
+    "displayName": "SMGs",
+    "order": 20,
+    "enabled": true
+  },
+  {
+    "id": "rifles",
+    "displayName": "Rifles",
+    "order": 30,
+    "enabled": true
+  },
+  {
+    "id": "heavy",
+    "displayName": "Heavy",
+    "order": 40,
+    "enabled": true
+  }
+]

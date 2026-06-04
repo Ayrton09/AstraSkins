@@ -1,0 +1,1100 @@
+[
+  {
+    "id": "studded_bloodhound_gloves",
+    "displayName": "Bloodhound Gloves",
+    "itemDefinitionIndex": 5027,
+    "enabled": true,
+    "skins": [
+      {
+        "id": "studded_bloodhound_gloves:10008",
+        "displayName": "Bronzed",
+        "paintKit": 10008,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5027,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "studded_bloodhound_gloves:10006",
+        "displayName": "Charred",
+        "paintKit": 10006,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5027,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "studded_bloodhound_gloves:10039",
+        "displayName": "Guerrilla",
+        "paintKit": 10039,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5027,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "studded_bloodhound_gloves:10007",
+        "displayName": "Snakebite",
+        "paintKit": 10007,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5027,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      }
+    ]
+  },
+  {
+    "id": "studded_brokenfang_gloves",
+    "displayName": "Broken Fang Gloves",
+    "itemDefinitionIndex": 4725,
+    "enabled": true,
+    "skins": [
+      {
+        "id": "studded_brokenfang_gloves:10085",
+        "displayName": "Jade",
+        "paintKit": 10085,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 4725,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "studded_brokenfang_gloves:10087",
+        "displayName": "Needle Point",
+        "paintKit": 10087,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 4725,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "studded_brokenfang_gloves:10088",
+        "displayName": "Unhinged",
+        "paintKit": 10088,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 4725,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "studded_brokenfang_gloves:10086",
+        "displayName": "Yellow-banded",
+        "paintKit": 10086,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 4725,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      }
+    ]
+  },
+  {
+    "id": "slick_gloves",
+    "displayName": "Driver Gloves",
+    "itemDefinitionIndex": 5031,
+    "enabled": true,
+    "skins": [
+      {
+        "id": "slick_gloves:10072",
+        "displayName": "Black Tie",
+        "paintKit": 10072,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5031,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "slick_gloves:1399",
+        "displayName": "Brocade Crane",
+        "paintKit": 1399,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5031,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "slick_gloves:1400",
+        "displayName": "Brocade Flowers",
+        "paintKit": 1400,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5031,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "slick_gloves:10015",
+        "displayName": "Convoy",
+        "paintKit": 10015,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5031,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "slick_gloves:10016",
+        "displayName": "Crimson Weave",
+        "paintKit": 10016,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5031,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "slick_gloves:10040",
+        "displayName": "Diamondback",
+        "paintKit": 10040,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5031,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "slick_gloves:1401",
+        "displayName": "Dragon Fists",
+        "paintKit": 1401,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5031,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "slick_gloves:1402",
+        "displayName": "Garden",
+        "paintKit": 1402,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5031,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "slick_gloves:1439",
+        "displayName": "Hand Sweaters",
+        "paintKit": 1439,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5031,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "slick_gloves:10042",
+        "displayName": "Imperial Plaid",
+        "paintKit": 10042,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5031,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "slick_gloves:10041",
+        "displayName": "King Snake",
+        "paintKit": 10041,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5031,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "slick_gloves:10013",
+        "displayName": "Lunar Weave",
+        "paintKit": 10013,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5031,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "slick_gloves:10043",
+        "displayName": "Overtake",
+        "paintKit": 10043,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5031,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "slick_gloves:1412",
+        "displayName": "Plum Quill",
+        "paintKit": 1412,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5031,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "slick_gloves:10071",
+        "displayName": "Queen Jaguar",
+        "paintKit": 10071,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5031,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "slick_gloves:10044",
+        "displayName": "Racing Green",
+        "paintKit": 10044,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5031,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "slick_gloves:10069",
+        "displayName": "Rezan the Red",
+        "paintKit": 10069,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5031,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "slick_gloves:1404",
+        "displayName": "Seigaiha",
+        "paintKit": 1404,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5031,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "slick_gloves:10070",
+        "displayName": "Snow Leopard",
+        "paintKit": 10070,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5031,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "slick_gloves:1398",
+        "displayName": "Wave Chaser",
+        "paintKit": 1398,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5031,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      }
+    ]
+  },
+  {
+    "id": "leather_handwraps",
+    "displayName": "Hand Wraps",
+    "itemDefinitionIndex": 5032,
+    "enabled": true,
+    "skins": [
+      {
+        "id": "leather_handwraps:10056",
+        "displayName": "Arboreal",
+        "paintKit": 10056,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5032,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "leather_handwraps:10036",
+        "displayName": "Badlands",
+        "paintKit": 10036,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5032,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "leather_handwraps:10084",
+        "displayName": "CAUTION!",
+        "paintKit": 10084,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5032,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "leather_handwraps:10053",
+        "displayName": "Cobalt Skulls",
+        "paintKit": 10053,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5032,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "leather_handwraps:10083",
+        "displayName": "Constrictor",
+        "paintKit": 10083,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5032,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "leather_handwraps:10081",
+        "displayName": "Desert Shamagh",
+        "paintKit": 10081,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5032,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "leather_handwraps:10055",
+        "displayName": "Duct Tape",
+        "paintKit": 10055,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5032,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "leather_handwraps:10082",
+        "displayName": "Giraffe",
+        "paintKit": 10082,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5032,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "leather_handwraps:10009",
+        "displayName": "Leather",
+        "paintKit": 10009,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5032,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "leather_handwraps:10054",
+        "displayName": "Overprint",
+        "paintKit": 10054,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5032,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "leather_handwraps:10021",
+        "displayName": "Slaughter",
+        "paintKit": 10021,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5032,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "leather_handwraps:10010",
+        "displayName": "Spruce DDPAT",
+        "paintKit": 10010,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5032,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      }
+    ]
+  },
+  {
+    "id": "studded_hydra_gloves",
+    "displayName": "Hydra Gloves",
+    "itemDefinitionIndex": 5035,
+    "enabled": true,
+    "skins": [
+      {
+        "id": "studded_hydra_gloves:10060",
+        "displayName": "Case Hardened",
+        "paintKit": 10060,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5035,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "studded_hydra_gloves:10057",
+        "displayName": "Emerald",
+        "paintKit": 10057,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5035,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "studded_hydra_gloves:10058",
+        "displayName": "Mangrove",
+        "paintKit": 10058,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5035,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "studded_hydra_gloves:10059",
+        "displayName": "Rattler",
+        "paintKit": 10059,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5035,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      }
+    ]
+  },
+  {
+    "id": "motorcycle_gloves",
+    "displayName": "Moto Gloves",
+    "itemDefinitionIndex": 5033,
+    "enabled": true,
+    "skins": [
+      {
+        "id": "motorcycle_gloves:10080",
+        "displayName": "3rd Commando Company",
+        "paintKit": 10080,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5033,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "motorcycle_gloves:10079",
+        "displayName": "Blood Pressure",
+        "paintKit": 10079,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5033,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "motorcycle_gloves:10027",
+        "displayName": "Boom!",
+        "paintKit": 10027,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5033,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "motorcycle_gloves:10028",
+        "displayName": "Cool Mint",
+        "paintKit": 10028,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5033,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "motorcycle_gloves:10024",
+        "displayName": "Eclipse",
+        "paintKit": 10024,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5033,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "motorcycle_gloves:10077",
+        "displayName": "Finish Line",
+        "paintKit": 10077,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5033,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "motorcycle_gloves:10049",
+        "displayName": "POW!",
+        "paintKit": 10049,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5033,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "motorcycle_gloves:10052",
+        "displayName": "Polygon",
+        "paintKit": 10052,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5033,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "motorcycle_gloves:10078",
+        "displayName": "Smoke Out",
+        "paintKit": 10078,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5033,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "motorcycle_gloves:10026",
+        "displayName": "Spearmint",
+        "paintKit": 10026,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5033,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "motorcycle_gloves:10051",
+        "displayName": "Transport",
+        "paintKit": 10051,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5033,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "motorcycle_gloves:10050",
+        "displayName": "Turtle",
+        "paintKit": 10050,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5033,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      }
+    ]
+  },
+  {
+    "id": "specialist_gloves",
+    "displayName": "Specialist Gloves",
+    "itemDefinitionIndex": 5034,
+    "enabled": true,
+    "skins": [
+      {
+        "id": "specialist_gloves:1437",
+        "displayName": "Big Swell",
+        "paintKit": 1437,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5034,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "specialist_gloves:1414",
+        "displayName": "Blackbook",
+        "paintKit": 1414,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5034,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "specialist_gloves:10062",
+        "displayName": "Buckshot",
+        "paintKit": 10062,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5034,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "specialist_gloves:1415",
+        "displayName": "Chocolate Chesterfield",
+        "paintKit": 1415,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5034,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "specialist_gloves:1440",
+        "displayName": "Cloud Chaser",
+        "paintKit": 1440,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5034,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "specialist_gloves:10033",
+        "displayName": "Crimson Kimono",
+        "paintKit": 10033,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5034,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "specialist_gloves:10061",
+        "displayName": "Crimson Web",
+        "paintKit": 10061,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5034,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "specialist_gloves:10034",
+        "displayName": "Emerald Web",
+        "paintKit": 10034,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5034,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "specialist_gloves:10063",
+        "displayName": "Fade",
+        "paintKit": 10063,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5034,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "specialist_gloves:10068",
+        "displayName": "Field Agent",
+        "paintKit": 10068,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5034,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "specialist_gloves:10030",
+        "displayName": "Forest DDPAT",
+        "paintKit": 10030,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5034,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "specialist_gloves:10035",
+        "displayName": "Foundation",
+        "paintKit": 10035,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5034,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "specialist_gloves:1413",
+        "displayName": "Lime Polycam",
+        "paintKit": 1413,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5034,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "specialist_gloves:10066",
+        "displayName": "Lt. Commander",
+        "paintKit": 10066,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5034,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "specialist_gloves:10065",
+        "displayName": "Marble Fade",
+        "paintKit": 10065,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5034,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "specialist_gloves:10064",
+        "displayName": "Mogul",
+        "paintKit": 10064,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5034,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "specialist_gloves:1438",
+        "displayName": "Pillow Punchers",
+        "paintKit": 1438,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5034,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "specialist_gloves:1416",
+        "displayName": "Sunburst",
+        "paintKit": 1416,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5034,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "specialist_gloves:10067",
+        "displayName": "Tiger Strike",
+        "paintKit": 10067,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5034,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      }
+    ]
+  },
+  {
+    "id": "sporty_gloves",
+    "displayName": "Sport Gloves",
+    "itemDefinitionIndex": 5030,
+    "enabled": true,
+    "skins": [
+      {
+        "id": "sporty_gloves:10045",
+        "displayName": "Amphibious",
+        "paintKit": 10045,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5030,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "sporty_gloves:10019",
+        "displayName": "Arid",
+        "paintKit": 10019,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5030,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "sporty_gloves:10074",
+        "displayName": "Big Game",
+        "paintKit": 10074,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5030,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "sporty_gloves:1407",
+        "displayName": "Blaze",
+        "paintKit": 1407,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5030,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "sporty_gloves:10046",
+        "displayName": "Bronze Morph",
+        "paintKit": 10046,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5030,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "sporty_gloves:1408",
+        "displayName": "Creme Pinstripe",
+        "paintKit": 1408,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5030,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "sporty_gloves:1406",
+        "displayName": "Frosty",
+        "paintKit": 1406,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5030,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "sporty_gloves:10038",
+        "displayName": "Hedge Maze",
+        "paintKit": 10038,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5030,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "sporty_gloves:10076",
+        "displayName": "Nocts",
+        "paintKit": 10076,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5030,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "sporty_gloves:1417",
+        "displayName": "Occult",
+        "paintKit": 1417,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5030,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "sporty_gloves:10047",
+        "displayName": "Omega",
+        "paintKit": 10047,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5030,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "sporty_gloves:10037",
+        "displayName": "Pandora's Box",
+        "paintKit": 10037,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5030,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "sporty_gloves:1409",
+        "displayName": "Red Racer",
+        "paintKit": 1409,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5030,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "sporty_gloves:10075",
+        "displayName": "Scarlet Shamagh",
+        "paintKit": 10075,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5030,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "sporty_gloves:10073",
+        "displayName": "Slingshot",
+        "paintKit": 10073,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5030,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "sporty_gloves:10018",
+        "displayName": "Superconductor",
+        "paintKit": 10018,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5030,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "sporty_gloves:1410",
+        "displayName": "Ultra Violent",
+        "paintKit": 1410,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5030,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "sporty_gloves:10048",
+        "displayName": "Vice",
+        "paintKit": 10048,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5030,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      },
+      {
+        "id": "sporty_gloves:1405",
+        "displayName": "Violet Beadwork",
+        "paintKit": 1405,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 5030,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient"
+      }
+    ]
+  }
+]

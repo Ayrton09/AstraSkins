@@ -1,0 +1,31 @@
+{
+  "ConfigVersion": 1,
+  "DatabaseMode": "mysql",
+  "Sqlite": {
+    "Path": "data/astra_skins.sqlite"
+  },
+  "MySql": {
+    "Host": "127.0.0.1",
+    "Port": 3306,
+    "Database": "astra_skins",
+    "Username": "astra_skins",
+    "Password": "change-me"
+  },
+  "Menu": {
+    "ItemsPerPage": 6,
+    "TimeoutSeconds": 25,
+    "CooldownMilliseconds": 180,
+    "SelectionCooldownMilliseconds": 900
+  },
+  "Definitions": {
+    "Weapons": "data/weapons.json",
+    "Knives": "data/knives.json",
+    "Gloves": "data/gloves.json",
+    "Agents": "data/agents.json",
+    "Categories": "data/categories.json"
+  },
+  "EnableAdminReloadCommand": true,
+  "AdminReloadPermission": "@css/config",
+  "EnableAdminDebugCommand": true,
+  "AdminDebugPermission": "@css/config"
+}
