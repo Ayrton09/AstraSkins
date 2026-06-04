@@ -15,9 +15,6 @@ Astra Skins is a CounterStrikeSharp plugin for Counter-Strike 2 that provides we
 - Weapon skins, knife type selection, knife finishes, gloves, and agents.
 - Agent radio voice support when the CS2 schema exposes the matching voice data.
 - SteamID64-based persistence.
-- Strict `mysql` or `sqlite` database mode.
-- No automatic database fallback.
-- No JSON persistence fallback.
 - Runtime cosmetic data loaded from external JSON files.
 - Admin reload and diagnostic commands.
 
