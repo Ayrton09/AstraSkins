@@ -8,6 +8,7 @@ obj/
 
 # FTP/deploy artifacts are generated locally, not source
 deploy/
+release/
 
 # Local/generated CounterStrikeSharp runtime state
 *.log

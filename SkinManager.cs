@@ -1531,7 +1531,6 @@ public sealed class SkinManager : IDisposable
 
     private void MarkWeaponStateChanged(CBasePlayerWeapon weapon)
     {
-        TrySetStateChanged(weapon, "CEconEntity", "m_AttributeManager");
         TrySetStateChanged(weapon, "CEconEntity", "m_nFallbackPaintKit");
         TrySetStateChanged(weapon, "CEconEntity", "m_nFallbackSeed");
         TrySetStateChanged(weapon, "CEconEntity", "m_flFallbackWear");
