@@ -19,6 +19,9 @@ public sealed class SkinManager : IDisposable
     private readonly Dictionary<ulong, PlayerSkinProfile> _profiles = new();
     private readonly HashSet<ulong> _loadingProfiles = new();
     private readonly HashSet<ulong> _activeSteamIds = new();
+    private readonly Dictionary<ulong, ulong> _profileEpochs = new();
+    private readonly object _storageQueueLock = new();
+    private Task _storageQueue = Task.CompletedTask;
     private ulong _nextItemId = MinimumCustomItemId;
     private bool _disposed;
 
@@ -103,18 +106,38 @@ public sealed class SkinManager : IDisposable
         _activeSteamIds.Clear();
         _loadingProfiles.Clear();
         _profiles.Clear();
+        _profileEpochs.Clear();
+
+        Task pendingStorageWork;
+        lock (_storageQueueLock)
+        {
+            pendingStorageWork = _storageQueue;
+        }
+
+        try
+        {
+            pendingStorageWork.Wait(TimeSpan.FromSeconds(3));
+        }
+        catch
+        {
+            // Queued operations log their own failures.
+        }
     }
 
     public PlayerSkinProfile GetProfile(CCSPlayerController player)
     {
         var steamId = GetSteamId64(player);
-        if (!_profiles.TryGetValue(steamId, out var profile))
+        _activeSteamIds.Add(steamId);
+        if (_profiles.TryGetValue(steamId, out var profile))
         {
-            profile = _storage.LoadProfile(steamId);
-            _profiles[steamId] = profile;
+            return profile;
         }
 
-        _activeSteamIds.Add(steamId);
+        // Start the load before caching the placeholder so the already-cached
+        // guard in LoadProfileInBackground does not skip it.
+        LoadProfileInBackground(steamId, applyAfterLoad: true, logFailures: false);
+        profile = new PlayerSkinProfile { SteamId64 = steamId };
+        _profiles[steamId] = profile;
         return profile;
     }
 
@@ -125,6 +148,7 @@ public sealed class SkinManager : IDisposable
             _profiles.Remove(steamId);
             _loadingProfiles.Remove(steamId);
             _activeSteamIds.Remove(steamId);
+            _profileEpochs.Remove(steamId);
         }
     }
 
@@ -133,6 +157,7 @@ public sealed class SkinManager : IDisposable
         _profiles.Remove(steamId64);
         _loadingProfiles.Remove(steamId64);
         _activeSteamIds.Remove(steamId64);
+        _profileEpochs.Remove(steamId64);
     }
 
     public void ApplyToPlayerWhenProfileReady(CCSPlayerController player, bool logFailures = false)
@@ -194,7 +219,7 @@ public sealed class SkinManager : IDisposable
         var steamId = GetSteamId64(player);
         var profile = GetProfile(player);
         profile.WeaponSkins[weaponEntity] = cosmeticId;
-        _storage.SaveWeaponSkin(steamId, weaponEntity, cosmeticId);
+        QueueStorageWrite($"weapon skin {cosmeticId} ({weaponEntity}) for {steamId}", () => _storage.SaveWeaponSkin(steamId, weaponEntity, cosmeticId));
         ApplyWeaponSelection(player, weaponEntity, skin, logFailures: true);
         return true;
     }
@@ -209,12 +234,13 @@ public sealed class SkinManager : IDisposable
         var steamId = GetSteamId64(player);
         var profile = GetProfile(player);
         profile.KnifeSkinId = cosmeticId;
-        _storage.SaveKnifeSkin(steamId, cosmeticId);
+        QueueStorageWrite($"knife skin {cosmeticId} for {steamId}", () => _storage.SaveKnifeSkin(steamId, cosmeticId));
         var knife = Catalog.Knives.FirstOrDefault(k => k.ItemDefinitionIndex == skin.ItemDefinitionIndex);
         if (knife is not null)
         {
             profile.KnifeId = knife.Id;
-            _storage.SaveKnifeType(steamId, knife.Id);
+            var knifeId = knife.Id;
+            QueueStorageWrite($"knife type {knifeId} for {steamId}", () => _storage.SaveKnifeType(steamId, knifeId));
         }
 
         ApplyKnifeSelection(player, skin, logFailures: true);
@@ -232,7 +258,8 @@ public sealed class SkinManager : IDisposable
         var steamId = GetSteamId64(player);
         var profile = GetProfile(player);
         profile.KnifeId = knife.Id;
-        _storage.SaveKnifeType(steamId, knife.Id);
+        var selectedKnifeId = knife.Id;
+        QueueStorageWrite($"knife type {selectedKnifeId} for {steamId}", () => _storage.SaveKnifeType(steamId, selectedKnifeId));
         ApplyKnifeTypeSelection(player, knife, logFailures: true);
         return true;
     }
@@ -247,7 +274,7 @@ public sealed class SkinManager : IDisposable
         var steamId = GetSteamId64(player);
         var profile = GetProfile(player);
         profile.GloveSkinId = cosmeticId;
-        _storage.SaveGloveSkin(steamId, cosmeticId);
+        QueueStorageWrite($"glove skin {cosmeticId} for {steamId}", () => _storage.SaveGloveSkin(steamId, cosmeticId));
         ApplyGloveSelection(player, glove, logFailures: true);
         return true;
     }
@@ -265,7 +292,8 @@ public sealed class SkinManager : IDisposable
         var steamId = GetSteamId64(player);
         var profile = GetProfile(player);
         profile.AgentIdsByTeam[normalizedTeam] = agent.Id;
-        _storage.SaveAgent(steamId, normalizedTeam, agent.Id);
+        var agentIdToSave = agent.Id;
+        QueueStorageWrite($"agent {agentIdToSave} ({normalizedTeam}) for {steamId}", () => _storage.SaveAgent(steamId, normalizedTeam, agentIdToSave));
         ApplyAgentSelection(player, agent, logFailures: true);
         return true;
     }
@@ -273,7 +301,8 @@ public sealed class SkinManager : IDisposable
     public void Reset(CCSPlayerController player)
     {
         var steamId = GetSteamId64(player);
-        _storage.ResetProfile(steamId);
+        BumpProfileEpoch(steamId);
+        QueueStorageWrite($"profile reset for {steamId}", () => _storage.ResetProfile(steamId));
         _profiles.Remove(steamId);
         ClearPlayerCosmetics(player, logFailures: true);
     }
@@ -287,7 +316,8 @@ public sealed class SkinManager : IDisposable
         }
 
         var steamId = GetSteamId64(player);
-        _storage.ResetCategory(steamId, normalized);
+        BumpProfileEpoch(steamId);
+        QueueStorageWrite($"category reset ({normalized}) for {steamId}", () => _storage.ResetCategory(steamId, normalized));
 
         var profile = GetProfile(player);
         switch (normalized)
@@ -665,8 +695,20 @@ public sealed class SkinManager : IDisposable
             return;
         }
 
-        Task.Run(() => _storage.LoadProfile(steamId64)).ContinueWith(task =>
+        var epoch = GetProfileEpoch(steamId64);
+        EnqueueStorageOperation(() =>
         {
+            PlayerSkinProfile? loaded = null;
+            Exception? failure = null;
+            try
+            {
+                loaded = _storage.LoadProfile(steamId64);
+            }
+            catch (Exception ex)
+            {
+                failure = ex;
+            }
+
             Server.NextFrame(() =>
             {
                 if (_disposed)
@@ -676,17 +718,17 @@ public sealed class SkinManager : IDisposable
 
                 _loadingProfiles.Remove(steamId64);
 
-                if (task.IsFaulted)
+                if (failure is not null)
                 {
                     if (logFailures)
                     {
-                        _logger.LogWarning(task.Exception, "Astra Skins failed to load profile for player {SteamId}.", steamId64);
+                        _logger.LogWarning(failure, "Astra Skins failed to load profile for player {SteamId}.", steamId64);
                     }
 
                     return;
                 }
 
-                if (task.Result is null)
+                if (loaded is null)
                 {
                     if (logFailures)
                     {
@@ -696,12 +738,22 @@ public sealed class SkinManager : IDisposable
                     return;
                 }
 
-                if (!_activeSteamIds.Contains(steamId64))
+                // A changed epoch means the profile was reset while this load
+                // was in flight; its data is stale and must be discarded.
+                if (!_activeSteamIds.Contains(steamId64) || GetProfileEpoch(steamId64) != epoch)
                 {
                     return;
                 }
 
-                _profiles[steamId64] = task.Result;
+                if (_profiles.TryGetValue(steamId64, out var existing))
+                {
+                    MergeLoadedProfile(existing, loaded);
+                }
+                else
+                {
+                    _profiles[steamId64] = loaded;
+                }
+
                 if (!applyAfterLoad)
                 {
                     return;
@@ -714,6 +766,65 @@ public sealed class SkinManager : IDisposable
                 }
             });
         });
+    }
+
+    private void QueueStorageWrite(string description, Action write)
+    {
+        EnqueueStorageOperation(() =>
+        {
+            try
+            {
+                write();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Astra Skins failed to persist {Description} in the background.", description);
+            }
+        });
+    }
+
+    // All storage work runs on one background chain so operations keep their
+    // submission order (a reset queued before a save must hit the database
+    // first) while the game thread never waits on the database.
+    private void EnqueueStorageOperation(Action operation)
+    {
+        lock (_storageQueueLock)
+        {
+            _storageQueue = _storageQueue.ContinueWith(
+                _ => operation(),
+                CancellationToken.None,
+                TaskContinuationOptions.None,
+                TaskScheduler.Default);
+        }
+    }
+
+    private ulong GetProfileEpoch(ulong steamId64)
+    {
+        return _profileEpochs.TryGetValue(steamId64, out var epoch) ? epoch : 0;
+    }
+
+    private void BumpProfileEpoch(ulong steamId64)
+    {
+        _profileEpochs[steamId64] = GetProfileEpoch(steamId64) + 1;
+    }
+
+    // Selections made in memory while the load was in flight win over the
+    // loaded values; the queued writes persist them anyway.
+    private static void MergeLoadedProfile(PlayerSkinProfile target, PlayerSkinProfile loaded)
+    {
+        foreach (var (weaponEntity, cosmeticId) in loaded.WeaponSkins)
+        {
+            target.WeaponSkins.TryAdd(weaponEntity, cosmeticId);
+        }
+
+        target.KnifeId ??= loaded.KnifeId;
+        target.KnifeSkinId ??= loaded.KnifeSkinId;
+        target.GloveSkinId ??= loaded.GloveSkinId;
+
+        foreach (var (team, agentId) in loaded.AgentIdsByTeam)
+        {
+            target.AgentIdsByTeam.TryAdd(team, agentId);
+        }
     }
 
     private bool ApplyKnifeSelection(CCSPlayerController player, CosmeticEntry skin, bool logFailures)
