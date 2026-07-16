@@ -6,6 +6,16 @@
     "enabled": true,
     "skins": [
       {
+        "id": "weapon_ak47:1449",
+        "displayName": "AUTOEXEC",
+        "paintKit": 1449,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
         "id": "weapon_ak47:1397",
         "displayName": "Aphrodite",
         "paintKit": 1397,
@@ -114,6 +124,16 @@
         "legacyModel": true,
         "enabled": true,
         "rarity": "rarity_legendary_weapon"
+      },
+      {
+        "id": "weapon_ak47:1466",
+        "displayName": "Consequence of the Jinn",
+        "paintKit": 1466,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
       },
       {
         "id": "weapon_ak47:1425",
@@ -814,6 +834,16 @@
         "rarity": "rarity_rare_weapon"
       },
       {
+        "id": "weapon_aug:1464",
+        "displayName": "Lapis Lazuli",
+        "paintKit": 1464,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_mythical_weapon"
+      },
+      {
         "id": "weapon_aug:173",
         "displayName": "Lil' Pig",
         "paintKit": 173,
@@ -912,6 +942,16 @@
         "legacyModel": true,
         "enabled": true,
         "rarity": "rarity_mythical_weapon"
+      },
+      {
+        "id": "weapon_aug:1452",
+        "displayName": "Signal Scanner",
+        "paintKit": 1452,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_rare_weapon"
       },
       {
         "id": "weapon_aug:1249",
@@ -1100,6 +1140,16 @@
         "legacyModel": true,
         "enabled": true,
         "rarity": "rarity_legendary_weapon"
+      },
+      {
+        "id": "weapon_awp:1467",
+        "displayName": "Black Box",
+        "paintKit": 1467,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_mythical_weapon"
       },
       {
         "id": "weapon_awp:1239",
@@ -1502,6 +1552,16 @@
         "rarity": "rarity_rare_weapon"
       },
       {
+        "id": "weapon_awp:1465",
+        "displayName": "Sovereign Flame",
+        "paintKit": 1465,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
         "id": "weapon_awp:451",
         "displayName": "Sun in Leo",
         "paintKit": 451,
@@ -1638,6 +1698,16 @@
         "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_common_weapon"
+      },
+      {
+        "id": "weapon_famas:1477",
+        "displayName": "Corp Defense",
+        "paintKit": 1477,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_uncommon_weapon"
       },
       {
         "id": "weapon_famas:835",
@@ -1878,6 +1948,16 @@
         "legacyModel": true,
         "enabled": true,
         "rarity": "rarity_mythical_weapon"
+      },
+      {
+        "id": "weapon_famas:1461",
+        "displayName": "Snake Song",
+        "paintKit": 1461,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_rare_weapon"
       },
       {
         "id": "weapon_famas:194",
@@ -2824,6 +2904,16 @@
         "rarity": "rarity_uncommon_weapon"
       },
       {
+        "id": "weapon_m4a1:1446",
+        "displayName": "Dark Operative",
+        "paintKit": 1446,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_rare_weapon"
+      },
+      {
         "id": "weapon_m4a1:471",
         "displayName": "Daybreak",
         "paintKit": 471,
@@ -2902,6 +2992,16 @@
         "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_rare_weapon"
+      },
+      {
+        "id": "weapon_m4a1:1463",
+        "displayName": "Falak",
+        "paintKit": 1463,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_legendary_weapon"
       },
       {
         "id": "weapon_m4a1:1353",
@@ -3412,6 +3512,16 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
+        "id": "weapon_m4a1_silencer:1476",
+        "displayName": "Fatal Glitch",
+        "paintKit": 1476,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_legendary_weapon"
+      },
+      {
         "id": "weapon_m4a1_silencer:1059",
         "displayName": "Fizzy POP",
         "paintKit": 1059,
@@ -3710,6 +3820,16 @@
     "enabled": true,
     "skins": [
       {
+        "id": "weapon_scar20:1470",
+        "displayName": "Arctic Camo Panels",
+        "paintKit": 1470,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_uncommon_weapon"
+      },
+      {
         "id": "weapon_scar20:298",
         "displayName": "Army Sheen",
         "paintKit": 298,
@@ -3948,6 +4068,16 @@
         "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_common_weapon"
+      },
+      {
+        "id": "weapon_scar20:1453",
+        "displayName": "Sirocco Script",
+        "paintKit": 1453,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_uncommon_weapon"
       },
       {
         "id": "weapon_scar20:165",
@@ -5204,6 +5334,16 @@
         "rarity": "rarity_common_weapon"
       },
       {
+        "id": "weapon_bizon:1472",
+        "displayName": "Traitor",
+        "paintKit": 1472,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_uncommon_weapon"
+      },
+      {
         "id": "weapon_bizon:149",
         "displayName": "Urban Dashed",
         "paintKit": 149,
@@ -5275,6 +5415,16 @@
         "id": "weapon_mac10:246",
         "displayName": "Amber Fade",
         "paintKit": 246,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_rare_weapon"
+      },
+      {
+        "id": "weapon_mac10:1454",
+        "displayName": "Arabesque Mosaic",
+        "paintKit": 1454,
         "seed": 0,
         "wear": 0.0001,
         "legacyModel": false,
@@ -5782,6 +5932,16 @@
         "rarity": "rarity_common_weapon"
       },
       {
+        "id": "weapon_mac10:1448",
+        "displayName": "Video Cam",
+        "paintKit": 1448,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_uncommon_weapon"
+      },
+      {
         "id": "weapon_mac10:840",
         "displayName": "Whitefish",
         "paintKit": 840,
@@ -6121,6 +6281,16 @@
         "id": "weapon_mp7:940",
         "displayName": "Astrolabe",
         "paintKit": 940,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_uncommon_weapon"
+      },
+      {
+        "id": "weapon_mp7:1468",
+        "displayName": "Base-2",
+        "paintKit": 1468,
         "seed": 0,
         "wear": 0.0001,
         "legacyModel": false,
@@ -6606,6 +6776,16 @@
         "rarity": "rarity_common_weapon"
       },
       {
+        "id": "weapon_mp9:1473",
+        "displayName": "Dune Asp",
+        "paintKit": 1473,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_uncommon_weapon"
+      },
+      {
         "id": "weapon_mp9:1225",
         "displayName": "Featherweight",
         "paintKit": 1225,
@@ -6844,6 +7024,16 @@
         "legacyModel": true,
         "enabled": true,
         "rarity": "rarity_common_weapon"
+      },
+      {
+        "id": "weapon_mp9:1469",
+        "displayName": "Spy Prototype",
+        "paintKit": 1469,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_rare_weapon"
       },
       {
         "id": "weapon_mp9:867",
@@ -9024,6 +9214,16 @@
         "rarity": "rarity_common_weapon"
       },
       {
+        "id": "weapon_nova:1474",
+        "displayName": "Morning Sun",
+        "paintKit": 1474,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_uncommon_weapon"
+      },
+      {
         "id": "weapon_nova:1350",
         "displayName": "Ocular",
         "paintKit": 1350,
@@ -9142,6 +9342,16 @@
         "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_common_weapon"
+      },
+      {
+        "id": "weapon_nova:1442",
+        "displayName": "Smart Gun",
+        "paintKit": 1442,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_mythical_weapon"
       },
       {
         "id": "weapon_nova:1247",
@@ -9452,6 +9662,16 @@
         "rarity": "rarity_mythical_weapon"
       },
       {
+        "id": "weapon_sawedoff:1475",
+        "displayName": "Lunar Wyrm",
+        "paintKit": 1475,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_rare_weapon"
+      },
+      {
         "id": "weapon_sawedoff:673",
         "displayName": "Morris",
         "paintKit": 673,
@@ -9626,6 +9846,16 @@
         "seed": 0,
         "wear": 0.0001,
         "legacyModel": true,
+        "enabled": true,
+        "rarity": "rarity_uncommon_weapon"
+      },
+      {
+        "id": "weapon_xm1014:1471",
+        "displayName": "Black Site",
+        "paintKit": 1471,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_uncommon_weapon"
       },
@@ -10156,6 +10386,16 @@
         "legacyModel": true,
         "enabled": true,
         "rarity": "rarity_mythical_weapon"
+      },
+      {
+        "id": "weapon_deagle:1458",
+        "displayName": "Eastern Enigma",
+        "paintKit": 1458,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_legendary_weapon"
       },
       {
         "id": "weapon_deagle:757",
@@ -10766,6 +11006,16 @@
         "rarity": "rarity_common_weapon"
       },
       {
+        "id": "weapon_elite:1459",
+        "displayName": "Mystic Conjunction",
+        "paintKit": 1459,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_uncommon_weapon"
+      },
+      {
         "id": "weapon_elite:1086",
         "displayName": "Oil Change",
         "paintKit": 1086,
@@ -11072,6 +11322,16 @@
         "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_rare_weapon"
+      },
+      {
+        "id": "weapon_fiveseven:1457",
+        "displayName": "Desert Seal",
+        "paintKit": 1457,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_uncommon_weapon"
       },
       {
         "id": "weapon_fiveseven:979",
@@ -11552,6 +11812,16 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
+        "id": "weapon_glock:1450",
+        "displayName": "Ghost Protocol",
+        "paintKit": 1450,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
         "id": "weapon_glock:1282",
         "displayName": "Glockingbird",
         "paintKit": 1282,
@@ -11610,6 +11880,16 @@
         "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_uncommon_weapon"
+      },
+      {
+        "id": "weapon_glock:1460",
+        "displayName": "Ifrit Lattice",
+        "paintKit": 1460,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_mythical_weapon"
       },
       {
         "id": "weapon_glock:623",
@@ -12668,6 +12948,16 @@
         "rarity": "rarity_mythical_weapon"
       },
       {
+        "id": "weapon_usp_silencer:1451",
+        "displayName": "Spiral Glitch",
+        "paintKit": 1451,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_legendary_weapon"
+      },
+      {
         "id": "weapon_usp_silencer:277",
         "displayName": "Stainless",
         "paintKit": 277,
@@ -13034,6 +13324,16 @@
         "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_legendary_weapon"
+      },
+      {
+        "id": "weapon_p250:1455",
+        "displayName": "Lotus Imprint",
+        "paintKit": 1455,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_mythical_weapon"
       },
       {
         "id": "weapon_p250:258",
@@ -13452,6 +13752,16 @@
         "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_common_weapon"
+      },
+      {
+        "id": "weapon_cz75a:1443",
+        "displayName": "Hydraulics",
+        "paintKit": 1443,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_mythical_weapon"
       },
       {
         "id": "weapon_cz75a:602",
@@ -13882,6 +14192,16 @@
         "rarity": "rarity_rare_weapon"
       },
       {
+        "id": "weapon_revolver:1445",
+        "displayName": "Monarch",
+        "paintKit": 1445,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_rare_weapon"
+      },
+      {
         "id": "weapon_revolver:40",
         "displayName": "Night",
         "paintKit": 40,
@@ -14230,6 +14550,16 @@
         "rarity": "rarity_rare_weapon"
       },
       {
+        "id": "weapon_tec9:1447",
+        "displayName": "Perimeter",
+        "paintKit": 1447,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_uncommon_weapon"
+      },
+      {
         "id": "weapon_tec9:1010",
         "displayName": "Phoenix Chalk",
         "paintKit": 1010,
@@ -14336,6 +14666,16 @@
         "seed": 0,
         "wear": 0.0001,
         "legacyModel": true,
+        "enabled": true,
+        "rarity": "rarity_rare_weapon"
+      },
+      {
+        "id": "weapon_tec9:1462",
+        "displayName": "Sultan",
+        "paintKit": 1462,
+        "seed": 0,
+        "wear": 0.0001,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_rare_weapon"
       },
