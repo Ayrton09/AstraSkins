@@ -164,7 +164,7 @@ Current packaged data contains:
 | Type | Count |
 | --- | ---: |
 | Weapons | 34 |
-| Weapon skins | 1415 |
+| Weapon skins | 1449 |
 | Knives | 20 |
 | Knife skins | 576 |
 | Glove types | 8 |
