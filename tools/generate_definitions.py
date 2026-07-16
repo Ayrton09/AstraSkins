@@ -556,7 +556,9 @@ def glove_family_for_paint(paint):
 
 def write_json(path, data):
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    # newline="\n" keeps the output byte-identical across platforms; without it
+    # Python rewrites every "\n" as CRLF on Windows.
+    path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
 
 
 def unique_by_id(entries):
