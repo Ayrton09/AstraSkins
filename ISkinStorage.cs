@@ -11,6 +11,8 @@ public interface ISkinStorage : IDisposable
     void SaveKnifeSkin(ulong steamId64, string cosmeticId);
     void SaveGloveSkin(ulong steamId64, string cosmeticId);
     void SaveAgent(ulong steamId64, string team, string agentId);
+    void SaveCustomization(ulong steamId64, string field, string target, string value);
+    void ClearCustomization(ulong steamId64, string field, string target);
     void ResetProfile(ulong steamId64);
     void ResetCategory(ulong steamId64, string category);
 }

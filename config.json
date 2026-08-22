@@ -9,13 +9,20 @@
     "Port": 3306,
     "Database": "astra_skins",
     "Username": "astra_skins",
-    "Password": "change-me"
+    "Password": "change-me",
+    "SslMode": "required"
   },
   "Menu": {
     "ItemsPerPage": 6,
     "TimeoutSeconds": 25,
     "CooldownMilliseconds": 180,
-    "SelectionCooldownMilliseconds": 900
+    "SelectionCooldownMilliseconds": 900,
+    "AllowWhileDead": true
+  },
+  "Customization": {
+    "Enabled": true,
+    "Permission": "",
+    "MaxNameTagLength": 20
   },
   "Definitions": {
     "Weapons": "data/weapons.json",

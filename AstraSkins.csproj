@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <None Include="data\**\*.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="lang\**\*.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="gamedata\**\*.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="schema\**\*.sql" CopyToOutputDirectory="PreserveNewest" />
     <None Include="tools\**\*" CopyToOutputDirectory="Never" />

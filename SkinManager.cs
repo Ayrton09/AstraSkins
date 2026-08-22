@@ -1,3 +1,4 @@
+using System.Globalization;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Entities.Constants;
@@ -11,6 +12,9 @@ namespace AstraSkins;
 
 public sealed class SkinManager : IDisposable
 {
+    public const string KnifeTarget = "knife";
+    public const string GloveTarget = "glove";
+
     private const ulong MinimumCustomItemId = 65578;
 
     private readonly ISkinStorage _storage;
@@ -211,7 +215,7 @@ public sealed class SkinManager : IDisposable
 
     public bool SetWeaponSkin(CCSPlayerController player, string weaponEntity, string cosmeticId)
     {
-        if (!Catalog.WeaponSkinsById.TryGetValue(cosmeticId, out var skin))
+        if (!Catalog.WeaponSkinsById.TryGetValue(cosmeticId, out var skin) || !CanUse(player, skin))
         {
             return false;
         }
@@ -226,7 +230,13 @@ public sealed class SkinManager : IDisposable
 
     public bool SetKnifeSkin(CCSPlayerController player, string cosmeticId)
     {
-        if (!Catalog.KnifeSkinsById.TryGetValue(cosmeticId, out var skin))
+        if (!Catalog.KnifeSkinsById.TryGetValue(cosmeticId, out var skin) || !CanUse(player, skin))
+        {
+            return false;
+        }
+
+        var knife = Catalog.Knives.FirstOrDefault(k => k.ItemDefinitionIndex == skin.ItemDefinitionIndex);
+        if (knife is not null && !CanUse(player, knife))
         {
             return false;
         }
@@ -235,7 +245,6 @@ public sealed class SkinManager : IDisposable
         var profile = GetProfile(player);
         profile.KnifeSkinId = cosmeticId;
         QueueStorageWrite($"knife skin {cosmeticId} for {steamId}", () => _storage.SaveKnifeSkin(steamId, cosmeticId));
-        var knife = Catalog.Knives.FirstOrDefault(k => k.ItemDefinitionIndex == skin.ItemDefinitionIndex);
         if (knife is not null)
         {
             profile.KnifeId = knife.Id;
@@ -250,7 +259,7 @@ public sealed class SkinManager : IDisposable
     public bool SetKnifeType(CCSPlayerController player, string knifeId)
     {
         var knife = Catalog.Knives.FirstOrDefault(k => k.Id.Equals(knifeId, StringComparison.OrdinalIgnoreCase));
-        if (knife is null)
+        if (knife is null || !CanUse(player, knife))
         {
             return false;
         }
@@ -266,7 +275,7 @@ public sealed class SkinManager : IDisposable
 
     public bool SetGloveSkin(CCSPlayerController player, string cosmeticId)
     {
-        if (!Catalog.GloveSkinsById.TryGetValue(cosmeticId, out var glove))
+        if (!Catalog.GloveSkinsById.TryGetValue(cosmeticId, out var glove) || !CanUse(player, glove))
         {
             return false;
         }
@@ -284,7 +293,8 @@ public sealed class SkinManager : IDisposable
         var normalizedTeam = NormalizeAgentTeam(team);
         if (normalizedTeam is not "t" and not "ct" ||
             !Catalog.AgentsById.TryGetValue(agentId, out var agent) ||
-            !agent.Team.Equals(normalizedTeam, StringComparison.OrdinalIgnoreCase))
+            !agent.Team.Equals(normalizedTeam, StringComparison.OrdinalIgnoreCase) ||
+            !CanUse(player, agent))
         {
             return false;
         }
@@ -324,15 +334,24 @@ public sealed class SkinManager : IDisposable
         {
             case "weapons":
                 profile.WeaponSkins.Clear();
+                foreach (var customizationTarget in profile.Customizations.Keys.ToArray())
+                {
+                    if (customizationTarget is not KnifeTarget and not GloveTarget)
+                    {
+                        profile.Customizations.Remove(customizationTarget);
+                    }
+                }
                 ClearWeaponCosmetics(player, includeKnives: false, logFailures: true);
                 break;
             case "knife":
                 profile.KnifeId = null;
                 profile.KnifeSkinId = null;
+                profile.Customizations.Remove(KnifeTarget);
                 ClearWeaponCosmetics(player, includeKnives: true, onlyKnives: true, logFailures: true);
                 break;
             case "gloves":
                 profile.GloveSkinId = null;
+                profile.Customizations.Remove(GloveTarget);
                 if (TryGetPawn(player, out var glovePawn, logFailures: true))
                 {
                     ClearGloveCosmetic(player, glovePawn!);
@@ -488,6 +507,129 @@ public sealed class SkinManager : IDisposable
             .OrderBy(w => IsPistol(w.EntityName) ? 1 : 0)
             .ThenBy(w => w.DisplayName)
             .ToList();
+    }
+
+    // Resolves the customization target of the held weapon: a weapon entity
+    // name known to the catalog, "knife", or null when nothing usable is held.
+    public string? GetHeldCustomizationTarget(CCSPlayerController player)
+    {
+        if (!TryGetPawn(player, out var pawn, logFailures: false))
+        {
+            return null;
+        }
+
+        var weapon = pawn!.WeaponServices?.ActiveWeapon.Value;
+        if (weapon is null || !weapon.IsValid)
+        {
+            return null;
+        }
+
+        var entityName = ResolveWeaponEntityName(weapon);
+        if (IsKnife(entityName))
+        {
+            return KnifeTarget;
+        }
+
+        return Catalog.WeaponsByEntity.ContainsKey(entityName) ? entityName : null;
+    }
+
+    public bool SetSeed(CCSPlayerController player, string target, int? seed)
+    {
+        return SetCustomization(player, target, "seed",
+            seed?.ToString(CultureInfo.InvariantCulture),
+            customization => customization.Seed = seed);
+    }
+
+    public bool SetWear(CCSPlayerController player, string target, float? wear)
+    {
+        return SetCustomization(player, target, "wear",
+            wear?.ToString("0.######", CultureInfo.InvariantCulture),
+            customization => customization.Wear = wear);
+    }
+
+    public bool SetNameTag(CCSPlayerController player, string target, string? nameTag)
+    {
+        return SetCustomization(player, target, "nametag", nameTag,
+            customization => customization.NameTag = nameTag);
+    }
+
+    private bool SetCustomization(CCSPlayerController player, string target, string field, string? storedValue, Action<WeaponCustomization> mutate)
+    {
+        if (!HasSkinSelected(player, target))
+        {
+            return false;
+        }
+
+        var steamId = GetSteamId64(player);
+        var profile = GetProfile(player);
+        if (!profile.Customizations.TryGetValue(target, out var customization))
+        {
+            customization = new WeaponCustomization();
+            profile.Customizations[target] = customization;
+        }
+
+        mutate(customization);
+        if (customization.IsEmpty)
+        {
+            profile.Customizations.Remove(target);
+        }
+
+        if (storedValue is null)
+        {
+            QueueStorageWrite($"{field} reset ({target}) for {steamId}", () => _storage.ClearCustomization(steamId, field, target));
+        }
+        else
+        {
+            QueueStorageWrite($"{field} {storedValue} ({target}) for {steamId}", () => _storage.SaveCustomization(steamId, field, target, storedValue));
+        }
+
+        ReapplyTarget(player, profile, target);
+        return true;
+    }
+
+    private bool HasSkinSelected(CCSPlayerController player, string target)
+    {
+        var profile = GetProfile(player);
+        return target switch
+        {
+            KnifeTarget => profile.KnifeSkinId is not null,
+            GloveTarget => profile.GloveSkinId is not null,
+            _ => profile.WeaponSkins.ContainsKey(target)
+        };
+    }
+
+    private void ReapplyTarget(CCSPlayerController player, PlayerSkinProfile profile, string target)
+    {
+        switch (target)
+        {
+            case KnifeTarget:
+                if (profile.KnifeSkinId is not null && Catalog.KnifeSkinsById.TryGetValue(profile.KnifeSkinId, out var knifeSkin))
+                {
+                    ApplyKnifeSelection(player, knifeSkin, logFailures: true);
+                }
+                break;
+            case GloveTarget:
+                if (profile.GloveSkinId is not null && Catalog.GloveSkinsById.TryGetValue(profile.GloveSkinId, out var glove))
+                {
+                    ApplyGloveSelection(player, glove, logFailures: true);
+                }
+                break;
+            default:
+                if (profile.WeaponSkins.TryGetValue(target, out var cosmeticId) && Catalog.WeaponSkinsById.TryGetValue(cosmeticId, out var skin))
+                {
+                    ApplyWeaponSelection(player, target, skin, logFailures: true);
+                }
+                break;
+        }
+    }
+
+    private WeaponCustomization? GetCustomization(CCSPlayerController player, string target)
+    {
+        return TryGetSteamId64(player, out var steamId) &&
+               _profiles.TryGetValue(steamId, out var profile) &&
+               profile.Customizations.TryGetValue(target, out var customization)
+            ? customization
+            : null;
     }
 
     public KnifeDefinition? GetCurrentKnifeDefinition(CCSPlayerController player)
@@ -825,6 +967,20 @@ public sealed class SkinManager : IDisposable
         {
             target.AgentIdsByTeam.TryAdd(team, agentId);
         }
+
+        foreach (var (customizationTarget, loadedCustomization) in loaded.Customizations)
+        {
+            if (target.Customizations.TryGetValue(customizationTarget, out var existing))
+            {
+                existing.Seed ??= loadedCustomization.Seed;
+                existing.Wear ??= loadedCustomization.Wear;
+                existing.NameTag ??= loadedCustomization.NameTag;
+            }
+            else
+            {
+                target.Customizations[customizationTarget] = loadedCustomization;
+            }
+        }
     }
 
     private bool ApplyKnifeSelection(CCSPlayerController player, CosmeticEntry skin, bool logFailures)
@@ -969,12 +1125,16 @@ public sealed class SkinManager : IDisposable
                 return false;
             }
 
+            var customization = GetCustomization(player, GloveTarget);
+            var seed = customization?.Seed ?? glove.Seed;
+            var wear = customization?.Wear ?? glove.Wear;
+
             econGloves.ItemDefinitionIndex = glove.ItemDefinitionIndex.Value;
             econGloves.EntityQuality = 3;
             UpdateEconItemIdentity(econGloves, player);
-            ApplyCustomName(econGloves, glove);
+            ApplyCustomName(econGloves, glove, overrideName: null);
 
-            var attributesApplied = _econAttributes.ApplyPaintAttributes(econGloves, glove, $"gloves player {player.SteamID}");
+            var attributesApplied = _econAttributes.ApplyPaintAttributes(econGloves, glove.Id, glove.PaintKit, seed, wear, $"gloves player {player.SteamID}");
             pawn.EconGlovesChanged++;
             MarkGlovesStateChanged(pawn);
             RefreshGloves(player, pawn);
@@ -1107,9 +1267,13 @@ public sealed class SkinManager : IDisposable
                 TryChangeKnifeSubclass(weapon, cosmetic.ItemDefinitionIndex.Value);
             }
 
+            var customization = GetCustomization(player, isKnife ? KnifeTarget : ResolveWeaponEntityName(weapon));
+            var seed = customization?.Seed ?? cosmetic.Seed;
+            var wear = customization?.Wear ?? cosmetic.Wear;
+
             weapon.FallbackPaintKit = cosmetic.PaintKit;
-            weapon.FallbackSeed = cosmetic.Seed;
-            weapon.FallbackWear = cosmetic.Wear;
+            weapon.FallbackSeed = seed;
+            weapon.FallbackWear = wear;
             weapon.FallbackStatTrak = -1;
             weapon.OriginalOwnerXuidLow = (uint)(player.SteamID & 0xFFFFFFFF);
             weapon.OriginalOwnerXuidHigh = (uint)(player.SteamID >> 32);
@@ -1121,9 +1285,9 @@ public sealed class SkinManager : IDisposable
 
             item.EntityQuality = isKnife ? 3 : 0;
             UpdateEconItemIdentity(item, player);
-            ApplyCustomName(item, cosmetic);
+            ApplyCustomName(item, cosmetic, customization?.NameTag);
 
-            var attributesApplied = _econAttributes.ApplyPaintAttributes(item, cosmetic, $"{ResolveWeaponEntityName(weapon)} entity {weapon.Index}");
+            var attributesApplied = _econAttributes.ApplyPaintAttributes(item, cosmetic.Id, cosmetic.PaintKit, seed, wear, $"{ResolveWeaponEntityName(weapon)} entity {weapon.Index}");
             ApplyWeaponBodyGroup(weapon, cosmetic);
             MarkWeaponStateChanged(weapon);
             RefreshActiveWeapon(player, weapon);
@@ -1597,15 +1761,16 @@ public sealed class SkinManager : IDisposable
         item.Initialized = true;
     }
 
-    private static void ApplyCustomName(CEconItemView item, CosmeticEntry cosmetic)
+    private static void ApplyCustomName(CEconItemView item, CosmeticEntry cosmetic, string? overrideName)
     {
-        if (string.IsNullOrWhiteSpace(cosmetic.CustomName))
+        var name = string.IsNullOrWhiteSpace(overrideName) ? cosmetic.CustomName : overrideName;
+        if (string.IsNullOrWhiteSpace(name))
         {
             return;
         }
 
-        item.CustomName = cosmetic.CustomName;
-        item.CustomNameOverride = cosmetic.CustomName;
+        item.CustomName = name;
+        item.CustomNameOverride = name;
     }
 
     private void TryChangeKnifeSubclass(CBasePlayerWeapon weapon, ushort itemDefinitionIndex)

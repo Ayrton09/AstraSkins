@@ -1,4 +1,3 @@
-using AstraSkins.Models;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
 using Microsoft.Extensions.Logging;
@@ -37,11 +36,11 @@ internal sealed class EconAttributeApplicator
         }
     }
 
-    public bool ApplyPaintAttributes(CEconItemView item, CosmeticEntry cosmetic, string context)
+    public bool ApplyPaintAttributes(CEconItemView item, string cosmeticId, int paintKit, int seed, float wear, string context)
     {
         if (item.Handle == IntPtr.Zero)
         {
-            _logger.LogWarning("Astra Skins econ item invalid while applying {CosmeticId} to {Context}.", cosmetic.Id, context);
+            _logger.LogWarning("Astra Skins econ item invalid while applying {CosmeticId} to {Context}.", cosmeticId, context);
             return false;
         }
 
@@ -49,7 +48,7 @@ internal sealed class EconAttributeApplicator
         {
             _logger.LogWarning(
                 "Astra Skins cannot apply dynamic paint attributes for {CosmeticId} on {Context}: gamedata signature is unavailable.",
-                cosmetic.Id,
+                cosmeticId,
                 context);
             return false;
         }
@@ -59,13 +58,13 @@ internal sealed class EconAttributeApplicator
             item.AttributeList.Attributes.RemoveAll();
             item.NetworkedDynamicAttributes.Attributes.RemoveAll();
 
-            SetPaintAttributes(item.AttributeList.Handle, cosmetic);
-            SetPaintAttributes(item.NetworkedDynamicAttributes.Handle, cosmetic);
+            SetPaintAttributes(item.AttributeList.Handle, paintKit, seed, wear);
+            SetPaintAttributes(item.NetworkedDynamicAttributes.Handle, paintKit, seed, wear);
             return true;
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Astra Skins attribute update failed for {CosmeticId} on {Context}.", cosmetic.Id, context);
+            _logger.LogWarning(ex, "Astra Skins attribute update failed for {CosmeticId} on {Context}.", cosmeticId, context);
             return false;
         }
     }
@@ -89,10 +88,10 @@ internal sealed class EconAttributeApplicator
         }
     }
 
-    private void SetPaintAttributes(nint attributeListHandle, CosmeticEntry cosmetic)
+    private void SetPaintAttributes(nint attributeListHandle, int paintKit, int seed, float wear)
     {
-        _setOrAddAttributeValueByName!.Invoke(attributeListHandle, "set item texture prefab", cosmetic.PaintKit);
-        _setOrAddAttributeValueByName.Invoke(attributeListHandle, "set item texture seed", cosmetic.Seed);
-        _setOrAddAttributeValueByName.Invoke(attributeListHandle, "set item texture wear", cosmetic.Wear);
+        _setOrAddAttributeValueByName!.Invoke(attributeListHandle, "set item texture prefab", paintKit);
+        _setOrAddAttributeValueByName.Invoke(attributeListHandle, "set item texture seed", seed);
+        _setOrAddAttributeValueByName.Invoke(attributeListHandle, "set item texture wear", wear);
     }
 }

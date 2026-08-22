@@ -11,6 +11,7 @@ public sealed class PluginConfig : BasePluginConfig
     public SqliteConfig Sqlite { get; set; } = new();
     public MySqlConfig MySql { get; set; } = new();
     public MenuConfig Menu { get; set; } = new();
+    public CustomizationConfig Customization { get; set; } = new();
     public DefinitionPathConfig Definitions { get; set; } = new();
     public bool EnableAdminReloadCommand { get; set; } = true;
     public string AdminReloadPermission { get; set; } = "@css/config";
@@ -30,6 +31,7 @@ public sealed class MySqlConfig
     public string Database { get; set; } = "astra_skins";
     public string Username { get; set; } = "astra_skins";
     public string Password { get; set; } = "change-me";
+    public string SslMode { get; set; } = "required";
 }
 
 public sealed class MenuConfig
@@ -38,6 +40,15 @@ public sealed class MenuConfig
     public int TimeoutSeconds { get; set; } = 25;
     public int CooldownMilliseconds { get; set; } = 180;
     public int SelectionCooldownMilliseconds { get; set; } = 900;
+    public bool AllowWhileDead { get; set; } = true;
+}
+
+public sealed class CustomizationConfig
+{
+    public bool Enabled { get; set; } = true;
+    public string Permission { get; set; } = string.Empty;
+    // 20 matches the name tag length the real game allows.
+    public int MaxNameTagLength { get; set; } = 20;
 }
 
 public sealed class DefinitionPathConfig

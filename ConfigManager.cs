@@ -1,5 +1,3 @@
-using System.Text.Json;
-using CounterStrikeSharp.API.Modules.Utils;
 using Microsoft.Extensions.Logging;
 using AstraSkins.Models;
 
@@ -8,65 +6,10 @@ namespace AstraSkins;
 public sealed class ConfigManager
 {
     private readonly ILogger _logger;
-    private readonly JsonSerializerOptions _jsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true,
-        WriteIndented = true
-    };
 
     public ConfigManager(ILogger logger)
     {
         _logger = logger;
-    }
-
-    public PluginConfig Load(string path)
-    {
-        if (!File.Exists(path))
-        {
-            throw new InvalidOperationException($"Missing config file: {path}");
-        }
-
-        PluginConfig? config;
-        try
-        {
-            config = JsonSerializer.Deserialize<PluginConfig>(File.ReadAllText(path), _jsonOptions);
-        }
-        catch (JsonException ex)
-        {
-            throw new InvalidOperationException($"Malformed config JSON in {path}: {ex.Message}", ex);
-        }
-
-        if (config is null)
-        {
-            throw new InvalidOperationException($"Config file is empty or invalid: {path}");
-        }
-
-        Validate(config);
-        return config;
-    }
-
-    public void WriteExample(string path)
-    {
-        if (File.Exists(path))
-        {
-            return;
-        }
-
-        Directory.CreateDirectory(Path.GetDirectoryName(path) ?? ".");
-        var example = new PluginConfig
-        {
-            DatabaseMode = "mysql",
-            Sqlite = new SqliteConfig { Path = "data/astra_skins.sqlite" },
-            MySql = new MySqlConfig
-            {
-                Host = "127.0.0.1",
-                Port = 3306,
-                Database = "astra_skins",
-                Username = "astra_skins",
-                Password = "change-me"
-            }
-        };
-        File.WriteAllText(path, JsonSerializer.Serialize(example, _jsonOptions));
     }
 
     public void Validate(PluginConfig config)
@@ -84,6 +27,11 @@ public sealed class ConfigManager
         if (config.Menu is null)
         {
             throw new InvalidOperationException("Menu config section is required.");
+        }
+
+        if (config.Customization is null)
+        {
+            throw new InvalidOperationException("Customization config section is required.");
         }
 
         if (config.Definitions is null)
@@ -117,6 +65,14 @@ public sealed class ConfigManager
             {
                 throw new InvalidOperationException("MySql.Port must be between 1 and 65535.");
             }
+
+            var sslMode = config.MySql.SslMode?.Trim().ToLowerInvariant();
+            if (sslMode is not ("none" or "preferred" or "required" or "verifyca" or "verifyfull"))
+            {
+                throw new InvalidOperationException("MySql.SslMode must be one of: none, preferred, required, verifyca, verifyfull.");
+            }
+
+            config.MySql.SslMode = sslMode;
         }
 
         if (config.Menu.ItemsPerPage is < 3 or > 10)
@@ -137,6 +93,11 @@ public sealed class ConfigManager
         if (config.Menu.SelectionCooldownMilliseconds is < 0 or > 5000)
         {
             throw new InvalidOperationException("Menu.SelectionCooldownMilliseconds must be between 0 and 5000.");
+        }
+
+        if (config.Customization.MaxNameTagLength is < 4 or > 32)
+        {
+            throw new InvalidOperationException("Customization.MaxNameTagLength must be between 4 and 32.");
         }
 
         if (string.IsNullOrWhiteSpace(config.Definitions.Weapons) ||

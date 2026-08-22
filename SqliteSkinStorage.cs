@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 using AstraSkins.Models;
@@ -78,6 +79,22 @@ public sealed class SqliteSkinStorage : ISkinStorage
         Upsert(steamId64, "agent", team, agentId);
     }
 
+    public void SaveCustomization(ulong steamId64, string field, string target, string value)
+    {
+        Upsert(steamId64, field, target, value);
+    }
+
+    public void ClearCustomization(ulong steamId64, string field, string target)
+    {
+        using var connection = Open();
+        using var command = connection.CreateCommand();
+        command.CommandText = "DELETE FROM astra_player_skin_selections WHERE steam_id = $steam_id AND selection_type = $selection_type AND target = $target";
+        command.Parameters.AddWithValue("$steam_id", unchecked((long)steamId64));
+        command.Parameters.AddWithValue("$selection_type", field);
+        command.Parameters.AddWithValue("$target", target);
+        command.ExecuteNonQuery();
+    }
+
     public void ResetProfile(ulong steamId64)
     {
         using var connection = Open();
@@ -93,9 +110,9 @@ public sealed class SqliteSkinStorage : ISkinStorage
         using var command = connection.CreateCommand();
         command.CommandText = category switch
         {
-            "weapons" => "DELETE FROM astra_player_skin_selections WHERE steam_id = $steam_id AND selection_type = 'weapon'",
-            "knife" => "DELETE FROM astra_player_skin_selections WHERE steam_id = $steam_id AND selection_type IN ('knife', 'knife_type')",
-            "gloves" => "DELETE FROM astra_player_skin_selections WHERE steam_id = $steam_id AND selection_type = 'glove'",
+            "weapons" => "DELETE FROM astra_player_skin_selections WHERE steam_id = $steam_id AND (selection_type = 'weapon' OR (selection_type IN ('seed', 'wear', 'nametag') AND target NOT IN ('knife', 'glove')))",
+            "knife" => "DELETE FROM astra_player_skin_selections WHERE steam_id = $steam_id AND (selection_type IN ('knife', 'knife_type') OR (selection_type IN ('seed', 'wear', 'nametag') AND target = 'knife'))",
+            "gloves" => "DELETE FROM astra_player_skin_selections WHERE steam_id = $steam_id AND (selection_type = 'glove' OR (selection_type IN ('seed', 'wear', 'nametag') AND target = 'glove'))",
             "agents" => "DELETE FROM astra_player_skin_selections WHERE steam_id = $steam_id AND selection_type = 'agent'",
             _ => throw new ArgumentOutOfRangeException(nameof(category), category, "Invalid reset category.")
         };
@@ -158,5 +175,30 @@ public sealed class SqliteSkinStorage : ISkinStorage
         {
             profile.AgentIdsByTeam[target] = cosmeticId;
         }
+        else if (type.Equals("seed", StringComparison.OrdinalIgnoreCase) &&
+                 int.TryParse(cosmeticId, NumberStyles.Integer, CultureInfo.InvariantCulture, out var seed))
+        {
+            GetOrAddCustomization(profile, target).Seed = seed;
+        }
+        else if (type.Equals("wear", StringComparison.OrdinalIgnoreCase) &&
+                 float.TryParse(cosmeticId, NumberStyles.Float, CultureInfo.InvariantCulture, out var wear))
+        {
+            GetOrAddCustomization(profile, target).Wear = wear;
+        }
+        else if (type.Equals("nametag", StringComparison.OrdinalIgnoreCase))
+        {
+            GetOrAddCustomization(profile, target).NameTag = cosmeticId;
+        }
+    }
+
+    private static WeaponCustomization GetOrAddCustomization(PlayerSkinProfile profile, string target)
+    {
+        if (!profile.Customizations.TryGetValue(target, out var customization))
+        {
+            customization = new WeaponCustomization();
+            profile.Customizations[target] = customization;
+        }
+
+        return customization;
     }
 }
