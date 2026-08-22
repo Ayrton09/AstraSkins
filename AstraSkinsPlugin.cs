@@ -32,7 +32,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
     public PluginConfig Config { get; set; } = new();
 
     public override string ModuleName => "Astra Skins";
-    public override string ModuleVersion => "1.0.4";
+    public override string ModuleVersion => "1.0.5";
     public override string ModuleAuthor => "Ayrton09";
     public override string ModuleDescription => string.Empty;
 
@@ -62,6 +62,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
 
         RegisterListener<Listeners.OnClientAuthorized>(OnClientAuthorized);
         RegisterListener<Listeners.OnTick>(OnTick);
+        RegisterListener<Listeners.OnPlayerButtonsChanged>(OnPlayerButtonsChanged);
         RegisterListener<Listeners.OnServerPrecacheResources>(OnServerPrecacheResources);
         RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawnPre, HookMode.Pre);
         RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawnPost, HookMode.Post);
@@ -110,7 +111,8 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
 
         _config = config;
         _storage = storage;
-        _skinManager = new SkinManager(storage, catalog, Logger);
+        _skinManager = new SkinManager(storage, catalog, Logger,
+            (delay, action) => AddTimer(delay, () => action(), TimerFlags.STOP_ON_MAPCHANGE));
         _menuManager = new MenuManager(_skinManager, config, Localizer, Logger);
         _ready = true;
 
@@ -241,6 +243,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         {
             var catalog = new DefinitionLoader(Logger).Load(ModuleDirectory, _config);
             _skinManager?.ReplaceCatalog(catalog);
+            _menuManager?.InvalidateAll();
             foreach (var livePlayer in Utilities.GetPlayers().Where(IsLiveHuman))
             {
                 _skinManager?.ApplyToPlayer(livePlayer);
@@ -614,6 +617,14 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         }
 
         _menuManager?.OnTick();
+    }
+
+    private void OnPlayerButtonsChanged(CCSPlayerController player, PlayerButtons pressed, PlayerButtons released)
+    {
+        if (_ready && player.IsValid)
+        {
+            _menuManager?.OnButtonsChanged(player, pressed);
+        }
     }
 
     // Agent models must be in each map's resource manifest before SetModel;

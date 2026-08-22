@@ -90,13 +90,16 @@ public sealed class SkinManager : IDisposable
 
     public DefinitionCatalog Catalog { get; private set; }
 
-    public SkinManager(ISkinStorage storage, DefinitionCatalog catalog, ILogger logger)
+    public SkinManager(ISkinStorage storage, DefinitionCatalog catalog, ILogger logger, Action<float, Action>? scheduleDelayed = null)
     {
         _storage = storage;
         Catalog = catalog;
         _logger = logger;
+        _scheduleDelayed = scheduleDelayed;
         _econAttributes = new EconAttributeApplicator(logger);
     }
+
+    private readonly Action<float, Action>? _scheduleDelayed;
 
     public void ReplaceCatalog(DefinitionCatalog catalog)
     {
@@ -1228,6 +1231,10 @@ public sealed class SkinManager : IDisposable
             pawn.CharacterDefIndex = itemDefinitionIndex;
             pawn.StrVOPrefix = agent.VoicePrefix ?? string.Empty;
             pawn.HasFemaleVoice = agent.HasFemaleVoice ?? IsFemaleVoicePrefix(agent.VoicePrefix);
+            // m_nCharacterDefIndex and m_strVOPrefix are not networked fields;
+            // calling SetStateChanged on them makes the engine log unresolved
+            // offsets. Only m_bHasFemaleVoice is part of the send table.
+            TrySetStateChanged(pawn, "CCSPlayerPawn", "m_bHasFemaleVoice");
             return true;
         }
         catch (Exception ex)
@@ -1414,8 +1421,13 @@ public sealed class SkinManager : IDisposable
             ApplyCosmeticToWeapon(player, oldWeapon, skin, isKnife: false, logFailures);
             oldWeapon.AddEntityIOEvent("Kill", oldWeapon, null, string.Empty, 0.01f);
 
-            var newHandle = player.GiveNamedItem(weaponEntity);
-            var newWeapon = new CBasePlayerWeapon(newHandle);
+            var newWeapon = player.GiveNamedItem<CBasePlayerWeapon>(weaponEntity);
+            if (newWeapon is null)
+            {
+                _logger.LogWarning("Astra Skins could not create replacement {WeaponEntity} for player {SteamId}.", weaponEntity, player.SteamID);
+                return false;
+            }
+
             Server.NextFrame(() =>
             {
                 if (!IsUsablePlayer(player) || !newWeapon.IsValid)
@@ -1425,11 +1437,17 @@ public sealed class SkinManager : IDisposable
 
                 try
                 {
-                    newWeapon.Clip1 = oldClip;
-                    if (newWeapon.ReserveAmmo.Length > 0)
+                    RestoreAmmo(newWeapon, oldClip, oldReserve);
+                    // The engine finishes initializing the new weapon after this
+                    // frame and refills its clip, so restore again once it has
+                    // settled or the write above is lost.
+                    _scheduleDelayed?.Invoke(0.2f, () =>
                     {
-                        newWeapon.ReserveAmmo[0] = oldReserve;
-                    }
+                        if (IsUsablePlayer(player) && newWeapon.IsValid)
+                        {
+                            RestoreAmmo(newWeapon, oldClip, oldReserve);
+                        }
+                    });
 
                     ApplyCosmeticToWeapon(player, newWeapon, skin, isKnife: false, logFailures);
                     player.ExecuteClientCommand(IsPistol(weaponEntity) ? "slot2" : "slot1");
@@ -1493,8 +1511,17 @@ public sealed class SkinManager : IDisposable
 
             oldKnife.AddEntityIOEvent("Kill", oldKnife, null, string.Empty, 0.01f);
 
-            var newHandle = player.GiveNamedItem("weapon_knife");
-            var newKnife = new CBasePlayerWeapon(newHandle);
+            var newKnife = player.GiveNamedItem<CBasePlayerWeapon>("weapon_knife");
+            if (newKnife is null)
+            {
+                if (logFailures)
+                {
+                    _logger.LogWarning("Astra Skins could not create replacement knife for player {SteamId}.", player.SteamID);
+                }
+
+                return false;
+            }
+
             Server.NextFrame(() =>
             {
                 if (!IsUsablePlayer(player) || !newKnife.IsValid)
@@ -1817,6 +1844,17 @@ public sealed class SkinManager : IDisposable
     {
         TrySetStateChanged(pawn, "CCSPlayerPawn", "m_EconGloves");
         TrySetStateChanged(pawn, "CCSPlayerPawn", "m_nEconGlovesChanged");
+    }
+
+    private void RestoreAmmo(CBasePlayerWeapon weapon, int clip, int reserve)
+    {
+        weapon.Clip1 = clip;
+        TrySetStateChanged(weapon, "CBasePlayerWeapon", "m_iClip1");
+        if (weapon.ReserveAmmo.Length > 0)
+        {
+            weapon.ReserveAmmo[0] = reserve;
+            TrySetStateChanged(weapon, "CBasePlayerWeapon", "m_pReserveAmmo");
+        }
     }
 
     private void TrySetStateChanged(CBaseEntity entity, string className, string fieldName)

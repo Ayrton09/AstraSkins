@@ -159,10 +159,13 @@ public sealed class MySqlSkinStorage : ISkinStorage
     {
         using var connection = Open();
         using var command = connection.CreateCommand();
+        // Referencing the bound parameter instead of VALUES(cosmetic_id) avoids
+        // the MySQL 8.0.20+ deprecation while staying compatible with MariaDB,
+        // which does not support the row-alias (AS new) replacement syntax.
         command.CommandText = """
         INSERT INTO astra_player_skin_selections (steam_id, selection_type, target, cosmetic_id)
         VALUES (@steam_id, @selection_type, @target, @cosmetic_id)
-        ON DUPLICATE KEY UPDATE cosmetic_id = VALUES(cosmetic_id), updated_at = CURRENT_TIMESTAMP;
+        ON DUPLICATE KEY UPDATE cosmetic_id = @cosmetic_id, updated_at = CURRENT_TIMESTAMP;
         """;
         command.Parameters.AddWithValue("@steam_id", steamId64);
         command.Parameters.AddWithValue("@selection_type", type);

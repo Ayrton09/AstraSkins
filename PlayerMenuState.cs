@@ -28,7 +28,9 @@ public sealed class PlayerMenuState
     public DateTime LastInputUtc { get; set; } = DateTime.MinValue;
     public DateTime LastSelectionUtc { get; set; } = DateTime.MinValue;
     public DateTime OpenedAtUtc { get; set; } = DateTime.UtcNow;
-    public PlayerButtons PreviousButtons { get; set; }
+    public string? LastSelectionKey { get; set; }
+    public IReadOnlyList<MenuOption>? CachedOptions { get; set; }
+    public DateTime CachedOptionsAtUtc { get; set; }
     public string? CategoryId { get; set; }
     public string? AgentTeam { get; set; }
     public WeaponDefinition? Weapon { get; set; }

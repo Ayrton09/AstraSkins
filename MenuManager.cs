@@ -19,22 +19,8 @@ public sealed class MenuManager
     private readonly Dictionary<int, float> _savedVelocity = new();
 
     private const int InitialInputDelayMilliseconds = 200;
-    private const string UpKey = "W";
-    private const string DownKey = "S";
-    private const string SelectKey = "E";
-    private const string BackKey = "Shift";
-    private const string CloseKey = "R";
     private const int MaxTitleLength = 46;
     private const int MaxItemLabelLength = 34;
-
-    private static readonly Dictionary<string, PlayerButtons> ButtonMap = new(StringComparer.OrdinalIgnoreCase)
-    {
-        [UpKey] = PlayerButtons.Forward,
-        [DownKey] = PlayerButtons.Back,
-        [SelectKey] = PlayerButtons.Use,
-        [BackKey] = PlayerButtons.Speed,
-        [CloseKey] = PlayerButtons.Reload
-    };
 
     public MenuManager(SkinManager skinManager, PluginConfig config, IStringLocalizer localizer, ILogger logger)
     {
@@ -53,7 +39,7 @@ public sealed class MenuManager
         state.Weapon = null;
         state.Knife = null;
         state.Glove = null;
-        ResetInputState(player, state);
+        ResetInputState(state);
         ChangeView(player, state, MenuView.Main);
     }
 
@@ -61,7 +47,7 @@ public sealed class MenuManager
     {
         var state = GetState(player);
         state.BackStack.Clear();
-        ResetInputState(player, state);
+        ResetInputState(state);
         ChangeView(player, state, MenuView.KnifeTypes);
     }
 
@@ -69,7 +55,7 @@ public sealed class MenuManager
     {
         var state = GetState(player);
         state.BackStack.Clear();
-        ResetInputState(player, state);
+        ResetInputState(state);
         ChangeView(player, state, MenuView.GloveTypes);
     }
 
@@ -78,7 +64,7 @@ public sealed class MenuManager
         var state = GetState(player);
         state.BackStack.Clear();
         state.AgentTeam = null;
-        ResetInputState(player, state);
+        ResetInputState(state);
         ChangeView(player, state, MenuView.AgentTeams);
     }
 
@@ -124,12 +110,6 @@ public sealed class MenuManager
             }
 
             Freeze(player);
-            HandleButtonInput(player, state, now);
-            if (!_states.ContainsKey(player.Slot) || !state.IsOpen)
-            {
-                continue;
-            }
-
             Render(player, state);
         }
     }
@@ -145,14 +125,14 @@ public sealed class MenuManager
         return state;
     }
 
-    private static void ResetInputState(CCSPlayerController player, PlayerMenuState state)
+    private static void ResetInputState(PlayerMenuState state)
     {
         var now = DateTime.UtcNow;
         state.OpenedAtUtc = now;
         state.LastInputUtc = now;
         state.LastSelectionUtc = DateTime.MinValue;
+        state.LastSelectionKey = null;
         state.LastInteractionUtc = now;
-        state.PreviousButtons = player.Buttons;
     }
 
     private void ChangeView(CCSPlayerController player, PlayerMenuState state, MenuView view, bool push = false)
@@ -165,6 +145,7 @@ public sealed class MenuManager
         state.View = view;
         state.Cursor = 0;
         state.LastInteractionUtc = DateTime.UtcNow;
+        InvalidateOptions(state);
         Freeze(player);
         Render(player, state);
     }
@@ -192,6 +173,7 @@ public sealed class MenuManager
             state.Weapon = snapshot.Weapon;
             state.Knife = snapshot.Knife;
             state.Glove = snapshot.Glove;
+            InvalidateOptions(state);
             return;
         }
 
@@ -210,19 +192,55 @@ public sealed class MenuManager
         var option = options[optionIndex];
         if (option.ThrottleSelection)
         {
+            // Throttle repeats of the same option; picking a different option
+            // is allowed immediately.
+            var selectionKey = $"{state.View}:{option.Label}";
             var now = DateTime.UtcNow;
-            if ((now - state.LastSelectionUtc).TotalMilliseconds < _config.Menu.SelectionCooldownMilliseconds)
+            if (selectionKey.Equals(state.LastSelectionKey, StringComparison.Ordinal) &&
+                (now - state.LastSelectionUtc).TotalMilliseconds < _config.Menu.SelectionCooldownMilliseconds)
             {
                 return;
             }
 
+            state.LastSelectionKey = selectionKey;
             state.LastSelectionUtc = now;
         }
 
         option.Action();
+        InvalidateOptions(state);
     }
 
+    // Options are cached per state and rebuilt only when the view or the
+    // selection changes; the main view also refreshes on a short TTL because
+    // it lists the weapons the player currently owns.
     private IReadOnlyList<MenuOption> GetOptions(PlayerMenuState state)
+    {
+        var now = DateTime.UtcNow;
+        if (state.CachedOptions is not null &&
+            (state.View != MenuView.Main || (now - state.CachedOptionsAtUtc).TotalSeconds < 1))
+        {
+            return state.CachedOptions;
+        }
+
+        state.CachedOptions = BuildOptions(state);
+        state.CachedOptionsAtUtc = now;
+        return state.CachedOptions;
+    }
+
+    private static void InvalidateOptions(PlayerMenuState state)
+    {
+        state.CachedOptions = null;
+    }
+
+    public void InvalidateAll()
+    {
+        foreach (var state in _states.Values)
+        {
+            InvalidateOptions(state);
+        }
+    }
+
+    private IReadOnlyList<MenuOption> BuildOptions(PlayerMenuState state)
     {
         return state.View switch
         {
@@ -300,48 +318,51 @@ public sealed class MenuManager
         return options;
     }
 
-    private void HandleButtonInput(CCSPlayerController player, PlayerMenuState state, DateTime now)
+    // Driven by the OnPlayerButtonsChanged listener: `pressed` only contains
+    // buttons that went down this frame, so no previous-state tracking needed.
+    public void OnButtonsChanged(CCSPlayerController player, PlayerButtons pressed)
     {
-        var current = player.Buttons;
-        if ((now - state.OpenedAtUtc).TotalMilliseconds < InitialInputDelayMilliseconds ||
-            (now - state.LastInputUtc).TotalMilliseconds < _config.Menu.CooldownMilliseconds)
+        if (!_states.TryGetValue(player.Slot, out var state) || !state.IsOpen)
         {
-            state.PreviousButtons = current;
             return;
         }
 
-        if (JustPressed(state.PreviousButtons, current, UpKey))
+        var now = DateTime.UtcNow;
+        if ((now - state.OpenedAtUtc).TotalMilliseconds < InitialInputDelayMilliseconds ||
+            (now - state.LastInputUtc).TotalMilliseconds < _config.Menu.CooldownMilliseconds)
         {
-            MoveCursor(state, -1);
-            state.LastInputUtc = now;
-            state.LastInteractionUtc = now;
-        }
-        else if (JustPressed(state.PreviousButtons, current, DownKey))
-        {
-            MoveCursor(state, 1);
-            state.LastInputUtc = now;
-            state.LastInteractionUtc = now;
-        }
-        else if (JustPressed(state.PreviousButtons, current, SelectKey))
-        {
-            Select(player, state);
-            state.LastInputUtc = now;
-            state.LastInteractionUtc = now;
-        }
-        else if (JustPressed(state.PreviousButtons, current, BackKey))
-        {
-            GoBack(player, state);
-            state.LastInputUtc = now;
-            state.LastInteractionUtc = now;
-        }
-        else if (JustPressed(state.PreviousButtons, current, CloseKey))
-        {
-            Close(player);
-            state.LastInputUtc = now;
-            state.LastInteractionUtc = now;
+            return;
         }
 
-        state.PreviousButtons = current;
+        if ((pressed & PlayerButtons.Reload) != 0)
+        {
+            Close(player);
+            return;
+        }
+
+        if ((pressed & PlayerButtons.Forward) != 0)
+        {
+            MoveCursor(state, -1);
+        }
+        else if ((pressed & PlayerButtons.Back) != 0)
+        {
+            MoveCursor(state, 1);
+        }
+        else if ((pressed & PlayerButtons.Use) != 0)
+        {
+            Select(player, state);
+        }
+        else if ((pressed & PlayerButtons.Speed) != 0)
+        {
+            GoBack(player, state);
+        }
+        else
+        {
+            return;
+        }
+
+        state.LastInputUtc = now;
+        state.LastInteractionUtc = now;
     }
 
     private IReadOnlyList<MenuOption> BuildCategoryOptions(PlayerMenuState state)
@@ -694,39 +715,51 @@ public sealed class MenuManager
 
     private void Freeze(CCSPlayerController player)
     {
-        if (player.PlayerPawn?.Value == null)
+        var pawn = player.PlayerPawn?.Value;
+        if (pawn == null)
         {
             return;
         }
 
         if (!_savedVelocity.ContainsKey(player.Slot))
         {
-            _savedVelocity[player.Slot] = player.PlayerPawn.Value.VelocityModifier;
+            _savedVelocity[player.Slot] = pawn.VelocityModifier;
         }
 
-        player.PlayerPawn.Value.VelocityModifier = 0f;
+        if (pawn.VelocityModifier != 0f)
+        {
+            pawn.VelocityModifier = 0f;
+            MarkVelocityModifierChanged(pawn);
+        }
     }
 
     private void Unfreeze(CCSPlayerController player)
     {
-        if (!_savedVelocity.TryGetValue(player.Slot, out var velocity) || player.PlayerPawn?.Value == null)
+        var pawn = player.PlayerPawn?.Value;
+        if (!_savedVelocity.TryGetValue(player.Slot, out var velocity) || pawn == null)
         {
             _savedVelocity.Remove(player.Slot);
             return;
         }
 
-        player.PlayerPawn.Value.VelocityModifier = velocity;
+        pawn.VelocityModifier = velocity;
+        MarkVelocityModifierChanged(pawn);
         _savedVelocity.Remove(player.Slot);
     }
 
-    private static bool JustPressed(PlayerButtons oldButtons, PlayerButtons newButtons, string key)
+    // Without marking the field dirty the client keeps animating with the old
+    // modifier (frozen legs after closing the menu) until something else
+    // forces a resync.
+    private void MarkVelocityModifierChanged(CCSPlayerPawn pawn)
     {
-        if (!ButtonMap.TryGetValue(key, out var button))
+        try
         {
-            return false;
+            Utilities.SetStateChanged(pawn, "CCSPlayerPawn", "m_flVelocityModifier");
         }
-
-        return (newButtons & button) != 0 && (oldButtons & button) == 0;
+        catch (Exception ex)
+        {
+            _logger.LogDebug(ex, "Failed to mark m_flVelocityModifier as changed.");
+        }
     }
 
     private static string TrimForOverlay(string text, int maxLength)
