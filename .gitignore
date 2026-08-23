@@ -29,3 +29,7 @@ weapons-1.7.8/
 .vscode/
 *.user
 *.suo
+
+# Release packaging output
+package/
+*.zip
