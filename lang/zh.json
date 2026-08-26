@@ -48,5 +48,7 @@
   "menu.title.glove_skins": "选择手套皮肤",
   "menu.title.agent_teams": "选择探员",
   "menu.title.agents_ct": "选择 CT 探员",
-  "menu.title.agents_t": "选择 T 探员"
+  "menu.title.agents_t": "选择 T 探员",
+  "menu.music": "音乐盒",
+  "menu.music.default": "默认音乐盒"
 }

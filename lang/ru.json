@@ -48,5 +48,7 @@
   "menu.title.glove_skins": "Выбор отделки перчаток",
   "menu.title.agent_teams": "Выбор агентов",
   "menu.title.agents_ct": "Выбор агента CT",
-  "menu.title.agents_t": "Выбор агента T"
+  "menu.title.agents_t": "Выбор агента T",
+  "menu.music": "Music Kit",
+  "menu.music.default": "Default Music Kit"
 }

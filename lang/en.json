@@ -48,5 +48,7 @@
   "menu.title.glove_skins": "Choose Glove Finish",
   "menu.title.agent_teams": "Choose Agents",
   "menu.title.agents_ct": "Choose CT Agent",
-  "menu.title.agents_t": "Choose T Agent"
+  "menu.title.agents_t": "Choose T Agent",
+  "menu.music": "Music Kit",
+  "menu.music.default": "Default Music Kit"
 }

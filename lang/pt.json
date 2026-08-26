@@ -48,5 +48,7 @@
   "menu.title.glove_skins": "Escolher acabamento das luvas",
   "menu.title.agent_teams": "Escolher agentes",
   "menu.title.agents_ct": "Escolher agente CT",
-  "menu.title.agents_t": "Escolher agente T"
+  "menu.title.agents_t": "Escolher agente T",
+  "menu.music": "Music Kit",
+  "menu.music.default": "Default Music Kit"
 }

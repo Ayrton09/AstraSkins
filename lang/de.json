@@ -48,5 +48,7 @@
   "menu.title.glove_skins": "Handschuh-Finish wählen",
   "menu.title.agent_teams": "Agenten wählen",
   "menu.title.agents_ct": "CT-Agent wählen",
-  "menu.title.agents_t": "T-Agent wählen"
+  "menu.title.agents_t": "T-Agent wählen",
+  "menu.music": "Music Kit",
+  "menu.music.default": "Default Music Kit"
 }
