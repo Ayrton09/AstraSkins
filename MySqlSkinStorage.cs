@@ -138,6 +138,7 @@ public sealed class MySqlSkinStorage : ISkinStorage
             "knife" => "DELETE FROM astra_player_skin_selections WHERE steam_id = @steam_id AND (selection_type IN ('knife', 'knife_type') OR (selection_type IN ('seed', 'wear', 'nametag') AND target = 'knife'))",
             "gloves" => "DELETE FROM astra_player_skin_selections WHERE steam_id = @steam_id AND (selection_type = 'glove' OR (selection_type IN ('seed', 'wear', 'nametag') AND target = 'glove'))",
             "agents" => "DELETE FROM astra_player_skin_selections WHERE steam_id = @steam_id AND selection_type = 'agent'",
+            "music" => "DELETE FROM astra_player_skin_selections WHERE steam_id = @steam_id AND selection_type = 'music_kit'",
             _ => throw new ArgumentOutOfRangeException(nameof(category), category, "Invalid reset category.")
         };
         command.Parameters.AddWithValue("@steam_id", steamId64);
@@ -195,6 +196,10 @@ public sealed class MySqlSkinStorage : ISkinStorage
         else if (type.Equals("agent", StringComparison.OrdinalIgnoreCase))
         {
             profile.AgentIdsByTeam[target] = cosmeticId;
+        }
+        else if (type.Equals("music_kit", StringComparison.OrdinalIgnoreCase))
+        {
+            profile.MusicKitId = cosmeticId;
         }
         else if (type.Equals("seed", StringComparison.OrdinalIgnoreCase) &&
                  int.TryParse(cosmeticId, NumberStyles.Integer, CultureInfo.InvariantCulture, out var seed))

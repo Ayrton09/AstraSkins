@@ -7,6 +7,7 @@ public sealed class PlayerSkinProfile
     public string? KnifeId { get; set; }
     public string? KnifeSkinId { get; set; }
     public string? GloveSkinId { get; set; }
+    public string? MusicKitId { get; set; }
     public Dictionary<string, string> AgentIdsByTeam { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 
     // Per-player overrides on top of the selected skin, keyed by weapon entity

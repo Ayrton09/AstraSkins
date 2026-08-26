@@ -68,6 +68,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawnPost, HookMode.Post);
         RegisterEventHandler<EventRoundFreezeEnd>(OnRoundFreezeEndPre, HookMode.Pre);
         RegisterEventHandler<EventPlayerDeath>(OnPlayerDeath);
+        RegisterEventHandler<EventRoundMvp>(OnRoundMvp);
         RegisterEventHandler<EventPlayerDisconnect>(OnPlayerDisconnect);
         RegisterEventHandler<EventPlayerTeam>(OnPlayerTeam);
         HookGiveNamedItem();
@@ -547,6 +548,21 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         if (player is not null && player.IsValid)
         {
             _menuManager?.Close(player);
+        }
+
+        return HookResult.Continue;
+    }
+
+    private HookResult OnRoundMvp(EventRoundMvp @event, GameEventInfo info)
+    {
+        var player = @event.Userid;
+        if (_ready && _skinManager is not null && player is { IsValid: true } && IsLiveHuman(player) &&
+            _skinManager.TryGetSelectedMusicKitId(player, out var musickitId))
+        {
+            // Keep the scoreboard MVP music consistent with the selected kit.
+            @event.Musickitid = musickitId;
+            @event.Musickitmvps = 0;
+            @event.Nomusic = 0;
         }
 
         return HookResult.Continue;

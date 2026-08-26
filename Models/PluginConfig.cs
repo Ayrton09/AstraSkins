@@ -57,5 +57,6 @@ public sealed class DefinitionPathConfig
     public string Knives { get; set; } = "data/knives.json";
     public string Gloves { get; set; } = "data/gloves.json";
     public string Agents { get; set; } = "data/agents.json";
+    public string MusicKits { get; set; } = "data/music_kits.json";
     public string? Categories { get; set; } = "data/categories.json";
 }

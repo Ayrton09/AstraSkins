@@ -1,0 +1,554 @@
+[
+  {
+    "id": "3",
+    "musicKit": 3,
+    "displayName": "Daniel Sadowski, Crimson Assault",
+    "displayNameZh": "Daniel Sadowski - 深红突击"
+  },
+  {
+    "id": "4",
+    "musicKit": 4,
+    "displayName": "Noisia, Sharpened",
+    "displayNameZh": "Noisia - 尖峰时刻"
+  },
+  {
+    "id": "5",
+    "musicKit": 5,
+    "displayName": "Robert Allaire, Insurgency",
+    "displayNameZh": "Robert Allaire - 叛乱"
+  },
+  {
+    "id": "6",
+    "musicKit": 6,
+    "displayName": "Sean Murray, A*D*8",
+    "displayNameZh": "Sean Murray - A*D*8"
+  },
+  {
+    "id": "7",
+    "musicKit": 7,
+    "displayName": "Feed Me, High Noon",
+    "displayNameZh": "Feed Me - 如日中天"
+  },
+  {
+    "id": "8",
+    "musicKit": 8,
+    "displayName": "Dren, Death's Head Demolition",
+    "displayNameZh": "Dren - 骷髅爆破"
+  },
+  {
+    "id": "9",
+    "musicKit": 9,
+    "displayName": "Austin Wintory, Desert Fire",
+    "displayNameZh": "Austin Wintory - 沙漠之焰"
+  },
+  {
+    "id": "10",
+    "musicKit": 10,
+    "displayName": "Sasha, LNOE",
+    "displayNameZh": "Sasha - 地球末夜"
+  },
+  {
+    "id": "11",
+    "musicKit": 11,
+    "displayName": "Skog, Metal",
+    "displayNameZh": "Skog - 金属"
+  },
+  {
+    "id": "12",
+    "musicKit": 12,
+    "displayName": "Midnight Riders, All I Want for Christmas",
+    "displayNameZh": "Midnight Riders - 圣诞之欲"
+  },
+  {
+    "id": "13",
+    "musicKit": 13,
+    "displayName": "Matt Lange, IsoRhythm",
+    "displayNameZh": "Matt Lange - 同型节奏"
+  },
+  {
+    "id": "14",
+    "musicKit": 14,
+    "displayName": "Mateo Messina, For No Mankind",
+    "displayNameZh": "Mateo Messina - 无人之境"
+  },
+  {
+    "id": "15",
+    "musicKit": 15,
+    "displayName": "Various Artists, Hotline Miami",
+    "displayNameZh": "多名作曲家 - 迈阿密热线"
+  },
+  {
+    "id": "16",
+    "musicKit": 16,
+    "displayName": "Daniel Sadowski, Total Domination",
+    "displayNameZh": "Daniel Sadowski - 绝对统御"
+  },
+  {
+    "id": "17",
+    "musicKit": 17,
+    "displayName": "Damjan Mravunac, The Talos Principle",
+    "displayNameZh": "Damjan Mravunac - 塔罗斯的法则"
+  },
+  {
+    "id": "18",
+    "musicKit": 18,
+    "displayName": "Proxy, Battlepack",
+    "displayNameZh": "Proxy - 万夫莫敌包"
+  },
+  {
+    "id": "19",
+    "musicKit": 19,
+    "displayName": "Ki:Theory, MOLOTOV",
+    "displayNameZh": "Ki:Theory - 莫洛托夫烈火"
+  },
+  {
+    "id": "20",
+    "musicKit": 20,
+    "displayName": "Troels Folmann, Uber Blasto Phone",
+    "displayNameZh": "Troels Folmann - 超爆话筒"
+  },
+  {
+    "id": "21",
+    "musicKit": 21,
+    "displayName": "Kelly Bailey, Hazardous Environments",
+    "displayNameZh": "Kelly Bailey - 有害物质环境"
+  },
+  {
+    "id": "22",
+    "musicKit": 22,
+    "displayName": "Skog, II-Headshot",
+    "displayNameZh": "Skog - II-爆头"
+  },
+  {
+    "id": "23",
+    "musicKit": 23,
+    "displayName": "Daniel Sadowski, The 8-Bit Kit",
+    "displayNameZh": "Daniel Sadowski - 8 位音乐盒"
+  },
+  {
+    "id": "24",
+    "musicKit": 24,
+    "displayName": "AWOLNATION, I Am",
+    "displayNameZh": "AWOLNATION - 就是我"
+  },
+  {
+    "id": "25",
+    "musicKit": 25,
+    "displayName": "Mord Fustang, Diamonds",
+    "displayNameZh": "Mord Fustang - 永恒之钻"
+  },
+  {
+    "id": "26",
+    "musicKit": 26,
+    "displayName": "Michael Bross, Invasion!",
+    "displayNameZh": "Michael Bross - 大举入侵！"
+  },
+  {
+    "id": "27",
+    "musicKit": 27,
+    "displayName": "Ian Hultquist, Lion's Mouth",
+    "displayNameZh": "Ian Hultquist - 雄狮之口"
+  },
+  {
+    "id": "28",
+    "musicKit": 28,
+    "displayName": "New Beat Fund, Sponge Fingerz",
+    "displayNameZh": "New Beat Fund - 海绵手指"
+  },
+  {
+    "id": "29",
+    "musicKit": 29,
+    "displayName": "Beartooth, Disgusting",
+    "displayNameZh": "Beartooth - 令人发指"
+  },
+  {
+    "id": "30",
+    "musicKit": 30,
+    "displayName": "Lennie Moore, Java Havana Funkaloo",
+    "displayNameZh": "Lennie Moore - 爪哇哈瓦那放克乐"
+  },
+  {
+    "id": "31",
+    "musicKit": 31,
+    "displayName": "Darude, Moments CSGO",
+    "displayNameZh": "Darude - CSGO 精彩时刻"
+  },
+  {
+    "id": "39",
+    "musicKit": 39,
+    "displayName": "The Verkkars, EZ4ENCE",
+    "displayNameZh": "The Verkkars - EZ4ENCE"
+  },
+  {
+    "id": "40",
+    "musicKit": 40,
+    "displayName": "Halo, The Master Chief Collection",
+    "displayNameZh": "《光环：士官长合集》"
+  },
+  {
+    "id": "41",
+    "musicKit": 41,
+    "displayName": "Scarlxrd: King, Scar",
+    "displayNameZh": "Scarlxrd - 疤王"
+  },
+  {
+    "id": "42",
+    "musicKit": 42,
+    "displayName": "Half-Life: Alyx, Anti-Citizen",
+    "displayNameZh": "《半衰期：爱莉克斯》，反叛者"
+  },
+  {
+    "id": "43",
+    "musicKit": 43,
+    "displayName": "Austin Wintory, Bachram",
+    "displayNameZh": "Austin Wintory - 巴克拉姆"
+  },
+  {
+    "id": "44",
+    "musicKit": 44,
+    "displayName": "Dren, Gunman Taco Truck",
+    "displayNameZh": "Dren - 枪手的卷饼卡车"
+  },
+  {
+    "id": "45",
+    "musicKit": 45,
+    "displayName": "Daniel Sadowski, Eye of the Dragon",
+    "displayNameZh": "Daniel Sadowski - 巨龙之眼"
+  },
+  {
+    "id": "46",
+    "musicKit": 46,
+    "displayName": "Tree Adams and Ben Bromfield, M.U.D.D. FORCE",
+    "displayNameZh": "Tree Adams 和 Ben Bromfield - M.U.D.D. 军团"
+  },
+  {
+    "id": "47",
+    "musicKit": 47,
+    "displayName": "Tim Huling, Neo Noir",
+    "displayNameZh": "Tim Huling - 新黑色电影"
+  },
+  {
+    "id": "48",
+    "musicKit": 48,
+    "displayName": "Sam Marshall, Bodacious",
+    "displayNameZh": "Sam Marshall - 大胆尝试"
+  },
+  {
+    "id": "49",
+    "musicKit": 49,
+    "displayName": "Matt Levine, Drifter",
+    "displayNameZh": "Matt Levine - 漂泊者"
+  },
+  {
+    "id": "50",
+    "musicKit": 50,
+    "displayName": "Amon Tobin, All for Dust",
+    "displayNameZh": "Amon Tobin - 尘归尘"
+  },
+  {
+    "id": "51",
+    "musicKit": 51,
+    "displayName": "Darren Korb, Hades Music Kit",
+    "displayNameZh": "Darren Korb，黑帝斯音乐盒"
+  },
+  {
+    "id": "52",
+    "musicKit": 52,
+    "displayName": "Neck Deep, The Lowlife Pack",
+    "displayNameZh": "Neck Deep - 躺平青年"
+  },
+  {
+    "id": "53",
+    "musicKit": 53,
+    "displayName": "Scarlxrd, CHAIN$AW.LXADXUT.",
+    "displayNameZh": "Scarlxrd - 电锯·追命"
+  },
+  {
+    "id": "54",
+    "musicKit": 54,
+    "displayName": "Austin Wintory, Mocha Petal",
+    "displayNameZh": "Austin Wintory - 咖啡拉花"
+  },
+  {
+    "id": "55",
+    "musicKit": 55,
+    "displayName": "Chipzel, ~Yellow Magic~",
+    "displayNameZh": "Chipzel - 黄色魔法"
+  },
+  {
+    "id": "56",
+    "musicKit": 56,
+    "displayName": "Freaky DNA, Vici",
+    "displayNameZh": "Freaky DNA - 征服"
+  },
+  {
+    "id": "57",
+    "musicKit": 57,
+    "displayName": "Jesse Harlin, Astro Bellum",
+    "displayNameZh": "Jesse Harlin - 战火星空"
+  },
+  {
+    "id": "58",
+    "musicKit": 58,
+    "displayName": "Laura Shigihara: Work Hard, Play Hard",
+    "displayNameZh": "Laura Shigihara - 好好干，好好活"
+  },
+  {
+    "id": "59",
+    "musicKit": 59,
+    "displayName": "Sarah Schachner, KOLIBRI",
+    "displayNameZh": "Sarah Schachner - 蜂鸟"
+  },
+  {
+    "id": "60",
+    "musicKit": 60,
+    "displayName": "bbno$, u mad!",
+    "displayNameZh": "bbno$ - 你急了！"
+  },
+  {
+    "id": "61",
+    "musicKit": 61,
+    "displayName": "The Verkkars & n0thing, Flashbang Dance",
+    "displayNameZh": "The Verkkars & n0thing - 闪光舞"
+  },
+  {
+    "id": "62",
+    "musicKit": 62,
+    "displayName": "3kliksphilip, Heading for the Source",
+    "displayNameZh": "3kliksphilip - 追溯起源"
+  },
+  {
+    "id": "63",
+    "musicKit": 63,
+    "displayName": "Humanity's Last Breath, Void",
+    "displayNameZh": "Humanity's Last Breath - 虚空"
+  },
+  {
+    "id": "64",
+    "musicKit": 64,
+    "displayName": "Juelz, Shooters",
+    "displayNameZh": "Juelz - 神枪手"
+  },
+  {
+    "id": "65",
+    "musicKit": 65,
+    "displayName": "Knock2, dashstar*",
+    "displayNameZh": "Knock2 - 冲击星*"
+  },
+  {
+    "id": "66",
+    "musicKit": 66,
+    "displayName": "Meechy Darko, Gothic Luxury",
+    "displayNameZh": "Meechy Darko - 哥特浮华"
+  },
+  {
+    "id": "67",
+    "musicKit": 67,
+    "displayName": "Sullivan King, Lock Me Up",
+    "displayNameZh": "Sullivan King - 困兽"
+  },
+  {
+    "id": "68",
+    "musicKit": 68,
+    "displayName": "Perfect World, 花脸 Hua Lian (Painted Face)",
+    "displayNameZh": "完美世界 - 花脸"
+  },
+  {
+    "id": "69",
+    "musicKit": 69,
+    "displayName": "Denzel Curry, ULTIMATE",
+    "displayNameZh": "Denzel Curry - 终极"
+  },
+  {
+    "id": "70",
+    "musicKit": 70,
+    "displayName": "Valve, CS:GO",
+    "displayNameZh": "Valve，反恐精英：全球攻势"
+  },
+  {
+    "id": "71",
+    "musicKit": 71,
+    "displayName": "DRYDEN, Feel The Power",
+    "displayNameZh": "DRYDEN - 触摸能量"
+  },
+  {
+    "id": "72",
+    "musicKit": 72,
+    "displayName": "ISOxo, inhuman",
+    "displayNameZh": "ISOxo - 非人类"
+  },
+  {
+    "id": "73",
+    "musicKit": 73,
+    "displayName": "KILL SCRIPT, All Night",
+    "displayNameZh": "KILL SCRIPT - 通宵达旦"
+  },
+  {
+    "id": "74",
+    "musicKit": 74,
+    "displayName": "Knock2, Make U SWEAT!",
+    "displayNameZh": "Knock2 - 燥起来！"
+  },
+  {
+    "id": "75",
+    "musicKit": 75,
+    "displayName": "Rad Cat, Reason",
+    "displayNameZh": "Rad Cat - 理由"
+  },
+  {
+    "id": "76",
+    "musicKit": 76,
+    "displayName": "TWERL and Ekko & Sidetrack, Under Bright Lights",
+    "displayNameZh": "TWERL, Ekko & Sidetrack - 万众瞩目"
+  },
+  {
+    "id": "78",
+    "musicKit": 78,
+    "displayName": "Austin Wintory, The Devil Went Clubbing in Georgia",
+    "displayNameZh": "Austin Wintory，恶魔舞厅"
+  },
+  {
+    "id": "79",
+    "musicKit": 79,
+    "displayName": "Ben Bromfield, Rabbit Hole",
+    "displayNameZh": "Ben Bromfield，兔子洞"
+  },
+  {
+    "id": "80",
+    "musicKit": 80,
+    "displayName": "Daniel Sadowski, Dead Shot",
+    "displayNameZh": "Daniel Sadowski，致命一击"
+  },
+  {
+    "id": "81",
+    "musicKit": 81,
+    "displayName": "Dren McDonald, Coffee! Kofe! Kahveh!",
+    "displayNameZh": "Dren McDonald，咖啡！加非！磕肥！"
+  },
+  {
+    "id": "82",
+    "musicKit": 82,
+    "displayName": "Matt Levine, Agency",
+    "displayNameZh": "Matt Levine，特工"
+  },
+  {
+    "id": "83",
+    "musicKit": 83,
+    "displayName": "Sam Marshall, Clutch",
+    "displayNameZh": "Sam Marshall，危在旦夕"
+  },
+  {
+    "id": "84",
+    "musicKit": 84,
+    "displayName": "Tim Huling, Devil's Paintbrush",
+    "displayNameZh": "Tim Huling，恶魔油漆刷"
+  },
+  {
+    "id": "85",
+    "musicKit": 85,
+    "displayName": "Tree Adams, Seventh Moon",
+    "displayNameZh": "Tree Adams，柒月"
+  },
+  {
+    "id": "86",
+    "musicKit": 86,
+    "displayName": "Perfect World, Ay Hey",
+    "displayNameZh": "完美世界 - 诶嘿"
+  },
+  {
+    "id": "87",
+    "musicKit": 87,
+    "displayName": "Adam Beyer, Red Room",
+    "displayNameZh": "Adam Beyer - 猩红密室"
+  },
+  {
+    "id": "88",
+    "musicKit": 88,
+    "displayName": "Ghost, Skeletá",
+    "displayNameZh": "Ghost - 骸骨圣典"
+  },
+  {
+    "id": "89",
+    "musicKit": 89,
+    "displayName": "HEALTH, RAT WARS",
+    "displayNameZh": "HEALTH - 鼠役"
+  },
+  {
+    "id": "90",
+    "musicKit": 90,
+    "displayName": "James and the Cold Gun, Chewing Glass",
+    "displayNameZh": "James and the Cold Gun - 嚼玻璃"
+  },
+  {
+    "id": "91",
+    "musicKit": 91,
+    "displayName": "Jonathan Young, Starship Velociraptor",
+    "displayNameZh": "Jonathan Young - 星际战机速龙号"
+  },
+  {
+    "id": "92",
+    "musicKit": 92,
+    "displayName": "Juelz, Floorspace",
+    "displayNameZh": "Juelz - 无拘空间"
+  },
+  {
+    "id": "93",
+    "musicKit": 93,
+    "displayName": "Killer Mike, MICHAEL",
+    "displayNameZh": "Killer Mike - 迈克尔"
+  },
+  {
+    "id": "94",
+    "musicKit": 94,
+    "displayName": "PVRIS, Evergreen",
+    "displayNameZh": "PVRIS - 常青"
+  },
+  {
+    "id": "95",
+    "musicKit": 95,
+    "displayName": "Selective Response, No Love Only Pleasure",
+    "displayNameZh": "Selective Response - 纵欲狂欢"
+  },
+  {
+    "id": "96",
+    "musicKit": 96,
+    "displayName": "Tigercub, The Perfume of Decay",
+    "displayNameZh": "Tigercub - 腐朽香氛"
+  },
+  {
+    "id": "98",
+    "musicKit": 98,
+    "displayName": "ALRT, DOPAMINE HIT",
+    "displayNameZh": "ALRT, 多巴胺冲击"
+  },
+  {
+    "id": "99",
+    "musicKit": 99,
+    "displayName": "Altare, Change My Mind",
+    "displayNameZh": "Altare, 吾心不移"
+  },
+  {
+    "id": "100",
+    "musicKit": 100,
+    "displayName": "borne, Give It To Me",
+    "displayNameZh": "borne, 给我"
+  },
+  {
+    "id": "101",
+    "musicKit": 101,
+    "displayName": "Pirapus, EVERYNITE",
+    "displayNameZh": "Pirapus, 每夜"
+  },
+  {
+    "id": "102",
+    "musicKit": 102,
+    "displayName": "Repiet & Julia Kleijn, On And On",
+    "displayNameZh": "Repiet & Julia Kleijn, 循环不息"
+  },
+  {
+    "id": "103",
+    "musicKit": 103,
+    "displayName": "ShockOne, Voices",
+    "displayNameZh": "ShockOne, 声流"
+  }
+]

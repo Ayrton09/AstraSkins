@@ -311,6 +311,95 @@ public sealed class SkinManager : IDisposable
         return true;
     }
 
+    public bool SetMusicKit(CCSPlayerController player, string cosmeticId)
+    {
+        if (!Catalog.MusicKitsById.TryGetValue(cosmeticId, out var kit) || !CanUse(player, kit))
+        {
+            return false;
+        }
+
+        var steamId = GetSteamId64(player);
+        var profile = GetProfile(player);
+        profile.MusicKitId = kit.Id;
+        QueueStorageWrite($"music kit {kit.Id} for {steamId}", () => _storage.SaveCustomization(steamId, "music_kit", "music", kit.Id));
+        ApplyMusicKitToPlayer(player, logFailures: true);
+        return true;
+    }
+
+    public bool ClearMusicKit(CCSPlayerController player)
+    {
+        var steamId = GetSteamId64(player);
+        var profile = GetProfile(player);
+        if (!string.IsNullOrWhiteSpace(profile.MusicKitId))
+        {
+            profile.MusicKitId = null;
+            QueueStorageWrite($"music kit reset for {steamId}", () => _storage.ClearCustomization(steamId, "music_kit", "music"));
+        }
+
+        ApplyMusicKitToPlayer(player, logFailures: true);
+        return true;
+    }
+
+    public void ApplyMusicKitToPlayer(CCSPlayerController player, bool logFailures = false)
+    {
+        try
+        {
+            var kitId = 0;
+            var profile = GetProfile(player);
+            if (!string.IsNullOrWhiteSpace(profile.MusicKitId))
+            {
+                if (Catalog.MusicKitsById.TryGetValue(profile.MusicKitId!, out var kit))
+                {
+                    kitId = kit.MusicKit;
+                }
+                else if (int.TryParse(profile.MusicKitId, out var parsed))
+                {
+                    // Tolerate raw numeric ids stored outside of the catalog.
+                    kitId = parsed;
+                }
+            }
+
+            var inventory = player.InventoryServices;
+            if (inventory is not null)
+            {
+                inventory.MusicID = checked((ushort)Math.Clamp(kitId, 0, ushort.MaxValue));
+                Utilities.SetStateChanged(player, "CCSPlayerController", "m_pInventoryServices");
+            }
+
+            player.MusicKitID = kitId;
+            Utilities.SetStateChanged(player, "CCSPlayerController", "m_iMusicKitID");
+            player.MusicKitMVPs = 0;
+            Utilities.SetStateChanged(player, "CCSPlayerController", "m_iMusicKitMVPs");
+            player.MvpNoMusic = false;
+            Utilities.SetStateChanged(player, "CCSPlayerController", "m_bMvpNoMusic");
+        }
+        catch (Exception ex)
+        {
+            if (logFailures)
+            {
+                _logger.LogWarning(ex, "Astra Skins failed to apply music kit for {SteamId}.", TryGetSteamId64(player, out var steamId) ? steamId : 0);
+            }
+        }
+    }
+
+    public bool TryGetSelectedMusicKitId(CCSPlayerController player, out int musicKitId)
+    {
+        musicKitId = 0;
+        var profile = GetProfile(player);
+        if (string.IsNullOrWhiteSpace(profile.MusicKitId))
+        {
+            return false;
+        }
+
+        if (Catalog.MusicKitsById.TryGetValue(profile.MusicKitId!, out var kit))
+        {
+            musicKitId = kit.MusicKit;
+            return true;
+        }
+
+        return int.TryParse(profile.MusicKitId, out musicKitId);
+    }
+
     public void Reset(CCSPlayerController player)
     {
         var steamId = GetSteamId64(player);
@@ -363,6 +452,9 @@ public sealed class SkinManager : IDisposable
             case "agents":
                 profile.AgentIdsByTeam.Clear();
                 break;
+            case "music":
+                profile.MusicKitId = null;
+                break;
         }
 
         return true;
@@ -389,6 +481,7 @@ public sealed class SkinManager : IDisposable
         ApplyWeapons(player, pawn!, profile, logFailures);
         ApplyGloves(player, pawn!, profile, logFailures);
         ApplyAgent(player, pawn!, profile, logFailures);
+        ApplyMusicKitToPlayer(player, logFailures);
     }
 
     public void ApplyAgentToPlayer(CCSPlayerController player, bool logFailures = false, bool loadIfMissing = true)
@@ -474,6 +567,11 @@ public sealed class SkinManager : IDisposable
     }
 
     public bool CanUse(CCSPlayerController player, AgentDefinition entry)
+    {
+        return string.IsNullOrWhiteSpace(entry.Permission) || AdminManager.PlayerHasPermissions(player, entry.Permission);
+    }
+
+    public bool CanUse(CCSPlayerController player, MusicKitDefinition entry)
     {
         return string.IsNullOrWhiteSpace(entry.Permission) || AdminManager.PlayerHasPermissions(player, entry.Permission);
     }
@@ -1736,6 +1834,7 @@ public sealed class SkinManager : IDisposable
             "knife" or "knives" => "knife",
             "glove" or "gloves" => "gloves",
             "agent" or "agents" => "agents",
+            "music" or "musickit" or "musickits" => "music",
             _ => null
         };
     }

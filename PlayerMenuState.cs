@@ -15,7 +15,8 @@ public enum MenuView
     GloveTypes,
     GloveSkins,
     AgentTeams,
-    Agents
+    Agents,
+    MusicKits
 }
 
 public sealed class PlayerMenuState
