@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS astra_player_skin_selections (
     INDEX idx_astra_player_skin_selections_steam_id (steam_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Created by the plugin only when EnableStarTracker is true.
+-- Created by the plugin only when EnableStatTrak is true.
 CREATE TABLE IF NOT EXISTS astra_music_kit_mvp_counts (
     steam_id BIGINT UNSIGNED NOT NULL,
     music_kit_id INT UNSIGNED NOT NULL,

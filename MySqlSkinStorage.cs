@@ -9,12 +9,12 @@ public sealed class MySqlSkinStorage : ISkinStorage
 {
     private readonly string _connectionString;
     private readonly ILogger _logger;
-    private readonly bool _starTrackerEnabled;
+    private readonly bool _statTrakEnabled;
 
-    public MySqlSkinStorage(Models.MySqlConfig config, ILogger logger, bool starTrackerEnabled = false)
+    public MySqlSkinStorage(Models.MySqlConfig config, ILogger logger, bool statTrakEnabled = false)
     {
         _logger = logger;
-        _starTrackerEnabled = starTrackerEnabled;
+        _statTrakEnabled = statTrakEnabled;
         var sslMode = ParseSslMode(config.SslMode);
         var builder = new MySqlConnectionStringBuilder
         {
@@ -59,7 +59,7 @@ public sealed class MySqlSkinStorage : ISkinStorage
             INDEX idx_astra_player_skin_selections_steam_id (steam_id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         """;
-        if (_starTrackerEnabled)
+        if (_statTrakEnabled)
         {
             schema += """
 
@@ -76,7 +76,7 @@ public sealed class MySqlSkinStorage : ISkinStorage
 
         command.CommandText = schema;
         command.ExecuteNonQuery();
-        _logger.LogInformation("MySQL storage initialized, StarTracker={StarTracker}.", _starTrackerEnabled);
+        _logger.LogInformation("MySQL storage initialized, StatTrak={StatTrak}.", _statTrakEnabled);
     }
 
     public PlayerSkinProfile LoadProfile(ulong steamId64)
@@ -87,10 +87,24 @@ public sealed class MySqlSkinStorage : ISkinStorage
         command.CommandText = "SELECT selection_type, target, cosmetic_id FROM astra_player_skin_selections WHERE steam_id = @steam_id";
         command.Parameters.AddWithValue("@steam_id", steamId64);
 
-        using var reader = command.ExecuteReader();
-        while (reader.Read())
+        using (var reader = command.ExecuteReader())
         {
-            ApplyRow(profile, reader.GetString(0), reader.GetString(1), reader.GetString(2));
+            while (reader.Read())
+            {
+                ApplyRow(profile, reader.GetString(0), reader.GetString(1), reader.GetString(2));
+            }
+        }
+
+        if (_statTrakEnabled)
+        {
+            using var countCommand = connection.CreateCommand();
+            countCommand.CommandText = "SELECT music_kit_id, mvp_count FROM astra_music_kit_mvp_counts WHERE steam_id = @steam_id";
+            countCommand.Parameters.AddWithValue("@steam_id", steamId64);
+            using var countReader = countCommand.ExecuteReader();
+            while (countReader.Read())
+            {
+                profile.MusicKitMvpCounts[countReader.GetInt32(0)] = ClampMvpCount(countReader.GetInt64(1));
+            }
         }
 
         return profile;
@@ -98,7 +112,7 @@ public sealed class MySqlSkinStorage : ISkinStorage
 
     public void IncrementMusicKitMvp(ulong steamId64, int musicKitId)
     {
-        if (!_starTrackerEnabled)
+        if (!_statTrakEnabled)
         {
             return;
         }
@@ -263,5 +277,10 @@ public sealed class MySqlSkinStorage : ISkinStorage
         }
 
         return customization;
+    }
+
+    private static int ClampMvpCount(long count)
+    {
+        return count <= 0 ? 0 : count >= int.MaxValue ? int.MaxValue : (int)count;
     }
 }

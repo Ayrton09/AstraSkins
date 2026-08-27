@@ -359,7 +359,13 @@ public sealed class SkinManager : IDisposable
                 }
             }
 
-            ApplyMusicKitState(player, kitId, logFailures);
+            var mvpCount = 0;
+            if (kitId > 0 && profile.MusicKitMvpCounts.TryGetValue(kitId, out var storedCount))
+            {
+                mvpCount = Math.Max(0, storedCount);
+            }
+
+            ApplyMusicKitState(player, kitId, mvpCount, logFailures);
         }
         catch (Exception ex)
         {
@@ -370,7 +376,7 @@ public sealed class SkinManager : IDisposable
         }
     }
 
-    private void ApplyMusicKitState(CCSPlayerController player, int kitId, bool logFailures)
+    private void ApplyMusicKitState(CCSPlayerController player, int kitId, int mvpCount, bool logFailures)
     {
         try
         {
@@ -383,7 +389,7 @@ public sealed class SkinManager : IDisposable
 
             player.MusicKitID = kitId;
             Utilities.SetStateChanged(player, "CCSPlayerController", "m_iMusicKitID");
-            player.MusicKitMVPs = 0;
+            player.MusicKitMVPs = Math.Max(0, mvpCount);
             Utilities.SetStateChanged(player, "CCSPlayerController", "m_iMusicKitMVPs");
             player.MvpNoMusic = false;
             Utilities.SetStateChanged(player, "CCSPlayerController", "m_bMvpNoMusic");
@@ -415,14 +421,34 @@ public sealed class SkinManager : IDisposable
         return int.TryParse(profile.MusicKitId, out musicKitId);
     }
 
-    public void RecordMusicKitMvp(CCSPlayerController player, int musicKitId)
+    public int RecordMusicKitMvp(CCSPlayerController player, int musicKitId)
     {
-        if (musicKitId <= 0 || !TryGetSteamId64(player, out var steamId))
+        if (!TryGetSteamId64(player, out var steamId))
         {
-            return;
+            return 0;
         }
 
+        // The controller is authoritative after the selected kit has been applied;
+        // the event value can refer to the kit used before a selection changed.
+        if (player.MusicKitID > 0)
+        {
+            musicKitId = player.MusicKitID;
+        }
+
+        if (musicKitId <= 0)
+        {
+            return 0;
+        }
+
+        var profile = GetProfile(player);
+        var currentCount = profile.MusicKitMvpCounts.TryGetValue(musicKitId, out var storedCount)
+            ? Math.Max(0, storedCount)
+            : 0;
+        var nextCount = currentCount == int.MaxValue ? int.MaxValue : currentCount + 1;
+        profile.MusicKitMvpCounts[musicKitId] = nextCount;
+        ApplyMusicKitState(player, musicKitId, nextCount, logFailures: true);
         QueueStorageWrite($"music kit MVP {musicKitId} for {steamId}", () => _storage.IncrementMusicKitMvp(steamId, musicKitId));
+        return nextCount;
     }
 
     public void Reset(CCSPlayerController player)
@@ -432,7 +458,7 @@ public sealed class SkinManager : IDisposable
         QueueStorageWrite($"profile reset for {steamId}", () => _storage.ResetProfile(steamId));
         _profiles.Remove(steamId);
         ClearPlayerCosmetics(player, logFailures: true);
-        ApplyMusicKitState(player, 0, logFailures: true);
+        ApplyMusicKitState(player, 0, 0, logFailures: true);
     }
 
     public bool ResetCategory(CCSPlayerController player, string category)
@@ -1091,6 +1117,20 @@ public sealed class SkinManager : IDisposable
         target.KnifeSkinId ??= loaded.KnifeSkinId;
         target.GloveSkinId ??= loaded.GloveSkinId;
         target.MusicKitId ??= loaded.MusicKitId;
+
+        foreach (var (musicKitId, loadedCount) in loaded.MusicKitMvpCounts)
+        {
+            var normalizedLoadedCount = Math.Max(0, loadedCount);
+            if (target.MusicKitMvpCounts.TryGetValue(musicKitId, out var localCount))
+            {
+                var mergedCount = (long)Math.Max(0, localCount) + normalizedLoadedCount;
+                target.MusicKitMvpCounts[musicKitId] = mergedCount >= int.MaxValue ? int.MaxValue : (int)mergedCount;
+            }
+            else
+            {
+                target.MusicKitMvpCounts[musicKitId] = normalizedLoadedCount;
+            }
+        }
 
         foreach (var (team, agentId) in loaded.AgentIdsByTeam)
         {

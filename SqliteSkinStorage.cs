@@ -9,13 +9,13 @@ public sealed class SqliteSkinStorage : ISkinStorage
 {
     private readonly string _databasePath;
     private readonly ILogger _logger;
-    private readonly bool _starTrackerEnabled;
+    private readonly bool _statTrakEnabled;
 
-    public SqliteSkinStorage(string databasePath, ILogger logger, bool starTrackerEnabled = false)
+    public SqliteSkinStorage(string databasePath, ILogger logger, bool statTrakEnabled = false)
     {
         _databasePath = databasePath;
         _logger = logger;
-        _starTrackerEnabled = starTrackerEnabled;
+        _statTrakEnabled = statTrakEnabled;
     }
 
     public void Initialize()
@@ -35,7 +35,7 @@ public sealed class SqliteSkinStorage : ISkinStorage
         CREATE INDEX IF NOT EXISTS idx_astra_player_skin_selections_steam_id
             ON astra_player_skin_selections (steam_id);
         """;
-        if (_starTrackerEnabled)
+        if (_statTrakEnabled)
         {
             schema += """
 
@@ -53,7 +53,7 @@ public sealed class SqliteSkinStorage : ISkinStorage
 
         command.CommandText = schema;
         command.ExecuteNonQuery();
-        _logger.LogInformation("SQLite storage initialized at {Path}, StarTracker={StarTracker}", _databasePath, _starTrackerEnabled);
+        _logger.LogInformation("SQLite storage initialized at {Path}, StatTrak={StatTrak}", _databasePath, _statTrakEnabled);
     }
 
     public PlayerSkinProfile LoadProfile(ulong steamId64)
@@ -64,10 +64,24 @@ public sealed class SqliteSkinStorage : ISkinStorage
         command.CommandText = "SELECT selection_type, target, cosmetic_id FROM astra_player_skin_selections WHERE steam_id = $steam_id";
         command.Parameters.AddWithValue("$steam_id", unchecked((long)steamId64));
 
-        using var reader = command.ExecuteReader();
-        while (reader.Read())
+        using (var reader = command.ExecuteReader())
         {
-            ApplyRow(profile, reader.GetString(0), reader.GetString(1), reader.GetString(2));
+            while (reader.Read())
+            {
+                ApplyRow(profile, reader.GetString(0), reader.GetString(1), reader.GetString(2));
+            }
+        }
+
+        if (_statTrakEnabled)
+        {
+            using var countCommand = connection.CreateCommand();
+            countCommand.CommandText = "SELECT music_kit_id, mvp_count FROM astra_music_kit_mvp_counts WHERE steam_id = $steam_id";
+            countCommand.Parameters.AddWithValue("$steam_id", unchecked((long)steamId64));
+            using var countReader = countCommand.ExecuteReader();
+            while (countReader.Read())
+            {
+                profile.MusicKitMvpCounts[countReader.GetInt32(0)] = ClampMvpCount(countReader.GetInt64(1));
+            }
         }
 
         return profile;
@@ -75,7 +89,7 @@ public sealed class SqliteSkinStorage : ISkinStorage
 
     public void IncrementMusicKitMvp(ulong steamId64, int musicKitId)
     {
-        if (!_starTrackerEnabled)
+        if (!_statTrakEnabled)
         {
             return;
         }
@@ -244,5 +258,10 @@ public sealed class SqliteSkinStorage : ISkinStorage
         }
 
         return customization;
+    }
+
+    private static int ClampMvpCount(long count)
+    {
+        return count <= 0 ? 0 : count >= int.MaxValue ? int.MaxValue : (int)count;
     }
 }

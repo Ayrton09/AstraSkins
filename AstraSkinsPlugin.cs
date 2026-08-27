@@ -118,21 +118,21 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         _ready = true;
 
         Logger.LogInformation(
-            "Astra Skins loaded: {Weapons} weapons, {KnifeSkins} knife skins, {GloveSkins} glove skins, {Agents} agents, DB={DatabaseMode}, StarTracker={StarTracker}",
+            "Astra Skins loaded: {Weapons} weapons, {KnifeSkins} knife skins, {GloveSkins} glove skins, {Agents} agents, DB={DatabaseMode}, StatTrak={StatTrak}",
             catalog.Weapons.Count,
             catalog.KnifeSkinsById.Count,
             catalog.GloveSkinsById.Count,
             catalog.Agents.Count,
             config.DatabaseMode,
-            config.EnableStarTracker);
+            config.EnableStatTrak);
     }
 
     private ISkinStorage CreateStorage(PluginConfig config)
     {
         return config.DatabaseMode switch
         {
-            "sqlite" => new SqliteSkinStorage(Resolve(ModuleDirectory, config.Sqlite.Path), Logger, config.EnableStarTracker),
-            "mysql" => new MySqlSkinStorage(config.MySql, Logger, config.EnableStarTracker),
+            "sqlite" => new SqliteSkinStorage(Resolve(ModuleDirectory, config.Sqlite.Path), Logger, config.EnableStatTrak),
+            "mysql" => new MySqlSkinStorage(config.MySql, Logger, config.EnableStatTrak),
             _ => throw new InvalidOperationException("Invalid DatabaseMode after validation.")
         };
     }
@@ -564,7 +564,6 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             {
                 // Keep the scoreboard MVP music consistent with the selected kit.
                 @event.Musickitid = musicKitId;
-                @event.Musickitmvps = 0;
                 @event.Nomusic = 0;
             }
             else
@@ -572,9 +571,9 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
                 musicKitId = checked((int)@event.Musickitid);
             }
 
-            if (_config?.EnableStarTracker == true)
+            if (_config?.EnableStatTrak == true)
             {
-                _skinManager.RecordMusicKitMvp(player, musicKitId);
+                @event.Musickitmvps = _skinManager.RecordMusicKitMvp(player, musicKitId);
             }
         }
 

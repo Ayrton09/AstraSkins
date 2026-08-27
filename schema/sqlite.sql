@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS astra_player_skin_selections (
 CREATE INDEX IF NOT EXISTS idx_astra_player_skin_selections_steam_id
     ON astra_player_skin_selections (steam_id);
 
--- Created by the plugin only when EnableStarTracker is true.
+-- Created by the plugin only when EnableStatTrak is true.
 CREATE TABLE IF NOT EXISTS astra_music_kit_mvp_counts (
     steam_id INTEGER NOT NULL,
     music_kit_id INTEGER NOT NULL,

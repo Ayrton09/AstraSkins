@@ -139,7 +139,7 @@ The menu items are numbered as a visual guide for orientation; navigation is by 
     "Permission": "",
     "MaxNameTagLength": 20
   },
-  "EnableStarTracker": false,
+  "EnableStatTrak": false,
   "Definitions": {
     "Weapons": "data/weapons.json",
     "Knives": "data/knives.json",
@@ -165,7 +165,7 @@ The menu items are numbered as a visual guide for orientation; navigation is by 
 | `Customization.Enabled` | Master switch for `!seed` / `!wear` / `!nametag` |
 | `Customization.Permission` | Restrict customization to a flag; empty = everyone |
 | `Customization.MaxNameTagLength` | Name tag cap, 4–32 (default 20 matches the real game) |
-| `EnableStarTracker` | Create and update the per-player music-kit MVP counter table |
+| `EnableStatTrak` | Create and update the per-player music-kit MVP counter table |
 
 ### SQLite
 
