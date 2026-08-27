@@ -30,6 +30,10 @@
   "astra.nametag_usage": "用法：!nametag <文字> | !nametag reset",
   "astra.nametag_set": "名称标签已设置为“{0}”。",
   "astra.nametag_reset": "名称标签已移除。",
+  "astra.stattrak_on": "已启用 StatTrak。计数：{0}。",
+  "astra.stattrak_off": "已移除 StatTrak。",
+  "astra.stattrak_usage": "用法：!stattrak | !stattrak <数量> | !stattrak reset",
+  "astra.search_no_results": "没有找到与“{0}”匹配的项。",
   "menu.equipped": "已装备 {0}。",
   "menu.save_failed": "无法保存选择。",
   "menu.no_entries": "暂无可用条目",
@@ -48,5 +52,6 @@
   "menu.title.glove_skins": "选择手套皮肤",
   "menu.title.agent_teams": "选择探员",
   "menu.title.agents_ct": "选择 CT 探员",
-  "menu.title.agents_t": "选择 T 探员"
+  "menu.title.agents_t": "选择 T 探员",
+  "menu.title.search": "搜索：{0}"
 }

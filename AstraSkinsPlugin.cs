@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes;
@@ -32,7 +32,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
     public PluginConfig Config { get; set; } = new();
 
     public override string ModuleName => "Astra Skins";
-    public override string ModuleVersion => "1.0.5";
+    public override string ModuleVersion => "1.0.6";
     public override string ModuleAuthor => "Ayrton09";
     public override string ModuleDescription => string.Empty;
 
@@ -59,6 +59,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         AddCommand("css_seed", "Set a custom paint seed for the held weapon.", CommandSeed);
         AddCommand("css_wear", "Set a custom wear value for the held weapon.", CommandWear);
         AddCommand("css_nametag", "Set a custom name tag for the held weapon.", CommandNameTag);
+        AddCommand("css_stattrak", "Toggle StatTrak on the held weapon.", CommandStatTrak);
 
         RegisterListener<Listeners.OnClientAuthorized>(OnClientAuthorized);
         RegisterListener<Listeners.OnTick>(OnTick);
@@ -142,7 +143,78 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             return;
         }
 
-        _menuManager!.OpenMain(player!);
+        var query = command.ArgCount > 1 ? command.ArgString.Trim() : string.Empty;
+        if (query.Length == 0)
+        {
+            _menuManager!.OpenMain(player!);
+            return;
+        }
+
+        _menuManager!.OpenSearch(player!, query);
+        if (!_menuManager.HasSearchResults(player!))
+        {
+            _menuManager.Close(player!, clearScreen: true);
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.search_no_results", query)}");
+        }
+    }
+
+    private void CommandStatTrak(CCSPlayerController? player, CommandInfo command)
+    {
+        if (!RequireReadyPlayer(player, command) || !RequireCustomization(player!, command))
+        {
+            return;
+        }
+
+        var target = _skinManager!.GetHeldCustomizationTarget(player!);
+        if (target is null)
+        {
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.custom_no_weapon")}");
+            return;
+        }
+
+        var current = _skinManager.GetStatTrak(player!, target);
+        int? next;
+        if (command.ArgCount <= 1)
+        {
+            next = current is null ? 0 : null;
+        }
+        else
+        {
+            var token = command.GetArg(1).Trim();
+            if (IsResetToken(token))
+            {
+                next = null;
+            }
+            else if (token.Equals("on", StringComparison.OrdinalIgnoreCase))
+            {
+                next = current ?? 0;
+            }
+            else if (int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsed) &&
+                     parsed is >= 0 and <= 999999)
+            {
+                next = parsed;
+            }
+            else
+            {
+                command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.stattrak_usage")}");
+                return;
+            }
+        }
+
+        if (!RequireMaintenanceCooldown(player!, command))
+        {
+            return;
+        }
+
+        if (!_skinManager.SetStatTrak(player!, target, next))
+        {
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.custom_no_skin")}");
+            return;
+        }
+
+        command.ReplyToCommand(next is null
+            ? $"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.stattrak_off")}"
+            : $"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.stattrak_on", next.Value)}");
     }
 
     private void CommandOpenKnives(CCSPlayerController? player, CommandInfo command)
@@ -547,6 +619,16 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         if (player is not null && player.IsValid)
         {
             _menuManager?.Close(player);
+        }
+
+        var attacker = @event.Attacker;
+        if (_ready && IsLiveHuman(attacker) && (player is null || attacker!.Slot != player.Slot))
+        {
+            var weapon = attacker!.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
+            if (weapon is not null && weapon.IsValid)
+            {
+                _skinManager?.IncrementStatTrak(attacker, weapon);
+            }
         }
 
         return HookResult.Continue;

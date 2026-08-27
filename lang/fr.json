@@ -30,6 +30,10 @@
   "astra.nametag_usage": "Utilisation : !nametag <texte> | !nametag reset",
   "astra.nametag_set": "Étiquette de nom définie sur « {0} ».",
   "astra.nametag_reset": "Étiquette de nom supprimée.",
+  "astra.stattrak_on": "StatTrak activé. Compteur à {0}.",
+  "astra.stattrak_off": "StatTrak retiré.",
+  "astra.stattrak_usage": "Utilisation : !stattrak | !stattrak <nombre> | !stattrak reset",
+  "astra.search_no_results": "Aucun résultat pour « {0} ».",
   "menu.equipped": "{0} équipé.",
   "menu.save_failed": "Impossible d'enregistrer la sélection.",
   "menu.no_entries": "Aucune entrée disponible",
@@ -48,5 +52,6 @@
   "menu.title.glove_skins": "Choisir une finition de gants",
   "menu.title.agent_teams": "Choisir les agents",
   "menu.title.agents_ct": "Choisir un agent CT",
-  "menu.title.agents_t": "Choisir un agent T"
+  "menu.title.agents_t": "Choisir un agent T",
+  "menu.title.search": "Recherche : {0}"
 }

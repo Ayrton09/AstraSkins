@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Entities.Constants;
@@ -121,9 +121,21 @@ public sealed class SkinManager : IDisposable
             pendingStorageWork = _storageQueue;
         }
 
+        if (pendingStorageWork.IsCompleted)
+        {
+            return;
+        }
+
         try
         {
-            pendingStorageWork.Wait(TimeSpan.FromSeconds(3));
+            // Unload only happens on an explicit plugin unload/reload, not on
+            // map change, so blocking briefly here is cheap. Dropping writes
+            // silently is not, hence the warning.
+            if (!pendingStorageWork.Wait(TimeSpan.FromSeconds(3)))
+            {
+                _logger.LogWarning(
+                    "Astra Skins unloaded while database writes were still pending; the most recent selections may not have been saved.");
+            }
         }
         catch
         {
@@ -536,6 +548,69 @@ public sealed class SkinManager : IDisposable
         return Catalog.WeaponsByEntity.ContainsKey(entityName) ? entityName : null;
     }
 
+    public bool SetStatTrak(CCSPlayerController player, string target, int? count)
+    {
+        return SetCustomization(player, target, "stattrak",
+            count?.ToString(CultureInfo.InvariantCulture),
+            customization => customization.StatTrak = count,
+            requiresPaintKit: false);
+    }
+
+    public int? GetStatTrak(CCSPlayerController player, string target)
+    {
+        return GetProfile(player).Customizations.TryGetValue(target, out var customization)
+            ? customization.StatTrak
+            : null;
+    }
+
+    // Bumps the counter in place: no weapon refresh, since re-creating the
+    // weapon on every kill would be disastrous.
+    public void IncrementStatTrak(CCSPlayerController player, CBasePlayerWeapon weapon)
+    {
+        if (_disposed || !IsUsablePlayer(player) || weapon is null || !weapon.IsValid)
+        {
+            return;
+        }
+
+        if (!TryGetSteamId64(player, out var steamId) || !_profiles.TryGetValue(steamId, out var profile))
+        {
+            return;
+        }
+
+        var weaponName = ResolveWeaponEntityName(weapon);
+        if (string.IsNullOrWhiteSpace(weaponName))
+        {
+            return;
+        }
+
+        var target = IsKnife(weaponName) ? KnifeTarget : weaponName;
+        if (!profile.Customizations.TryGetValue(target, out var customization) || customization.StatTrak is null)
+        {
+            return;
+        }
+
+        var next = customization.StatTrak.Value + 1;
+        customization.StatTrak = next;
+        QueueStorageWrite($"stattrak {next} ({target}) for {steamId}",
+            () => _storage.SaveCustomization(steamId, "stattrak", target, next.ToString(CultureInfo.InvariantCulture)));
+
+        try
+        {
+            weapon.FallbackStatTrak = next;
+            TrySetStateChanged(weapon, "CEconEntity", "m_nFallbackStatTrak");
+
+            var item = weapon.AttributeManager.Item;
+            if (item.Handle != IntPtr.Zero)
+            {
+                _econAttributes.UpdateStatTrak(item, next);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDebug(ex, "Astra Skins failed to update the StatTrak counter on entity {EntityIndex}.", weapon.Index);
+        }
+    }
+
     public bool SetSeed(CCSPlayerController player, string target, int? seed)
     {
         return SetCustomization(player, target, "seed",
@@ -553,12 +628,13 @@ public sealed class SkinManager : IDisposable
     public bool SetNameTag(CCSPlayerController player, string target, string? nameTag)
     {
         return SetCustomization(player, target, "nametag", nameTag,
-            customization => customization.NameTag = nameTag);
+            customization => customization.NameTag = nameTag,
+            requiresPaintKit: false);
     }
 
-    private bool SetCustomization(CCSPlayerController player, string target, string field, string? storedValue, Action<WeaponCustomization> mutate)
+    private bool SetCustomization(CCSPlayerController player, string target, string field, string? storedValue, Action<WeaponCustomization> mutate, bool requiresPaintKit = true)
     {
-        if (!HasSkinSelected(player, target))
+        if (!HasCustomizableItem(player, target, requiresPaintKit))
         {
             return false;
         }
@@ -590,12 +666,15 @@ public sealed class SkinManager : IDisposable
         return true;
     }
 
-    private bool HasSkinSelected(CCSPlayerController player, string target)
+    // Seed and wear only mean something on top of a paint kit, but StatTrak and
+    // name tags work on a plain knife too, the same way vanilla StatTrak knives
+    // exist in the game.
+    private bool HasCustomizableItem(CCSPlayerController player, string target, bool requiresPaintKit)
     {
         var profile = GetProfile(player);
         return target switch
         {
-            KnifeTarget => profile.KnifeSkinId is not null,
+            KnifeTarget => profile.KnifeSkinId is not null || (!requiresPaintKit && profile.KnifeId is not null),
             GloveTarget => profile.GloveSkinId is not null,
             _ => profile.WeaponSkins.ContainsKey(target)
         };
@@ -606,9 +685,23 @@ public sealed class SkinManager : IDisposable
         switch (target)
         {
             case KnifeTarget:
-                if (profile.KnifeSkinId is not null && Catalog.KnifeSkinsById.TryGetValue(profile.KnifeSkinId, out var knifeSkin))
+                // The stored skin can belong to a previously selected knife
+                // (changing knife type does not clear it). Applying it blindly
+                // would switch the player back to the old knife, so fall back to
+                // the selected knife type, exactly like ApplyMatchingWeapon does.
+                if (profile.KnifeSkinId is not null &&
+                    Catalog.KnifeSkinsById.TryGetValue(profile.KnifeSkinId, out var knifeSkin) &&
+                    KnifeSkinMatchesSelectedKnife(profile, knifeSkin))
                 {
                     ApplyKnifeSelection(player, knifeSkin, logFailures: true);
+                }
+                else if (profile.KnifeId is not null)
+                {
+                    var selectedKnife = Catalog.Knives.FirstOrDefault(k => k.Id.Equals(profile.KnifeId, StringComparison.OrdinalIgnoreCase));
+                    if (selectedKnife is not null)
+                    {
+                        ApplyKnifeTypeSelection(player, selectedKnife, logFailures: true);
+                    }
                 }
                 break;
             case GloveTarget:
@@ -783,7 +876,7 @@ public sealed class SkinManager : IDisposable
 
         return profile.WeaponSkins.TryGetValue(weaponName, out var cosmeticId) &&
                Catalog.WeaponSkinsById.TryGetValue(cosmeticId, out var skin) &&
-               ApplyCosmeticToWeapon(player, weapon, skin, isKnife: false, logFailures);
+               ApplyCosmeticToWeapon(player, weapon, skin, isKnife: false, logFailures, weaponName);
     }
 
     private bool ApplyWeaponSelection(CCSPlayerController player, string weaponEntity, CosmeticEntry skin, bool logFailures)
@@ -1244,7 +1337,7 @@ public sealed class SkinManager : IDisposable
         }
     }
 
-    private bool ApplyCosmeticToWeapon(CCSPlayerController player, CBasePlayerWeapon weapon, CosmeticEntry cosmetic, bool isKnife, bool logFailures)
+    private bool ApplyCosmeticToWeapon(CCSPlayerController player, CBasePlayerWeapon weapon, CosmeticEntry cosmetic, bool isKnife, bool logFailures, string? customizationTarget = null)
     {
         try
         {
@@ -1274,14 +1367,18 @@ public sealed class SkinManager : IDisposable
                 TryChangeKnifeSubclass(weapon, cosmetic.ItemDefinitionIndex.Value);
             }
 
-            var customization = GetCustomization(player, isKnife ? KnifeTarget : ResolveWeaponEntityName(weapon));
+            // Resolving the entity name on a freshly created weapon is not
+            // reliable, so prefer the target the caller already knows.
+            var customization = GetCustomization(player, isKnife ? KnifeTarget : customizationTarget ?? ResolveWeaponEntityName(weapon));
             var seed = customization?.Seed ?? cosmetic.Seed;
             var wear = customization?.Wear ?? cosmetic.Wear;
+
+            var statTrak = customization?.StatTrak;
 
             weapon.FallbackPaintKit = cosmetic.PaintKit;
             weapon.FallbackSeed = seed;
             weapon.FallbackWear = wear;
-            weapon.FallbackStatTrak = -1;
+            weapon.FallbackStatTrak = statTrak ?? -1;
             weapon.OriginalOwnerXuidLow = (uint)(player.SteamID & 0xFFFFFFFF);
             weapon.OriginalOwnerXuidHigh = (uint)(player.SteamID >> 32);
 
@@ -1290,12 +1387,14 @@ public sealed class SkinManager : IDisposable
                 item.ItemDefinitionIndex = cosmetic.ItemDefinitionIndex.Value;
             }
 
-            item.EntityQuality = isKnife ? 3 : 0;
+            // Quality 9 is what makes the client render the StatTrak counter.
+            item.EntityQuality = statTrak.HasValue ? 9 : isKnife ? 3 : 0;
             UpdateEconItemIdentity(item, player);
             ApplyCustomName(item, cosmetic, customization?.NameTag);
 
-            var attributesApplied = _econAttributes.ApplyPaintAttributes(item, cosmetic.Id, cosmetic.PaintKit, seed, wear, $"{ResolveWeaponEntityName(weapon)} entity {weapon.Index}");
+            var attributesApplied = _econAttributes.ApplyPaintAttributes(item, cosmetic.Id, cosmetic.PaintKit, seed, wear, $"{ResolveWeaponEntityName(weapon)} entity {weapon.Index}", statTrak);
             ApplyWeaponBodyGroup(weapon, cosmetic);
+            ApplyStatTrakBodyGroup(weapon, statTrak.HasValue);
             MarkWeaponStateChanged(weapon);
             RefreshActiveWeapon(player, weapon);
 
@@ -1413,6 +1512,9 @@ public sealed class SkinManager : IDisposable
                 return false;
             }
 
+            // Only take the player's weapon slot over if the weapon being
+            // refreshed is the one actually in their hands.
+            var wasActive = IsActiveWeapon(player, oldWeapon);
             var oldClip = 0;
             var oldReserve = 0;
             oldClip = Math.Max(0, oldWeapon.Clip1);
@@ -1438,19 +1540,23 @@ public sealed class SkinManager : IDisposable
                 try
                 {
                     RestoreAmmo(newWeapon, oldClip, oldReserve);
+                    ApplyCosmeticToWeapon(player, newWeapon, skin, isKnife: false, logFailures, weaponEntity);
+
                     // The engine finishes initializing the new weapon after this
-                    // frame and refills its clip, so restore again once it has
-                    // settled or the write above is lost.
+                    // frame, refilling the clip and clearing the StatTrak netprop,
+                    // so write both again once it has settled.
                     _scheduleDelayed?.Invoke(0.2f, () =>
                     {
                         if (IsUsablePlayer(player) && newWeapon.IsValid)
                         {
                             RestoreAmmo(newWeapon, oldClip, oldReserve);
+                            ApplyCosmeticToWeapon(player, newWeapon, skin, isKnife: false, logFailures: false, weaponEntity);
                         }
                     });
-
-                    ApplyCosmeticToWeapon(player, newWeapon, skin, isKnife: false, logFailures);
-                    player.ExecuteClientCommand(IsPistol(weaponEntity) ? "slot2" : "slot1");
+                    if (wasActive)
+                    {
+                        player.ExecuteClientCommand(IsPistol(weaponEntity) ? "slot2" : "slot1");
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -1500,6 +1606,7 @@ public sealed class SkinManager : IDisposable
                 return false;
             }
 
+            var knifeWasActive = IsActiveWeapon(player, oldKnife);
             if (skin is null)
             {
                 ApplyKnifeTypeToWeapon(player, oldKnife, knife, logFailures);
@@ -1545,7 +1652,29 @@ public sealed class SkinManager : IDisposable
                         ApplyCosmeticToWeapon(player, newKnife, skin, isKnife: true, logFailures);
                     }
 
-                    player.ExecuteClientCommand("slot3");
+                    // Same settle window as weapons: the StatTrak counter is a
+                    // netprop the engine clears while it finishes the entity.
+                    _scheduleDelayed?.Invoke(0.2f, () =>
+                    {
+                        if (!IsUsablePlayer(player) || !newKnife.IsValid)
+                        {
+                            return;
+                        }
+
+                        if (skin is null)
+                        {
+                            ApplyKnifeTypeToWeapon(player, newKnife, knife, logFailures: false);
+                        }
+                        else
+                        {
+                            ApplyCosmeticToWeapon(player, newKnife, skin, isKnife: true, logFailures: false);
+                        }
+                    });
+
+                    if (knifeWasActive)
+                    {
+                        player.ExecuteClientCommand("slot3");
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -1596,17 +1725,27 @@ public sealed class SkinManager : IDisposable
                 return false;
             }
 
+            var statTrak = GetCustomization(player, KnifeTarget)?.StatTrak;
+
             TryChangeKnifeSubclass(weapon, knife.ItemDefinitionIndex);
             weapon.FallbackPaintKit = 0;
             weapon.FallbackSeed = 0;
             weapon.FallbackWear = 0f;
-            weapon.FallbackStatTrak = -1;
+            weapon.FallbackStatTrak = statTrak ?? -1;
             weapon.OriginalOwnerXuidLow = (uint)(player.SteamID & 0xFFFFFFFF);
             weapon.OriginalOwnerXuidHigh = (uint)(player.SteamID >> 32);
             item.ItemDefinitionIndex = knife.ItemDefinitionIndex;
-            item.EntityQuality = 3;
+            item.EntityQuality = statTrak.HasValue ? 9 : 3;
             UpdateEconItemIdentity(item, player);
-            _econAttributes.ClearPaintAttributes(item, $"{knife.EntityName} entity {weapon.Index}");
+            var nameTag = GetCustomization(player, KnifeTarget)?.NameTag;
+            if (!string.IsNullOrWhiteSpace(nameTag))
+            {
+                item.CustomName = nameTag;
+                item.CustomNameOverride = nameTag;
+            }
+
+            _econAttributes.ClearPaintAttributes(item, $"{knife.EntityName} entity {weapon.Index}", statTrak);
+            ApplyStatTrakBodyGroup(weapon, statTrak.HasValue);
             MarkWeaponStateChanged(weapon);
             RefreshActiveWeapon(player, weapon);
             return true;
@@ -1832,6 +1971,20 @@ public sealed class SkinManager : IDisposable
         }
     }
 
+    // The counter is a separate module on the model; without its bodygroup the
+    // item is named StatTrak but shows no number when inspected.
+    private void ApplyStatTrakBodyGroup(CBasePlayerWeapon weapon, bool enabled)
+    {
+        try
+        {
+            weapon.AcceptInput("SetBodygroup", value: $"stattrak,{(enabled ? 1 : 0)}");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDebug(ex, "Astra Skins failed to set the StatTrak bodygroup on entity {EntityIndex}.", weapon.Index);
+        }
+    }
+
     private void MarkWeaponStateChanged(CBasePlayerWeapon weapon)
     {
         TrySetStateChanged(weapon, "CEconEntity", "m_nFallbackPaintKit");
@@ -1844,6 +1997,19 @@ public sealed class SkinManager : IDisposable
     {
         TrySetStateChanged(pawn, "CCSPlayerPawn", "m_EconGloves");
         TrySetStateChanged(pawn, "CCSPlayerPawn", "m_nEconGlovesChanged");
+    }
+
+    private static bool IsActiveWeapon(CCSPlayerController player, CBasePlayerWeapon weapon)
+    {
+        try
+        {
+            var active = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
+            return active is not null && active.IsValid && weapon.IsValid && active.Index == weapon.Index;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private void RestoreAmmo(CBasePlayerWeapon weapon, int clip, int reserve)

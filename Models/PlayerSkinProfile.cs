@@ -1,4 +1,4 @@
-namespace AstraSkins.Models;
+﻿namespace AstraSkins.Models;
 
 public sealed class PlayerSkinProfile
 {
@@ -19,5 +19,6 @@ public sealed class WeaponCustomization
     public int? Seed { get; set; }
     public float? Wear { get; set; }
     public string? NameTag { get; set; }
-    public bool IsEmpty => Seed is null && Wear is null && NameTag is null;
+    public int? StatTrak { get; set; }
+    public bool IsEmpty => Seed is null && Wear is null && NameTag is null && StatTrak is null;
 }

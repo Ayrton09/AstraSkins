@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using Microsoft.Extensions.Logging;
 using MySqlConnector;
 using AstraSkins.Models;
@@ -134,9 +134,9 @@ public sealed class MySqlSkinStorage : ISkinStorage
         using var command = connection.CreateCommand();
         command.CommandText = category switch
         {
-            "weapons" => "DELETE FROM astra_player_skin_selections WHERE steam_id = @steam_id AND (selection_type = 'weapon' OR (selection_type IN ('seed', 'wear', 'nametag') AND target NOT IN ('knife', 'glove')))",
-            "knife" => "DELETE FROM astra_player_skin_selections WHERE steam_id = @steam_id AND (selection_type IN ('knife', 'knife_type') OR (selection_type IN ('seed', 'wear', 'nametag') AND target = 'knife'))",
-            "gloves" => "DELETE FROM astra_player_skin_selections WHERE steam_id = @steam_id AND (selection_type = 'glove' OR (selection_type IN ('seed', 'wear', 'nametag') AND target = 'glove'))",
+            "weapons" => "DELETE FROM astra_player_skin_selections WHERE steam_id = @steam_id AND (selection_type = 'weapon' OR (selection_type IN ('seed', 'wear', 'nametag', 'stattrak') AND target NOT IN ('knife', 'glove')))",
+            "knife" => "DELETE FROM astra_player_skin_selections WHERE steam_id = @steam_id AND (selection_type IN ('knife', 'knife_type') OR (selection_type IN ('seed', 'wear', 'nametag', 'stattrak') AND target = 'knife'))",
+            "gloves" => "DELETE FROM astra_player_skin_selections WHERE steam_id = @steam_id AND (selection_type = 'glove' OR (selection_type IN ('seed', 'wear', 'nametag', 'stattrak') AND target = 'glove'))",
             "agents" => "DELETE FROM astra_player_skin_selections WHERE steam_id = @steam_id AND selection_type = 'agent'",
             _ => throw new ArgumentOutOfRangeException(nameof(category), category, "Invalid reset category.")
         };
@@ -209,6 +209,11 @@ public sealed class MySqlSkinStorage : ISkinStorage
         else if (type.Equals("nametag", StringComparison.OrdinalIgnoreCase))
         {
             GetOrAddCustomization(profile, target).NameTag = cosmeticId;
+        }
+        else if (type.Equals("stattrak", StringComparison.OrdinalIgnoreCase) &&
+                 int.TryParse(cosmeticId, NumberStyles.Integer, CultureInfo.InvariantCulture, out var statTrak))
+        {
+            GetOrAddCustomization(profile, target).StatTrak = statTrak;
         }
     }
 

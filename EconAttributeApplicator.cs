@@ -1,4 +1,4 @@
-using CounterStrikeSharp.API.Core;
+﻿using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
 using Microsoft.Extensions.Logging;
 
@@ -36,7 +36,7 @@ internal sealed class EconAttributeApplicator
         }
     }
 
-    public bool ApplyPaintAttributes(CEconItemView item, string cosmeticId, int paintKit, int seed, float wear, string context)
+    public bool ApplyPaintAttributes(CEconItemView item, string cosmeticId, int paintKit, int seed, float wear, string context, int? statTrak = null)
     {
         if (item.Handle == IntPtr.Zero)
         {
@@ -60,6 +60,7 @@ internal sealed class EconAttributeApplicator
 
             SetPaintAttributes(item.AttributeList.Handle, paintKit, seed, wear);
             SetPaintAttributes(item.NetworkedDynamicAttributes.Handle, paintKit, seed, wear);
+            SetStatTrakAttributes(item, statTrak);
             return true;
         }
         catch (Exception ex)
@@ -69,7 +70,24 @@ internal sealed class EconAttributeApplicator
         }
     }
 
-    public void ClearPaintAttributes(CEconItemView item, string context)
+    public void UpdateStatTrak(CEconItemView item, int statTrak)
+    {
+        if (item.Handle == IntPtr.Zero)
+        {
+            return;
+        }
+
+        try
+        {
+            SetStatTrakAttributes(item, statTrak);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDebug(ex, "Astra Skins failed to update the StatTrak attribute.");
+        }
+    }
+
+    public void ClearPaintAttributes(CEconItemView item, string context, int? statTrak = null)
     {
         if (item.Handle == IntPtr.Zero)
         {
@@ -81,10 +99,34 @@ internal sealed class EconAttributeApplicator
         {
             item.AttributeList.Attributes.RemoveAll();
             item.NetworkedDynamicAttributes.Attributes.RemoveAll();
+            SetStatTrakAttributes(item, statTrak);
         }
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Astra Skins failed to clear paint attributes on {Context}.", context);
+        }
+    }
+
+    // Removing every attribute also removes the kill eater pair that feeds the
+    // digits on the StatTrak module, which is why a seed or wear change used to
+    // leave the counter blank. Re-add it whenever the list is rebuilt.
+    private void SetStatTrakAttributes(CEconItemView item, int? statTrak)
+    {
+        if (statTrak is null || _setOrAddAttributeValueByName is null)
+        {
+            return;
+        }
+
+        // "kill eater" is stored as an unsigned int, but the setter takes a float
+        // and writes it verbatim into the union. Passing 20f would be read back as
+        // its bit pattern (1101004800), so reinterpret the int bits instead.
+        var count = BitConverter.Int32BitsToSingle(statTrak.Value);
+        var scoreType = BitConverter.Int32BitsToSingle(0);
+
+        foreach (var handle in new[] { item.AttributeList.Handle, item.NetworkedDynamicAttributes.Handle })
+        {
+            _setOrAddAttributeValueByName.Invoke(handle, "kill eater", count);
+            _setOrAddAttributeValueByName.Invoke(handle, "kill eater score type", scoreType);
         }
     }
 

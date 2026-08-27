@@ -1,4 +1,4 @@
-using System.Net;
+﻿using System.Net;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
@@ -21,6 +21,7 @@ public sealed class MenuManager
     private const int InitialInputDelayMilliseconds = 200;
     private const int MaxTitleLength = 46;
     private const int MaxItemLabelLength = 34;
+    private const int MaxSearchResults = 64;
 
     public MenuManager(SkinManager skinManager, PluginConfig config, IStringLocalizer localizer, ILogger logger)
     {
@@ -66,6 +67,22 @@ public sealed class MenuManager
         state.AgentTeam = null;
         ResetInputState(state);
         ChangeView(player, state, MenuView.AgentTeams);
+    }
+
+    public void OpenSearch(CCSPlayerController player, string query)
+    {
+        var state = GetState(player);
+        state.BackStack.Clear();
+        state.SearchQuery = query;
+        ResetInputState(state);
+        ChangeView(player, state, MenuView.Search);
+    }
+
+    public bool HasSearchResults(CCSPlayerController player)
+    {
+        return _states.TryGetValue(player.Slot, out var state) &&
+               state.View == MenuView.Search &&
+               GetOptions(state).Count > 0;
     }
 
     public void Close(CCSPlayerController player, bool clearScreen = true)
@@ -254,6 +271,7 @@ public sealed class MenuManager
             MenuView.GloveSkins => BuildGloveSkinOptions(state),
             MenuView.AgentTeams => BuildAgentTeamOptions(state),
             MenuView.Agents => BuildAgentOptions(state),
+            MenuView.Search => BuildSearchOptions(state),
             _ => Array.Empty<MenuOption>()
         };
     }
@@ -633,6 +651,156 @@ public sealed class MenuManager
             .ToList();
     }
 
+    // Flat search across every cosmetic the player may equip. Every whitespace
+    // separated term must appear in the entry label, so "ak redline" works.
+    private IReadOnlyList<MenuOption> BuildSearchOptions(PlayerMenuState state)
+    {
+        var player = Utilities.GetPlayerFromSlot(state.Slot);
+        if (player is null || !player.IsValid || string.IsNullOrWhiteSpace(state.SearchQuery))
+        {
+            return Array.Empty<MenuOption>();
+        }
+
+        var terms = state.SearchQuery.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (terms.Length == 0)
+        {
+            return Array.Empty<MenuOption>();
+        }
+
+        var profile = _skinManager.GetProfile(player);
+        var catalog = _skinManager.Catalog;
+        var options = new List<MenuOption>();
+
+        void Add(string label, bool selected, Func<CCSPlayerController, bool> apply)
+        {
+            options.Add(new MenuOption(label, () =>
+            {
+                var current = Utilities.GetPlayerFromSlot(state.Slot);
+                if (current is null || !current.IsValid)
+                {
+                    return;
+                }
+
+                var saved = apply(current);
+                current.PrintToChat(saved
+                    ? $"{AstraSkinsPlugin.FormatPrefix()} {_localizer.ForPlayer(current, "menu.equipped", label)}"
+                    : $"{AstraSkinsPlugin.FormatPrefix()} {_localizer.ForPlayer(current, "menu.save_failed")}");
+                state.LastInteractionUtc = DateTime.UtcNow;
+                Render(current, state);
+            }, selected, ThrottleSelection: true));
+        }
+
+        foreach (var weapon in catalog.Weapons)
+        {
+            foreach (var skin in weapon.Skins)
+            {
+                if (options.Count >= MaxSearchResults)
+                {
+                    return options;
+                }
+
+                var label = $"{weapon.DisplayName} | {skin.DisplayName}";
+                if (!MatchesAllTerms(label, terms) || !_skinManager.CanUse(player, skin))
+                {
+                    continue;
+                }
+
+                var entity = weapon.EntityName;
+                var skinId = skin.Id;
+                var selected = profile.WeaponSkins.TryGetValue(entity, out var equipped) &&
+                               equipped.Equals(skinId, StringComparison.OrdinalIgnoreCase);
+                Add(label, selected, current => _skinManager.SetWeaponSkin(current, entity, skinId));
+            }
+        }
+
+        foreach (var knife in catalog.Knives)
+        {
+            if (!_skinManager.CanUse(player, knife))
+            {
+                continue;
+            }
+
+            foreach (var skin in knife.Skins)
+            {
+                if (options.Count >= MaxSearchResults)
+                {
+                    return options;
+                }
+
+                var label = $"{knife.DisplayName} | {skin.DisplayName}";
+                if (!MatchesAllTerms(label, terms) || !_skinManager.CanUse(player, skin))
+                {
+                    continue;
+                }
+
+                var skinId = skin.Id;
+                var selected = skinId.Equals(profile.KnifeSkinId, StringComparison.OrdinalIgnoreCase);
+                Add(label, selected, current => _skinManager.SetKnifeSkin(current, skinId));
+            }
+        }
+
+        foreach (var glove in catalog.Gloves)
+        {
+            if (!_skinManager.CanUse(player, glove))
+            {
+                continue;
+            }
+
+            foreach (var skin in glove.Skins)
+            {
+                if (options.Count >= MaxSearchResults)
+                {
+                    return options;
+                }
+
+                var label = $"{glove.DisplayName} | {skin.DisplayName}";
+                if (!MatchesAllTerms(label, terms) || !_skinManager.CanUse(player, skin))
+                {
+                    continue;
+                }
+
+                var skinId = skin.Id;
+                var selected = skinId.Equals(profile.GloveSkinId, StringComparison.OrdinalIgnoreCase);
+                Add(label, selected, current => _skinManager.SetGloveSkin(current, skinId));
+            }
+        }
+
+        foreach (var agent in catalog.Agents)
+        {
+            if (options.Count >= MaxSearchResults)
+            {
+                return options;
+            }
+
+            var label = $"{agent.Team.ToUpperInvariant()} | {agent.DisplayName}";
+            if (!MatchesAllTerms(label, terms) || !_skinManager.CanUse(player, agent))
+            {
+                continue;
+            }
+
+            var agentId = agent.Id;
+            var team = agent.Team;
+            var selected = profile.AgentIdsByTeam.TryGetValue(team, out var equippedAgent) &&
+                           equippedAgent.Equals(agentId, StringComparison.OrdinalIgnoreCase);
+            Add(label, selected, current => _skinManager.SetAgent(current, team, agentId));
+        }
+
+        return options;
+    }
+
+    private static bool MatchesAllTerms(string label, string[] terms)
+    {
+        foreach (var term in terms)
+        {
+            if (label.IndexOf(term, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private void Render(CCSPlayerController player, PlayerMenuState state)
     {
         if (!player.IsValid || !state.IsOpen)
@@ -694,6 +862,7 @@ public sealed class MenuManager
             MenuView.GloveTypes => _localizer.ForPlayer(player, "menu.title.gloves"),
             MenuView.GloveSkins => state.Glove?.DisplayName ?? _localizer.ForPlayer(player, "menu.title.glove_skins"),
             MenuView.AgentTeams => _localizer.ForPlayer(player, "menu.title.agent_teams"),
+            MenuView.Search => _localizer.ForPlayer(player, "menu.title.search", state.SearchQuery ?? string.Empty),
             MenuView.Agents => state.AgentTeam == "ct"
                 ? _localizer.ForPlayer(player, "menu.title.agents_ct")
                 : _localizer.ForPlayer(player, "menu.title.agents_t"),
@@ -742,8 +911,14 @@ public sealed class MenuManager
             return;
         }
 
-        pawn.VelocityModifier = velocity;
-        MarkVelocityModifierChanged(pawn);
+        // Only hand the value back if it is still the one we forced; if another
+        // plugin changed it while the menu was open, theirs wins.
+        if (pawn.VelocityModifier == 0f)
+        {
+            pawn.VelocityModifier = velocity;
+            MarkVelocityModifierChanged(pawn);
+        }
+
         _savedVelocity.Remove(player.Slot);
     }
 
