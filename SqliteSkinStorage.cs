@@ -9,11 +9,13 @@ public sealed class SqliteSkinStorage : ISkinStorage
 {
     private readonly string _databasePath;
     private readonly ILogger _logger;
+    private readonly bool _starTrackerEnabled;
 
-    public SqliteSkinStorage(string databasePath, ILogger logger)
+    public SqliteSkinStorage(string databasePath, ILogger logger, bool starTrackerEnabled = false)
     {
         _databasePath = databasePath;
         _logger = logger;
+        _starTrackerEnabled = starTrackerEnabled;
     }
 
     public void Initialize()
@@ -21,7 +23,7 @@ public sealed class SqliteSkinStorage : ISkinStorage
         Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(_databasePath)) ?? ".");
         using var connection = Open();
         using var command = connection.CreateCommand();
-        command.CommandText = """
+        var schema = """
         CREATE TABLE IF NOT EXISTS astra_player_skin_selections (
             steam_id INTEGER NOT NULL,
             selection_type TEXT NOT NULL,
@@ -33,8 +35,25 @@ public sealed class SqliteSkinStorage : ISkinStorage
         CREATE INDEX IF NOT EXISTS idx_astra_player_skin_selections_steam_id
             ON astra_player_skin_selections (steam_id);
         """;
+        if (_starTrackerEnabled)
+        {
+            schema += """
+
+        CREATE TABLE IF NOT EXISTS astra_music_kit_mvp_counts (
+            steam_id INTEGER NOT NULL,
+            music_kit_id INTEGER NOT NULL,
+            mvp_count INTEGER NOT NULL DEFAULT 0,
+            updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (steam_id, music_kit_id)
+        );
+        CREATE INDEX IF NOT EXISTS idx_astra_music_kit_mvp_counts_steam_id
+            ON astra_music_kit_mvp_counts (steam_id);
+        """;
+        }
+
+        command.CommandText = schema;
         command.ExecuteNonQuery();
-        _logger.LogInformation("SQLite storage initialized at {Path}", _databasePath);
+        _logger.LogInformation("SQLite storage initialized at {Path}, StarTracker={StarTracker}", _databasePath, _starTrackerEnabled);
     }
 
     public PlayerSkinProfile LoadProfile(ulong steamId64)
@@ -52,6 +71,26 @@ public sealed class SqliteSkinStorage : ISkinStorage
         }
 
         return profile;
+    }
+
+    public void IncrementMusicKitMvp(ulong steamId64, int musicKitId)
+    {
+        if (!_starTrackerEnabled)
+        {
+            return;
+        }
+
+        using var connection = Open();
+        using var command = connection.CreateCommand();
+        command.CommandText = """
+        INSERT INTO astra_music_kit_mvp_counts (steam_id, music_kit_id, mvp_count, updated_at)
+        VALUES ($steam_id, $music_kit_id, 1, CURRENT_TIMESTAMP)
+        ON CONFLICT(steam_id, music_kit_id)
+        DO UPDATE SET mvp_count = mvp_count + 1, updated_at = CURRENT_TIMESTAMP;
+        """;
+        command.Parameters.AddWithValue("$steam_id", unchecked((long)steamId64));
+        command.Parameters.AddWithValue("$music_kit_id", musicKitId);
+        command.ExecuteNonQuery();
     }
 
     public void SaveWeaponSkin(ulong steamId64, string weaponEntity, string cosmeticId)

@@ -6,6 +6,7 @@ public interface ISkinStorage : IDisposable
 {
     void Initialize();
     PlayerSkinProfile LoadProfile(ulong steamId64);
+    void IncrementMusicKitMvp(ulong steamId64, int musicKitId);
     void SaveWeaponSkin(ulong steamId64, string weaponEntity, string cosmeticId);
     void SaveKnifeType(ulong steamId64, string knifeId);
     void SaveKnifeSkin(ulong steamId64, string cosmeticId);

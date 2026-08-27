@@ -12,6 +12,7 @@ public sealed class PluginConfig : BasePluginConfig
     public MySqlConfig MySql { get; set; } = new();
     public MenuConfig Menu { get; set; } = new();
     public CustomizationConfig Customization { get; set; } = new();
+    public bool EnableStarTracker { get; set; } = false;
     public DefinitionPathConfig Definitions { get; set; } = new();
     public bool EnableAdminReloadCommand { get; set; } = true;
     public string AdminReloadPermission { get; set; } = "@css/config";

@@ -415,6 +415,16 @@ public sealed class SkinManager : IDisposable
         return int.TryParse(profile.MusicKitId, out musicKitId);
     }
 
+    public void RecordMusicKitMvp(CCSPlayerController player, int musicKitId)
+    {
+        if (musicKitId <= 0 || !TryGetSteamId64(player, out var steamId))
+        {
+            return;
+        }
+
+        QueueStorageWrite($"music kit MVP {musicKitId} for {steamId}", () => _storage.IncrementMusicKitMvp(steamId, musicKitId));
+    }
+
     public void Reset(CCSPlayerController player)
     {
         var steamId = GetSteamId64(player);

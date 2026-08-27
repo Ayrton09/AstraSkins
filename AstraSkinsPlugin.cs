@@ -118,20 +118,21 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         _ready = true;
 
         Logger.LogInformation(
-            "Astra Skins loaded: {Weapons} weapons, {KnifeSkins} knife skins, {GloveSkins} glove skins, {Agents} agents, DB={DatabaseMode}",
+            "Astra Skins loaded: {Weapons} weapons, {KnifeSkins} knife skins, {GloveSkins} glove skins, {Agents} agents, DB={DatabaseMode}, StarTracker={StarTracker}",
             catalog.Weapons.Count,
             catalog.KnifeSkinsById.Count,
             catalog.GloveSkinsById.Count,
             catalog.Agents.Count,
-            config.DatabaseMode);
+            config.DatabaseMode,
+            config.EnableStarTracker);
     }
 
     private ISkinStorage CreateStorage(PluginConfig config)
     {
         return config.DatabaseMode switch
         {
-            "sqlite" => new SqliteSkinStorage(Resolve(ModuleDirectory, config.Sqlite.Path), Logger),
-            "mysql" => new MySqlSkinStorage(config.MySql, Logger),
+            "sqlite" => new SqliteSkinStorage(Resolve(ModuleDirectory, config.Sqlite.Path), Logger, config.EnableStarTracker),
+            "mysql" => new MySqlSkinStorage(config.MySql, Logger, config.EnableStarTracker),
             _ => throw new InvalidOperationException("Invalid DatabaseMode after validation.")
         };
     }
@@ -556,13 +557,25 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
     private HookResult OnRoundMvp(EventRoundMvp @event, GameEventInfo info)
     {
         var player = @event.Userid;
-        if (_ready && _skinManager is not null && player is { IsValid: true } && IsLiveHuman(player) &&
-            _skinManager.TryGetSelectedMusicKitId(player, out var musickitId))
+        if (_ready && _skinManager is not null && player is { IsValid: true } && IsLiveHuman(player))
         {
-            // Keep the scoreboard MVP music consistent with the selected kit.
-            @event.Musickitid = musickitId;
-            @event.Musickitmvps = 0;
-            @event.Nomusic = 0;
+            var hasSelectedMusicKit = _skinManager.TryGetSelectedMusicKitId(player, out var musicKitId);
+            if (hasSelectedMusicKit)
+            {
+                // Keep the scoreboard MVP music consistent with the selected kit.
+                @event.Musickitid = musicKitId;
+                @event.Musickitmvps = 0;
+                @event.Nomusic = 0;
+            }
+            else
+            {
+                musicKitId = checked((int)@event.Musickitid);
+            }
+
+            if (_config?.EnableStarTracker == true)
+            {
+                _skinManager.RecordMusicKitMvp(player, musicKitId);
+            }
         }
 
         return HookResult.Continue;

@@ -9,10 +9,12 @@ public sealed class MySqlSkinStorage : ISkinStorage
 {
     private readonly string _connectionString;
     private readonly ILogger _logger;
+    private readonly bool _starTrackerEnabled;
 
-    public MySqlSkinStorage(Models.MySqlConfig config, ILogger logger)
+    public MySqlSkinStorage(Models.MySqlConfig config, ILogger logger, bool starTrackerEnabled = false)
     {
         _logger = logger;
+        _starTrackerEnabled = starTrackerEnabled;
         var sslMode = ParseSslMode(config.SslMode);
         var builder = new MySqlConnectionStringBuilder
         {
@@ -46,7 +48,7 @@ public sealed class MySqlSkinStorage : ISkinStorage
     {
         using var connection = Open();
         using var command = connection.CreateCommand();
-        command.CommandText = """
+        var schema = """
         CREATE TABLE IF NOT EXISTS astra_player_skin_selections (
             steam_id BIGINT UNSIGNED NOT NULL,
             selection_type VARCHAR(16) NOT NULL,
@@ -57,8 +59,24 @@ public sealed class MySqlSkinStorage : ISkinStorage
             INDEX idx_astra_player_skin_selections_steam_id (steam_id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         """;
+        if (_starTrackerEnabled)
+        {
+            schema += """
+
+        CREATE TABLE IF NOT EXISTS astra_music_kit_mvp_counts (
+            steam_id BIGINT UNSIGNED NOT NULL,
+            music_kit_id INT UNSIGNED NOT NULL,
+            mvp_count BIGINT UNSIGNED NOT NULL DEFAULT 0,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (steam_id, music_kit_id),
+            INDEX idx_astra_music_kit_mvp_counts_steam_id (steam_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        """;
+        }
+
+        command.CommandText = schema;
         command.ExecuteNonQuery();
-        _logger.LogInformation("MySQL storage initialized.");
+        _logger.LogInformation("MySQL storage initialized, StarTracker={StarTracker}.", _starTrackerEnabled);
     }
 
     public PlayerSkinProfile LoadProfile(ulong steamId64)
@@ -76,6 +94,25 @@ public sealed class MySqlSkinStorage : ISkinStorage
         }
 
         return profile;
+    }
+
+    public void IncrementMusicKitMvp(ulong steamId64, int musicKitId)
+    {
+        if (!_starTrackerEnabled)
+        {
+            return;
+        }
+
+        using var connection = Open();
+        using var command = connection.CreateCommand();
+        command.CommandText = """
+        INSERT INTO astra_music_kit_mvp_counts (steam_id, music_kit_id, mvp_count)
+        VALUES (@steam_id, @music_kit_id, 1)
+        ON DUPLICATE KEY UPDATE mvp_count = mvp_count + 1, updated_at = CURRENT_TIMESTAMP;
+        """;
+        command.Parameters.AddWithValue("@steam_id", steamId64);
+        command.Parameters.AddWithValue("@music_kit_id", musicKitId);
+        command.ExecuteNonQuery();
     }
 
     public void SaveWeaponSkin(ulong steamId64, string weaponEntity, string cosmeticId)
