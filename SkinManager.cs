@@ -359,6 +359,21 @@ public sealed class SkinManager : IDisposable
                 }
             }
 
+            ApplyMusicKitState(player, kitId, logFailures);
+        }
+        catch (Exception ex)
+        {
+            if (logFailures)
+            {
+                _logger.LogWarning(ex, "Astra Skins failed to resolve music kit for {SteamId}.", TryGetSteamId64(player, out var steamId) ? steamId : 0);
+            }
+        }
+    }
+
+    private void ApplyMusicKitState(CCSPlayerController player, int kitId, bool logFailures)
+    {
+        try
+        {
             var inventory = player.InventoryServices;
             if (inventory is not null)
             {
@@ -407,6 +422,7 @@ public sealed class SkinManager : IDisposable
         QueueStorageWrite($"profile reset for {steamId}", () => _storage.ResetProfile(steamId));
         _profiles.Remove(steamId);
         ClearPlayerCosmetics(player, logFailures: true);
+        ApplyMusicKitState(player, 0, logFailures: true);
     }
 
     public bool ResetCategory(CCSPlayerController player, string category)
@@ -454,6 +470,7 @@ public sealed class SkinManager : IDisposable
                 break;
             case "music":
                 profile.MusicKitId = null;
+                ApplyMusicKitToPlayer(player, logFailures: true);
                 break;
         }
 
@@ -1063,6 +1080,7 @@ public sealed class SkinManager : IDisposable
         target.KnifeId ??= loaded.KnifeId;
         target.KnifeSkinId ??= loaded.KnifeSkinId;
         target.GloveSkinId ??= loaded.GloveSkinId;
+        target.MusicKitId ??= loaded.MusicKitId;
 
         foreach (var (team, agentId) in loaded.AgentIdsByTeam)
         {
