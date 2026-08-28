@@ -18,7 +18,8 @@
 
 - 🎨 **1,400+ weapon skins, 20 knives with 576 finishes, 8 glove types, 63 agents** — all data-driven from JSON, no datasets baked into the code.
 - 🕹️ **Built-in WASD menu** — navigate with `W`/`S`, select with `E`. No external menu plugin required.
-- 🔧 **Per-player customization** — custom paint seed, wear/float, and name tags via `!seed`, `!wear`, and `!nametag`.
+- 🔧 **Per-player customization** — custom paint seed, wear/float, name tags, and StatTrak counters via `!seed`, `!wear`, `!nametag`, and `!stattrak`.
+- 🔎 **Search** — `!ws <text>` finds any skin, knife, glove, or agent without scrolling through pages.
 - 💾 **Persistent selections** — SQLite or MySQL, keyed by SteamID64. Selections survive reconnects, map changes, and restarts.
 - 🌍 **7 languages** — per-player localization (English, Spanish, Chinese, Portuguese, German, French, Russian).
 - 🗣️ **Agent radio voices** — agents keep their voice lines where the CS2 schema exposes the voice data.
@@ -70,6 +71,7 @@
 | Command | Description |
 | --- | --- |
 | `!ws` | Open the main skins menu |
+| `!ws <search>` | Search every skin, knife, glove, and agent at once |
 | `!knife` | Open the knife menu |
 | `!gloves` | Open the gloves menu |
 | `!agents` | Open the agents menu |
@@ -83,8 +85,11 @@
 | `!seed <0-1000>` | Custom paint seed for the held weapon · `!seed gloves <n>` for gloves · `!seed reset` to clear |
 | `!wear <0.00-1.00>` | Custom wear/float for the held weapon · `!wear gloves <n>` for gloves · `!wear reset` to clear |
 | `!nametag <text>` | Name tag for the held weapon · `!nametag reset` to remove |
+| `!stattrak` | Toggle StatTrak on the held weapon · `!stattrak <count>` sets the counter · `!stattrak reset` removes it |
 
 Overrides apply on top of the selected skin, take effect instantly, and persist in the database. They target the weapon currently held (knife included); pass `gloves` as the first argument to target equipped gloves instead. A skin must be selected for the item first.
+
+StatTrak works the same way: enable it on a weapon or knife and the counter goes up with every kill you get with that item, persisting across reconnects and map changes.
 
 > **Tip:** seeds only change finishes whose pattern placement varies — Case Hardened, Crimson Web, Marble Fade, Fade. Most other skins look identical on every seed.
 
@@ -107,6 +112,21 @@ Both can be disabled entirely in the config.
 | `R` | Close |
 
 The menu items are numbered as a visual guide for orientation; navigation is by keys, not numbers. While the menu is open the player is held in place. Heads up: `E` still performs its normal in-world action (open doors, pick up weapons, defuse), so avoid confirming a selection while standing on the bomb.
+
+## Search
+
+With 1,449 weapon skins alone, scrolling is not always the fastest way in. `!ws <search>` opens a flat result list spanning weapon skins, knife finishes, glove finishes, and agents.
+
+Every whitespace-separated term has to appear in the entry, so you can narrow down quickly:
+
+```text
+!ws redline        → Redline on every weapon that has it
+!ws ak redline     → straight to the AK-47 Redline
+!ws marble fade    → every Marble Fade knife
+!ws ct mccoy       → the CT agent
+```
+
+Results respect permissions and are capped at 64 entries; already-equipped items are marked with `*`.
 
 ## Configuration
 
@@ -139,7 +159,7 @@ The menu items are numbered as a visual guide for orientation; navigation is by 
     "Permission": "",
     "MaxNameTagLength": 20
   },
-  "EnableStatTrak": false,
+  "EnableMusicKitMvpCounter": false,
   "Definitions": {
     "Weapons": "data/weapons.json",
     "Knives": "data/knives.json",
@@ -165,7 +185,7 @@ The menu items are numbered as a visual guide for orientation; navigation is by 
 | `Customization.Enabled` | Master switch for `!seed` / `!wear` / `!nametag` |
 | `Customization.Permission` | Restrict customization to a flag; empty = everyone |
 | `Customization.MaxNameTagLength` | Name tag cap, 4–32 (default 20 matches the real game) |
-| `EnableStatTrak` | Create and update the per-player music-kit MVP counter table |
+| `EnableMusicKitMvpCounter` | Track per-player MVP counts for selected music kits |
 
 ### SQLite
 

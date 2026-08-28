@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using Microsoft.Extensions.Logging;
 using MySqlConnector;
 using AstraSkins.Models;
@@ -9,12 +9,12 @@ public sealed class MySqlSkinStorage : ISkinStorage
 {
     private readonly string _connectionString;
     private readonly ILogger _logger;
-    private readonly bool _statTrakEnabled;
+    private readonly bool _musicKitMvpCounterEnabled;
 
-    public MySqlSkinStorage(Models.MySqlConfig config, ILogger logger, bool statTrakEnabled = false)
+    public MySqlSkinStorage(Models.MySqlConfig config, ILogger logger, bool musicKitMvpCounterEnabled = false)
     {
         _logger = logger;
-        _statTrakEnabled = statTrakEnabled;
+        _musicKitMvpCounterEnabled = musicKitMvpCounterEnabled;
         var sslMode = ParseSslMode(config.SslMode);
         var builder = new MySqlConnectionStringBuilder
         {
@@ -48,7 +48,7 @@ public sealed class MySqlSkinStorage : ISkinStorage
     {
         using var connection = Open();
         using var command = connection.CreateCommand();
-        var schema = """
+        const string schema = """
         CREATE TABLE IF NOT EXISTS astra_player_skin_selections (
             steam_id BIGINT UNSIGNED NOT NULL,
             selection_type VARCHAR(16) NOT NULL,
@@ -59,24 +59,9 @@ public sealed class MySqlSkinStorage : ISkinStorage
             INDEX idx_astra_player_skin_selections_steam_id (steam_id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         """;
-        if (_statTrakEnabled)
-        {
-            schema += """
-
-        CREATE TABLE IF NOT EXISTS astra_music_kit_mvp_counts (
-            steam_id BIGINT UNSIGNED NOT NULL,
-            music_kit_id INT UNSIGNED NOT NULL,
-            mvp_count BIGINT UNSIGNED NOT NULL DEFAULT 0,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            PRIMARY KEY (steam_id, music_kit_id),
-            INDEX idx_astra_music_kit_mvp_counts_steam_id (steam_id)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-        """;
-        }
-
         command.CommandText = schema;
         command.ExecuteNonQuery();
-        _logger.LogInformation("MySQL storage initialized, StatTrak={StatTrak}.", _statTrakEnabled);
+        _logger.LogInformation("MySQL storage initialized, MusicKitMvpCounter={MusicKitMvpCounter}.", _musicKitMvpCounterEnabled);
     }
 
     public PlayerSkinProfile LoadProfile(ulong steamId64)
@@ -84,7 +69,7 @@ public sealed class MySqlSkinStorage : ISkinStorage
         var profile = new PlayerSkinProfile { SteamId64 = steamId64 };
         using var connection = Open();
         using var command = connection.CreateCommand();
-        command.CommandText = "SELECT selection_type, target, cosmetic_id FROM astra_player_skin_selections WHERE steam_id = @steam_id";
+        command.CommandText = "SELECT selection_type, target, cosmetic_id FROM astra_player_skin_selections WHERE steam_id = @steam_id AND selection_type <> 'music_kit_mvp'";
         command.Parameters.AddWithValue("@steam_id", steamId64);
 
         using (var reader = command.ExecuteReader())
@@ -95,15 +80,19 @@ public sealed class MySqlSkinStorage : ISkinStorage
             }
         }
 
-        if (_statTrakEnabled)
+        if (_musicKitMvpCounterEnabled)
         {
             using var countCommand = connection.CreateCommand();
-            countCommand.CommandText = "SELECT music_kit_id, mvp_count FROM astra_music_kit_mvp_counts WHERE steam_id = @steam_id";
+            countCommand.CommandText = "SELECT target, cosmetic_id FROM astra_player_skin_selections WHERE steam_id = @steam_id AND selection_type = 'music_kit_mvp'";
             countCommand.Parameters.AddWithValue("@steam_id", steamId64);
             using var countReader = countCommand.ExecuteReader();
             while (countReader.Read())
             {
-                profile.MusicKitMvpCounts[countReader.GetInt32(0)] = ClampMvpCount(countReader.GetInt64(1));
+                if (int.TryParse(countReader.GetString(0), NumberStyles.Integer, CultureInfo.InvariantCulture, out var musicKitId) &&
+                    int.TryParse(countReader.GetString(1), NumberStyles.Integer, CultureInfo.InvariantCulture, out var count))
+                {
+                    profile.MusicKitMvpCounts[musicKitId] = Math.Max(0, count);
+                }
             }
         }
 
@@ -112,7 +101,7 @@ public sealed class MySqlSkinStorage : ISkinStorage
 
     public void IncrementMusicKitMvp(ulong steamId64, int musicKitId)
     {
-        if (!_statTrakEnabled)
+        if (!_musicKitMvpCounterEnabled)
         {
             return;
         }
@@ -120,12 +109,12 @@ public sealed class MySqlSkinStorage : ISkinStorage
         using var connection = Open();
         using var command = connection.CreateCommand();
         command.CommandText = """
-        INSERT INTO astra_music_kit_mvp_counts (steam_id, music_kit_id, mvp_count)
-        VALUES (@steam_id, @music_kit_id, 1)
-        ON DUPLICATE KEY UPDATE mvp_count = mvp_count + 1, updated_at = CURRENT_TIMESTAMP;
+        INSERT INTO astra_player_skin_selections (steam_id, selection_type, target, cosmetic_id)
+        VALUES (@steam_id, 'music_kit_mvp', @target, '1')
+        ON DUPLICATE KEY UPDATE cosmetic_id = CAST(LEAST(CAST(cosmetic_id AS UNSIGNED) + 1, 2147483647) AS CHAR), updated_at = CURRENT_TIMESTAMP;
         """;
         command.Parameters.AddWithValue("@steam_id", steamId64);
-        command.Parameters.AddWithValue("@music_kit_id", musicKitId);
+        command.Parameters.AddWithValue("@target", musicKitId.ToString(CultureInfo.InvariantCulture));
         command.ExecuteNonQuery();
     }
 
@@ -185,11 +174,11 @@ public sealed class MySqlSkinStorage : ISkinStorage
         using var command = connection.CreateCommand();
         command.CommandText = category switch
         {
-            "weapons" => "DELETE FROM astra_player_skin_selections WHERE steam_id = @steam_id AND (selection_type = 'weapon' OR (selection_type IN ('seed', 'wear', 'nametag') AND target NOT IN ('knife', 'glove')))",
-            "knife" => "DELETE FROM astra_player_skin_selections WHERE steam_id = @steam_id AND (selection_type IN ('knife', 'knife_type') OR (selection_type IN ('seed', 'wear', 'nametag') AND target = 'knife'))",
-            "gloves" => "DELETE FROM astra_player_skin_selections WHERE steam_id = @steam_id AND (selection_type = 'glove' OR (selection_type IN ('seed', 'wear', 'nametag') AND target = 'glove'))",
+            "weapons" => "DELETE FROM astra_player_skin_selections WHERE steam_id = @steam_id AND (selection_type = 'weapon' OR (selection_type IN ('seed', 'wear', 'nametag', 'stattrak') AND target NOT IN ('knife', 'glove')))",
+            "knife" => "DELETE FROM astra_player_skin_selections WHERE steam_id = @steam_id AND (selection_type IN ('knife', 'knife_type') OR (selection_type IN ('seed', 'wear', 'nametag', 'stattrak') AND target = 'knife'))",
+            "gloves" => "DELETE FROM astra_player_skin_selections WHERE steam_id = @steam_id AND (selection_type = 'glove' OR (selection_type IN ('seed', 'wear', 'nametag', 'stattrak') AND target = 'glove'))",
             "agents" => "DELETE FROM astra_player_skin_selections WHERE steam_id = @steam_id AND selection_type = 'agent'",
-            "music" => "DELETE FROM astra_player_skin_selections WHERE steam_id = @steam_id AND selection_type = 'music_kit'",
+            "music" => "DELETE FROM astra_player_skin_selections WHERE steam_id = @steam_id AND selection_type IN ('music_kit', 'music_kit_mvp')",
             _ => throw new ArgumentOutOfRangeException(nameof(category), category, "Invalid reset category.")
         };
         command.Parameters.AddWithValue("@steam_id", steamId64);
@@ -252,6 +241,12 @@ public sealed class MySqlSkinStorage : ISkinStorage
         {
             profile.MusicKitId = cosmeticId;
         }
+        else if (type.Equals("music_kit_mvp", StringComparison.OrdinalIgnoreCase) &&
+                 int.TryParse(target, NumberStyles.Integer, CultureInfo.InvariantCulture, out var musicKitId) &&
+                 int.TryParse(cosmeticId, NumberStyles.Integer, CultureInfo.InvariantCulture, out var mvpCount))
+        {
+            profile.MusicKitMvpCounts[musicKitId] = Math.Max(0, mvpCount);
+        }
         else if (type.Equals("seed", StringComparison.OrdinalIgnoreCase) &&
                  int.TryParse(cosmeticId, NumberStyles.Integer, CultureInfo.InvariantCulture, out var seed))
         {
@@ -266,6 +261,11 @@ public sealed class MySqlSkinStorage : ISkinStorage
         {
             GetOrAddCustomization(profile, target).NameTag = cosmeticId;
         }
+        else if (type.Equals("stattrak", StringComparison.OrdinalIgnoreCase) &&
+                 int.TryParse(cosmeticId, NumberStyles.Integer, CultureInfo.InvariantCulture, out var statTrak))
+        {
+            GetOrAddCustomization(profile, target).StatTrak = statTrak;
+        }
     }
 
     private static WeaponCustomization GetOrAddCustomization(PlayerSkinProfile profile, string target)
@@ -279,8 +279,4 @@ public sealed class MySqlSkinStorage : ISkinStorage
         return customization;
     }
 
-    private static int ClampMvpCount(long count)
-    {
-        return count <= 0 ? 0 : count >= int.MaxValue ? int.MaxValue : (int)count;
-    }
 }

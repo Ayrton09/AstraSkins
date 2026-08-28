@@ -1,4 +1,4 @@
-using AstraSkins.Models;
+﻿using AstraSkins.Models;
 using CounterStrikeSharp.API;
 
 namespace AstraSkins;
@@ -16,7 +16,8 @@ public enum MenuView
     GloveSkins,
     AgentTeams,
     Agents,
-    MusicKits
+    MusicKits,
+    Search
 }
 
 public sealed class PlayerMenuState
@@ -32,6 +33,7 @@ public sealed class PlayerMenuState
     public string? LastSelectionKey { get; set; }
     public IReadOnlyList<MenuOption>? CachedOptions { get; set; }
     public DateTime CachedOptionsAtUtc { get; set; }
+    public string? SearchQuery { get; set; }
     public string? CategoryId { get; set; }
     public string? AgentTeam { get; set; }
     public WeaponDefinition? Weapon { get; set; }

@@ -30,6 +30,10 @@
   "astra.nametag_usage": "Uso: !nametag <texto> | !nametag reset",
   "astra.nametag_set": "Etiqueta con nombre establecida en \"{0}\".",
   "astra.nametag_reset": "Etiqueta con nombre eliminada.",
+  "astra.stattrak_on": "StatTrak activado. Contador en {0}.",
+  "astra.stattrak_off": "StatTrak eliminado.",
+  "astra.stattrak_usage": "Uso: !stattrak | !stattrak <cantidad> | !stattrak reset",
+  "astra.search_no_results": "Sin resultados para \"{0}\".",
   "menu.equipped": "Equipaste {0}.",
   "menu.save_failed": "No se pudo guardar la selección.",
   "menu.no_entries": "No hay entradas disponibles",
@@ -49,6 +53,5 @@
   "menu.title.agent_teams": "Elegir agentes",
   "menu.title.agents_ct": "Elegir agente CT",
   "menu.title.agents_t": "Elegir agente T",
-  "menu.music": "Music Kit",
-  "menu.music.default": "Default Music Kit"
+  "menu.title.search": "Búsqueda: {0}"
 }
