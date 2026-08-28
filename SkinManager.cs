@@ -20,6 +20,7 @@ public sealed class SkinManager : IDisposable
     private readonly ISkinStorage _storage;
     private readonly ILogger _logger;
     private readonly EconAttributeApplicator _econAttributes;
+    private readonly bool _enableAllWeaponsStatTrak;
     private readonly Dictionary<ulong, PlayerSkinProfile> _profiles = new();
     private readonly HashSet<ulong> _loadingProfiles = new();
     private readonly HashSet<ulong> _activeSteamIds = new();
@@ -90,11 +91,17 @@ public sealed class SkinManager : IDisposable
 
     public DefinitionCatalog Catalog { get; private set; }
 
-    public SkinManager(ISkinStorage storage, DefinitionCatalog catalog, ILogger logger, Action<float, Action>? scheduleDelayed = null)
+    public SkinManager(
+        ISkinStorage storage,
+        DefinitionCatalog catalog,
+        ILogger logger,
+        Action<float, Action>? scheduleDelayed = null,
+        bool enableAllWeaponsStatTrak = true)
     {
         _storage = storage;
         Catalog = catalog;
         _logger = logger;
+        _enableAllWeaponsStatTrak = enableAllWeaponsStatTrak;
         _scheduleDelayed = scheduleDelayed;
         _econAttributes = new EconAttributeApplicator(logger);
     }
@@ -584,7 +591,35 @@ public sealed class SkinManager : IDisposable
         }
 
         var target = IsKnife(weaponName) ? KnifeTarget : weaponName;
-        if (!profile.Customizations.TryGetValue(target, out var customization) || customization.StatTrak is null)
+        var hasSelectedItem = IsKnife(weaponName)
+            ? profile.KnifeSkinId is not null || profile.KnifeId is not null
+            : profile.WeaponSkins.ContainsKey(weaponName);
+        if (!hasSelectedItem && !profile.Customizations.ContainsKey(target))
+        {
+            return;
+        }
+
+        if (!profile.Customizations.TryGetValue(target, out var customization))
+        {
+            if (!_enableAllWeaponsStatTrak)
+            {
+                return;
+            }
+
+            customization = new WeaponCustomization { StatTrak = 0 };
+            profile.Customizations[target] = customization;
+        }
+        else if (customization.StatTrak is null)
+        {
+            if (!_enableAllWeaponsStatTrak)
+            {
+                return;
+            }
+
+            customization.StatTrak = 0;
+        }
+
+        if (customization.StatTrak is null)
         {
             return;
         }
@@ -1373,7 +1408,7 @@ public sealed class SkinManager : IDisposable
             var seed = customization?.Seed ?? cosmetic.Seed;
             var wear = customization?.Wear ?? cosmetic.Wear;
 
-            var statTrak = customization?.StatTrak;
+            var statTrak = customization?.StatTrak ?? (_enableAllWeaponsStatTrak ? 0 : null);
 
             weapon.FallbackPaintKit = cosmetic.PaintKit;
             weapon.FallbackSeed = seed;
@@ -1725,7 +1760,7 @@ public sealed class SkinManager : IDisposable
                 return false;
             }
 
-            var statTrak = GetCustomization(player, KnifeTarget)?.StatTrak;
+            var statTrak = GetCustomization(player, KnifeTarget)?.StatTrak ?? (_enableAllWeaponsStatTrak ? 0 : null);
 
             TryChangeKnifeSubclass(weapon, knife.ItemDefinitionIndex);
             weapon.FallbackPaintKit = 0;

@@ -24,6 +24,7 @@
     "Permission": "",
     "MaxNameTagLength": 20
   },
+  "EnableAllWeaponsStatTrak": true,
   "Definitions": {
     "Weapons": "data/weapons.json",
     "Knives": "data/knives.json",
