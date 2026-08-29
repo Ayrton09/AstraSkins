@@ -206,6 +206,71 @@ public sealed class SkinManager : IDisposable
         LoadProfileInBackground(steamId, applyAfterLoad: true, logFailures);
     }
 
+    public void ApplyMusicKitWhenProfileReady(CCSPlayerController player, bool logFailures = false)
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        if (!TryGetSteamId64(player, out var steamId))
+        {
+            if (logFailures)
+            {
+                _logger.LogWarning("Astra Skins cannot apply music kit: player SteamID64 is invalid.");
+            }
+
+            return;
+        }
+
+        if (_profiles.ContainsKey(steamId))
+        {
+            ApplyMusicKitToPlayer(player, logFailures);
+            return;
+        }
+
+        _activeSteamIds.Add(steamId);
+        LoadProfileInBackground(steamId, applyAfterLoad: true, logFailures);
+    }
+
+    public void EnsureMusicKitWhenProfileReady(CCSPlayerController player, bool logFailures = false)
+    {
+        if (_disposed || !TryGetSteamId64(player, out var steamId))
+        {
+            return;
+        }
+
+        if (!_profiles.TryGetValue(steamId, out var profile))
+        {
+            _activeSteamIds.Add(steamId);
+            LoadProfileInBackground(steamId, applyAfterLoad: true, logFailures);
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(profile.MusicKitId))
+        {
+            return;
+        }
+
+        var (kitId, mvpCount) = ResolveMusicKitState(profile);
+        if (kitId <= 0)
+        {
+            return;
+        }
+
+        var inventory = player.InventoryServices;
+        var inventoryMatches = inventory is null || inventory.MusicID == (ushort)Math.Clamp(kitId, 0, ushort.MaxValue);
+        if (player.MusicKitID == kitId &&
+            player.MusicKitMVPs == mvpCount &&
+            !player.MvpNoMusic &&
+            inventoryMatches)
+        {
+            return;
+        }
+
+        ApplyMusicKitState(player, kitId, mvpCount, logFailures);
+    }
+
     public void PreloadProfile(CCSPlayerController player)
     {
         if (_disposed || !TryGetSteamId64(player, out var steamId) || _profiles.ContainsKey(steamId))
@@ -356,27 +421,8 @@ public sealed class SkinManager : IDisposable
     {
         try
         {
-            var kitId = 0;
             var profile = GetProfile(player);
-            if (!string.IsNullOrWhiteSpace(profile.MusicKitId))
-            {
-                if (Catalog.MusicKitsById.TryGetValue(profile.MusicKitId!, out var kit))
-                {
-                    kitId = kit.MusicKit;
-                }
-                else if (int.TryParse(profile.MusicKitId, out var parsed))
-                {
-                    // Tolerate raw numeric ids stored outside of the catalog.
-                    kitId = parsed;
-                }
-            }
-
-            var mvpCount = 0;
-            if (kitId > 0 && profile.MusicKitMvpCounts.TryGetValue(kitId, out var storedCount))
-            {
-                mvpCount = Math.Max(0, storedCount);
-            }
-
+            var (kitId, mvpCount) = ResolveMusicKitState(profile);
             ApplyMusicKitState(player, kitId, mvpCount, logFailures);
         }
         catch (Exception ex)
@@ -386,6 +432,31 @@ public sealed class SkinManager : IDisposable
                 _logger.LogWarning(ex, "Astra Skins failed to resolve music kit for {SteamId}.", TryGetSteamId64(player, out var steamId) ? steamId : 0);
             }
         }
+    }
+
+    private (int KitId, int MvpCount) ResolveMusicKitState(PlayerSkinProfile profile)
+    {
+        var kitId = 0;
+        if (!string.IsNullOrWhiteSpace(profile.MusicKitId))
+        {
+            if (Catalog.MusicKitsById.TryGetValue(profile.MusicKitId!, out var kit))
+            {
+                kitId = kit.MusicKit;
+            }
+            else if (int.TryParse(profile.MusicKitId, out var parsed))
+            {
+                // Tolerate raw numeric ids stored outside of the catalog.
+                kitId = parsed;
+            }
+        }
+
+        var mvpCount = 0;
+        if (kitId > 0 && profile.MusicKitMvpCounts.TryGetValue(kitId, out var storedCount))
+        {
+            mvpCount = Math.Max(0, storedCount);
+        }
+
+        return (kitId, mvpCount);
     }
 
     private void ApplyMusicKitState(CCSPlayerController player, int kitId, int mvpCount, bool logFailures)
@@ -537,6 +608,11 @@ public sealed class SkinManager : IDisposable
             return;
         }
 
+        // Music kits are controller-level state and do not require a spawned
+        // pawn. Apply them before the pawn guard so first team selection and
+        // warmup profile loads cannot skip the music kit entirely.
+        ApplyMusicKitToPlayer(player, logFailures);
+
         if (!TryGetPawn(player, out var pawn, logFailures))
         {
             return;
@@ -546,7 +622,6 @@ public sealed class SkinManager : IDisposable
         ApplyWeapons(player, pawn!, profile, logFailures);
         ApplyGloves(player, pawn!, profile, logFailures);
         ApplyAgent(player, pawn!, profile, logFailures);
-        ApplyMusicKitToPlayer(player, logFailures);
     }
 
     public void ApplyAgentToPlayer(CCSPlayerController player, bool logFailures = false, bool loadIfMissing = true)
