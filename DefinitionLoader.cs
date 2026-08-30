@@ -25,6 +25,7 @@ public sealed class DefinitionLoader
         var knivesPath = Resolve(baseDirectory, config.Definitions.Knives);
         var glovesPath = Resolve(baseDirectory, config.Definitions.Gloves);
         var agentsPath = Resolve(baseDirectory, config.Definitions.Agents);
+        var musicKitsPath = Resolve(baseDirectory, config.Definitions.MusicKits);
         var categoriesPath = string.IsNullOrWhiteSpace(config.Definitions.Categories)
             ? null
             : Resolve(baseDirectory, config.Definitions.Categories!);
@@ -37,8 +38,14 @@ public sealed class DefinitionLoader
             ? LoadRequired<List<CategoryDefinition>>(categoriesPath, "categories")
             : new List<CategoryDefinition>();
 
+        // Music kits are an optional category: the feature simply stays hidden
+        // when the definition file is absent.
+        var musicKits = File.Exists(musicKitsPath)
+            ? LoadRequired<List<MusicKitDefinition>>(musicKitsPath, "music kits")
+            : new List<MusicKitDefinition>();
+
         var validation = new DefinitionValidation(_logger);
-        return validation.ValidateAndBuild(weapons, knives, gloves, agents, categories);
+        return validation.ValidateAndBuild(weapons, knives, gloves, agents, categories, musicKits);
     }
 
     private T LoadRequired<T>(string path, string label)
@@ -77,11 +84,13 @@ public sealed class DefinitionCatalog
     public IReadOnlyList<GloveDefinition> Gloves { get; init; } = Array.Empty<GloveDefinition>();
     public IReadOnlyList<AgentDefinition> Agents { get; init; } = Array.Empty<AgentDefinition>();
     public IReadOnlyList<CategoryDefinition> Categories { get; init; } = Array.Empty<CategoryDefinition>();
+    public IReadOnlyList<MusicKitDefinition> MusicKits { get; init; } = Array.Empty<MusicKitDefinition>();
     public IReadOnlyDictionary<string, WeaponDefinition> WeaponsByEntity { get; init; } = new Dictionary<string, WeaponDefinition>();
     public IReadOnlyDictionary<string, CosmeticEntry> WeaponSkinsById { get; init; } = new Dictionary<string, CosmeticEntry>();
     public IReadOnlyDictionary<string, CosmeticEntry> KnifeSkinsById { get; init; } = new Dictionary<string, CosmeticEntry>();
     public IReadOnlyDictionary<string, CosmeticEntry> GloveSkinsById { get; init; } = new Dictionary<string, CosmeticEntry>();
     public IReadOnlyDictionary<string, AgentDefinition> AgentsById { get; init; } = new Dictionary<string, AgentDefinition>();
+    public IReadOnlyDictionary<string, MusicKitDefinition> MusicKitsById { get; init; } = new Dictionary<string, MusicKitDefinition>();
 }
 
 internal sealed class DefinitionValidation
@@ -108,18 +117,21 @@ internal sealed class DefinitionValidation
         List<KnifeDefinition> knives,
         List<GloveDefinition> gloves,
         List<AgentDefinition> agents,
-        List<CategoryDefinition> categories)
+        List<CategoryDefinition> categories,
+        List<MusicKitDefinition> musicKits)
     {
         var categoryIds = categories.Where(c => c.Enabled).Select(c => c.Id).ToHashSet(StringComparer.OrdinalIgnoreCase);
         var validWeapons = new List<WeaponDefinition>();
         var validKnives = new List<KnifeDefinition>();
         var validGloves = new List<GloveDefinition>();
         var validAgents = new List<AgentDefinition>();
+        var validMusicKits = new List<MusicKitDefinition>();
         var weaponsByEntity = new Dictionary<string, WeaponDefinition>(StringComparer.OrdinalIgnoreCase);
         var weaponSkinsById = new Dictionary<string, CosmeticEntry>(StringComparer.OrdinalIgnoreCase);
         var knifeSkinsById = new Dictionary<string, CosmeticEntry>(StringComparer.OrdinalIgnoreCase);
         var gloveSkinsById = new Dictionary<string, CosmeticEntry>(StringComparer.OrdinalIgnoreCase);
         var agentsById = new Dictionary<string, AgentDefinition>(StringComparer.OrdinalIgnoreCase);
+        var musicKitsById = new Dictionary<string, MusicKitDefinition>(StringComparer.OrdinalIgnoreCase);
 
         ValidateCategories(categories);
 
@@ -202,6 +214,28 @@ internal sealed class DefinitionValidation
             agentsById[agent.Id] = agent;
         }
 
+        foreach (var kit in musicKits)
+        {
+            if (!kit.Enabled)
+            {
+                continue;
+            }
+
+            if (string.IsNullOrWhiteSpace(kit.Id) || string.IsNullOrWhiteSpace(kit.DisplayName) || kit.MusicKit <= 0)
+            {
+                _logger.LogWarning("Skipping invalid music kit definition with Id={Id}. Id, DisplayName, and a positive MusicKit value are required.", kit.Id);
+                continue;
+            }
+
+            if (!musicKitsById.TryAdd(kit.Id, kit))
+            {
+                _logger.LogWarning("Skipping duplicate music kit definition Id={Id}.", kit.Id);
+                continue;
+            }
+
+            validMusicKits.Add(kit);
+        }
+
         if (validWeapons.Count == 0 && validKnives.Count == 0 && validGloves.Count == 0 && validAgents.Count == 0)
         {
             throw new InvalidOperationException("No valid cosmetic definitions were loaded. Check data JSON files.");
@@ -213,12 +247,14 @@ internal sealed class DefinitionValidation
             Knives = validKnives.OrderBy(k => k.DisplayName).ToList(),
             Gloves = validGloves.OrderBy(g => g.DisplayName).ToList(),
             Agents = validAgents.OrderBy(a => a.Team).ThenBy(a => a.DisplayName).ToList(),
+            MusicKits = validMusicKits.OrderBy(m => m.MusicKit).ToList(),
             Categories = categories.Where(c => c.Enabled).OrderBy(c => c.Order).ThenBy(c => c.DisplayName).ToList(),
             WeaponsByEntity = weaponsByEntity,
             WeaponSkinsById = weaponSkinsById,
             KnifeSkinsById = knifeSkinsById,
             GloveSkinsById = gloveSkinsById,
-            AgentsById = agentsById
+            AgentsById = agentsById,
+            MusicKitsById = musicKitsById
         };
     }
 

@@ -159,6 +159,7 @@ Results respect permissions and are capped at 64 entries; already-equipped items
     "Permission": "",
     "MaxNameTagLength": 20
   },
+  "EnableMusicKitMvpCounter": false,
   "Definitions": {
     "Weapons": "data/weapons.json",
     "Knives": "data/knives.json",
@@ -184,6 +185,7 @@ Results respect permissions and are capped at 64 entries; already-equipped items
 | `Customization.Enabled` | Master switch for `!seed` / `!wear` / `!nametag` |
 | `Customization.Permission` | Restrict customization to a flag; empty = everyone |
 | `Customization.MaxNameTagLength` | Name tag cap, 4–32 (default 20 matches the real game) |
+| `EnableMusicKitMvpCounter` | Track per-player MVP counts for selected music kits |
 
 ### SQLite
 

@@ -271,6 +271,7 @@ public sealed class MenuManager
             MenuView.GloveSkins => BuildGloveSkinOptions(state),
             MenuView.AgentTeams => BuildAgentTeamOptions(state),
             MenuView.Agents => BuildAgentOptions(state),
+            MenuView.MusicKits => BuildMusicKitOptions(state),
             MenuView.Search => BuildSearchOptions(state),
             _ => Array.Empty<MenuOption>()
         };
@@ -331,6 +332,12 @@ public sealed class MenuManager
         {
             var current = Utilities.GetPlayerFromSlot(state.Slot);
             if (current is not null) ChangeView(current, state, MenuView.AgentTeams, push: true);
+        }));
+
+        options.Add(new MenuOption($"{visualIndex++}. {_localizer.ForPlayer(player, "menu.music")}", () =>
+        {
+            var current = Utilities.GetPlayerFromSlot(state.Slot);
+            if (current is not null) ChangeView(current, state, MenuView.MusicKits, push: true);
         }));
 
         return options;
@@ -422,6 +429,68 @@ public sealed class MenuManager
             var player = Utilities.GetPlayerFromSlot(state.Slot);
             if (player is not null) ChangeView(player, state, MenuView.AgentTeams, push: true);
         }));
+        options.Add(new MenuOption(_localizer.ForPlayer(menuPlayer, "menu.music"), () =>
+        {
+            var player = Utilities.GetPlayerFromSlot(state.Slot);
+            if (player is not null) ChangeView(player, state, MenuView.MusicKits, push: true);
+        }));
+        return options;
+    }
+
+    private IReadOnlyList<MenuOption> BuildMusicKitOptions(PlayerMenuState state)
+    {
+        var player = Utilities.GetPlayerFromSlot(state.Slot);
+        if (player is null)
+        {
+            return Array.Empty<MenuOption>();
+        }
+
+        var profile = _skinManager.GetProfile(player);
+        var preferZh = player.GetLanguage().Name.StartsWith("zh", StringComparison.OrdinalIgnoreCase);
+        string Name(MusicKitDefinition kit) =>
+            preferZh && !string.IsNullOrWhiteSpace(kit.DisplayNameZh) ? kit.DisplayNameZh! : kit.DisplayName;
+
+        var options = new List<MenuOption>
+        {
+            new(
+                _localizer.ForPlayer(player, "menu.music.default"),
+                () =>
+                {
+                    var current = Utilities.GetPlayerFromSlot(state.Slot);
+                    if (current is null) return;
+                    _skinManager.ClearMusicKit(current);
+                    current.PrintToChat($"{AstraSkinsPlugin.FormatPrefix()} {_localizer.ForPlayer(current, "menu.equipped", _localizer.ForPlayer(current, "menu.music.default"))}");
+                    InvalidateOptions(state);
+                },
+                string.IsNullOrWhiteSpace(profile.MusicKitId),
+                ThrottleSelection: true)
+        };
+
+        options.AddRange(_skinManager.Catalog.MusicKits
+            .Where(k => _skinManager.CanUse(player, k))
+            .Select(k => new MenuOption(
+                Name(k),
+                () =>
+                {
+                    var current = Utilities.GetPlayerFromSlot(state.Slot);
+                    if (current is null) return;
+                    if (k.Id.Equals(_skinManager.GetProfile(current).MusicKitId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        state.LastInteractionUtc = DateTime.UtcNow;
+                        Render(current, state);
+                        return;
+                    }
+
+                    var saved = _skinManager.SetMusicKit(current, k.Id);
+                    current.PrintToChat(saved
+                        ? $"{AstraSkinsPlugin.FormatPrefix()} {_localizer.ForPlayer(current, "menu.equipped", Name(k))}"
+                        : $"{AstraSkinsPlugin.FormatPrefix()} {_localizer.ForPlayer(current, "menu.save_failed")}");
+                    state.LastInteractionUtc = DateTime.UtcNow;
+                    Render(current, state);
+                },
+                k.Id.Equals(profile.MusicKitId, StringComparison.OrdinalIgnoreCase),
+                ThrottleSelection: true)));
+
         return options;
     }
 
@@ -862,6 +931,7 @@ public sealed class MenuManager
             MenuView.GloveTypes => _localizer.ForPlayer(player, "menu.title.gloves"),
             MenuView.GloveSkins => state.Glove?.DisplayName ?? _localizer.ForPlayer(player, "menu.title.glove_skins"),
             MenuView.AgentTeams => _localizer.ForPlayer(player, "menu.title.agent_teams"),
+            MenuView.MusicKits => _localizer.ForPlayer(player, "menu.music"),
             MenuView.Search => _localizer.ForPlayer(player, "menu.title.search", state.SearchQuery ?? string.Empty),
             MenuView.Agents => state.AgentTeam == "ct"
                 ? _localizer.ForPlayer(player, "menu.title.agents_ct")

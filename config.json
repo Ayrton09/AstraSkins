@@ -24,11 +24,13 @@
     "Permission": "",
     "MaxNameTagLength": 20
   },
+  "EnableMusicKitMvpCounter": false,
   "Definitions": {
     "Weapons": "data/weapons.json",
     "Knives": "data/knives.json",
     "Gloves": "data/gloves.json",
     "Agents": "data/agents.json",
+    "MusicKits": "data/music_kits.json",
     "Categories": "data/categories.json"
   },
   "EnableAdminReloadCommand": true,

@@ -16,6 +16,7 @@ public enum MenuView
     GloveSkins,
     AgentTeams,
     Agents,
+    MusicKits,
     Search
 }
 
