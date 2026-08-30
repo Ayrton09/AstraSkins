@@ -607,7 +607,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
 
         foreach (var player in Utilities.GetPlayers().Where(IsLiveHuman))
         {
-            _skinManager.ApplyAgentToPlayer(player, logFailures: false, loadIfMissing: false);
+            _skinManager.ApplyToPlayerWhenProfileReady(player, logFailures: false);
         }
 
         return HookResult.Continue;
