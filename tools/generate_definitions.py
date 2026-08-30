@@ -10,6 +10,8 @@ ITEMS_GAME_URL = "https://raw.githubusercontent.com/SteamDatabase/GameTracking-C
 CSGO_ENGLISH_URL = "https://raw.githubusercontent.com/SteamDatabase/GameTracking-CS2/master/game/csgo/pak01_dir/resource/csgo_english.txt"
 SKINS_API_URL = "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/en/skins.json"
 AGENTS_API_URL = "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/en/agents.json"
+MUSIC_KITS_API_URL = "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/en/music_kits.json"
+MUSIC_KITS_ZH_API_URL = "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/zh-CN/music_kits.json"
 
 WEAPON_DISPLAY = {
     "weapon_ak47": ("rifles", "AK-47"),
@@ -561,6 +563,40 @@ def write_json(path, data):
     path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
 
 
+def strip_music_kit_prefix(name):
+    # "Music Kit | Feed Me, High Noon" / "\u97f3\u4e50\u76d2 | ..." -> keep only the kit name.
+    if name and " | " in name:
+        return name.split(" | ", 1)[1].strip()
+    return (name or "").strip()
+
+
+def build_music_kits(api_music_kits, api_music_kits_zh):
+    zh_names = {}
+    for entry in api_music_kits_zh or []:
+        zh_names[entry.get("id")] = strip_music_kit_prefix(entry.get("name"))
+
+    kits = []
+    for entry in api_music_kits or []:
+        kit_id = entry.get("id") or ""
+        match = re.fullmatch(r"music_kit-(\d+)", kit_id)
+        if not match:
+            continue  # skips the "_st" StatTrak variants
+        number = int(match.group(1))
+        if number <= 2:
+            continue  # engine default kits, not selectable cosmetics
+        name = strip_music_kit_prefix(entry.get("name"))
+        if not name:
+            continue
+        kit = {"id": str(number), "musicKit": number, "displayName": name}
+        zh = zh_names.get(kit_id)
+        if zh:
+            kit["displayNameZh"] = zh
+        kits.append(kit)
+
+    kits.sort(key=lambda k: k["musicKit"])
+    return kits
+
+
 def unique_by_id(entries):
     result = []
     seen = set()
@@ -578,6 +614,8 @@ def main():
     parser.add_argument("--language", default=CSGO_ENGLISH_URL)
     parser.add_argument("--skins-api", default=SKINS_API_URL)
     parser.add_argument("--agents-api", default=AGENTS_API_URL)
+    parser.add_argument("--music-kits-api", default=MUSIC_KITS_API_URL)
+    parser.add_argument("--music-kits-zh-api", default=MUSIC_KITS_ZH_API_URL)
     parser.add_argument("--output", default="data")
     args = parser.parse_args()
 
@@ -585,12 +623,15 @@ def main():
     translations = parse_translations(load_text(args.language))
     api_skins = json.loads(load_text(args.skins_api)) if args.skins_api else None
     api_agents = json.loads(load_text(args.agents_api)) if args.agents_api else None
+    api_music_kits = json.loads(load_text(args.music_kits_api)) if args.music_kits_api else None
+    api_music_kits_zh = json.loads(load_text(args.music_kits_zh_api)) if args.music_kits_zh_api else None
     output = Path(args.output)
 
     weapons = build_weapons(root, translations, api_skins)
     knives = build_knives(root, translations, api_skins)
     gloves = build_gloves(root, translations, api_skins)
     agents = build_agents(api_agents, root)
+    music_kits = build_music_kits(api_music_kits, api_music_kits_zh)
 
     if not any(w["skins"] for w in weapons):
         print("No weapon skins were generated; check item_sets and paint_kits in the input schema.", file=sys.stderr)
@@ -600,8 +641,9 @@ def main():
     write_json(output / "knives.json", knives)
     write_json(output / "gloves.json", gloves)
     write_json(output / "agents.json", agents)
+    write_json(output / "music_kits.json", music_kits)
     write_json(output / "categories.json", CATEGORIES)
-    print(f"Generated {sum(len(w['skins']) for w in weapons)} weapon skins, {sum(len(k['skins']) for k in knives)} knife skins, {sum(len(g['skins']) for g in gloves)} glove skins, and {len(agents)} agents into {output}")
+    print(f"Generated {sum(len(w['skins']) for w in weapons)} weapon skins, {sum(len(k['skins']) for k in knives)} knife skins, {sum(len(g['skins']) for g in gloves)} glove skins, and {len(agents)} agents and {len(music_kits)} music kits into {output}")
     return 0
 
 

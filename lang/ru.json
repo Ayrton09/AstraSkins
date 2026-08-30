@@ -5,11 +5,12 @@
   "astra.command_cooldown": "Подождите немного, прежде чем снова использовать эту команду.",
   "astra.refresh_done": "Выбранные скины применены заново.",
   "astra.reset_all": "Все выборы сброшены. Стандартный агент вернётся при следующем возрождении.",
-  "astra.reset_usage": "Использование: !wsreset [all|weapons|knife|gloves|agents]",
+  "astra.reset_usage": "Использование: !wsreset [all|weapons|knife|gloves|agents|music]",
   "astra.reset_weapons": "Выбор скинов оружия сброшен.",
   "astra.reset_knife": "Выбор ножа сброшен.",
   "astra.reset_gloves": "Выбор перчаток сброшен.",
   "astra.reset_agents": "Выбор агентов сброшен. Стандартный агент вернётся при следующем возрождении.",
+  "astra.reset_music": "Выбор музыкального набора сброшен.",
   "astra.not_initialized": "Плагин не инициализирован.",
   "astra.reload_disabled": "Команда перезагрузки отключена.",
   "astra.reload_no_permission": "У вас нет прав для перезагрузки определений.",
@@ -53,5 +54,7 @@
   "menu.title.agent_teams": "Выбор агентов",
   "menu.title.agents_ct": "Выбор агента CT",
   "menu.title.agents_t": "Выбор агента T",
-  "menu.title.search": "Поиск: {0}"
+  "menu.title.search": "Поиск: {0}",
+  "menu.music": "Музыкальный набор",
+  "menu.music.default": "Стандартный музыкальный набор"
 }

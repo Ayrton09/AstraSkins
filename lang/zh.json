@@ -5,11 +5,12 @@
   "astra.command_cooldown": "请稍等片刻再使用该命令。",
   "astra.refresh_done": "已重新应用所选皮肤。",
   "astra.reset_all": "已重置所有选择。默认探员将在下次重生时恢复。",
-  "astra.reset_usage": "用法：!wsreset [all|weapons|knife|gloves|agents]",
+  "astra.reset_usage": "用法：!wsreset [all|weapons|knife|gloves|agents|music]",
   "astra.reset_weapons": "已重置武器皮肤选择。",
   "astra.reset_knife": "已重置刀具选择。",
   "astra.reset_gloves": "已重置手套选择。",
   "astra.reset_agents": "已重置探员选择。默认探员将在下次重生时恢复。",
+  "astra.reset_music": "已重置音乐盒选择。",
   "astra.not_initialized": "插件尚未初始化。",
   "astra.reload_disabled": "重载命令已禁用。",
   "astra.reload_no_permission": "你没有重载定义文件的权限。",
@@ -53,5 +54,7 @@
   "menu.title.agent_teams": "选择探员",
   "menu.title.agents_ct": "选择 CT 探员",
   "menu.title.agents_t": "选择 T 探员",
-  "menu.title.search": "搜索：{0}"
+  "menu.title.search": "搜索：{0}",
+  "menu.music": "音乐盒",
+  "menu.music.default": "默认音乐盒"
 }

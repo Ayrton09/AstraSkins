@@ -291,6 +291,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             "knife" or "knives" => "astra.reset_knife",
             "glove" or "gloves" => "astra.reset_gloves",
             "agent" or "agents" => "astra.reset_agents",
+            "music" or "musickit" or "musickits" => "astra.reset_music",
             _ => "astra.reset_all"
         };
         command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, messageKey)}");

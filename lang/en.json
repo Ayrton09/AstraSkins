@@ -5,11 +5,12 @@
   "astra.command_cooldown": "Please wait a moment before using this command again.",
   "astra.refresh_done": "Selections reapplied.",
   "astra.reset_all": "All selections reset. Default agent returns on next spawn.",
-  "astra.reset_usage": "Usage: !wsreset [all|weapons|knife|gloves|agents]",
+  "astra.reset_usage": "Usage: !wsreset [all|weapons|knife|gloves|agents|music]",
   "astra.reset_weapons": "Weapon selections reset.",
   "astra.reset_knife": "Knife selection reset.",
   "astra.reset_gloves": "Glove selection reset.",
   "astra.reset_agents": "Agent selections reset. Default agent returns on next spawn.",
+  "astra.reset_music": "Music kit selection reset.",
   "astra.not_initialized": "Plugin is not initialized.",
   "astra.reload_disabled": "Reload command is disabled.",
   "astra.reload_no_permission": "You do not have permission to reload definitions.",
@@ -53,5 +54,7 @@
   "menu.title.agent_teams": "Choose Agents",
   "menu.title.agents_ct": "Choose CT Agent",
   "menu.title.agents_t": "Choose T Agent",
-  "menu.title.search": "Search: {0}"
+  "menu.title.search": "Search: {0}",
+  "menu.music": "Music Kit",
+  "menu.music.default": "Default Music Kit"
 }

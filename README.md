@@ -16,10 +16,11 @@
 
 ## Features
 
-- 🎨 **1,400+ weapon skins, 20 knives with 576 finishes, 8 glove types, 63 agents** — all data-driven from JSON, no datasets baked into the code.
+- 🎨 **1,400+ weapon skins, 20 knives with 576 finishes, 8 glove types, 63 agents, 92 music kits** — all data-driven from JSON, no datasets baked into the code.
 - 🕹️ **Built-in WASD menu** — navigate with `W`/`S`, select with `E`. No external menu plugin required.
 - 🔧 **Per-player customization** — custom paint seed, wear/float, name tags, and StatTrak counters via `!seed`, `!wear`, `!nametag`, and `!stattrak`.
 - 🔎 **Search** — `!ws <text>` finds any skin, knife, glove, or agent without scrolling through pages.
+- 🎵 **Music kits** — pick any of 92 kits from the menu, with an optional per-kit MVP counter shown on the scoreboard.
 - 💾 **Persistent selections** — SQLite or MySQL, keyed by SteamID64. Selections survive reconnects, map changes, and restarts.
 - 🌍 **7 languages** — per-player localization (English, Spanish, Chinese, Portuguese, German, French, Russian).
 - 🗣️ **Agent radio voices** — agents keep their voice lines where the CS2 schema exposes the voice data.
@@ -76,7 +77,7 @@
 | `!gloves` | Open the gloves menu |
 | `!agents` | Open the agents menu |
 | `!wsrefresh` | Reapply saved selections |
-| `!wsreset [all\|weapons\|knife\|gloves\|agents]` | Reset saved selections, all or per category |
+| `!wsreset [all\|weapons\|knife\|gloves\|agents\|music]` | Reset saved selections, all or per category |
 
 ### Customization
 
@@ -128,6 +129,14 @@ Every whitespace-separated term has to appear in the entry, so you can narrow do
 
 Results respect permissions and are capped at 64 entries; already-equipped items are marked with `*`.
 
+## Music Kits
+
+The main menu has a **Music Kit** category with every selectable kit and a "Default Music Kit" entry to go back to the stock music. The selected kit plays at the usual cues (round start, MVP anthem, bomb planted) and persists like any other selection.
+
+With `EnableMusicKitMvpCounter` set to `true`, the plugin also tracks how many MVPs each player earns with their selected kit and shows the count on the MVP scoreboard panel, like StatTrak music kits in the official game. The counter persists in the database and is cleared by `!wsreset music` or a full reset.
+
+If `data/music_kits.json` is missing, the category simply stays hidden.
+
 ## Configuration
 
 `configs/plugins/AstraSkins/AstraSkins.json` — the defaults are safe to publish and use placeholder credentials:
@@ -165,6 +174,7 @@ Results respect permissions and are capped at 64 entries; already-equipped items
     "Knives": "data/knives.json",
     "Gloves": "data/gloves.json",
     "Agents": "data/agents.json",
+    "MusicKits": "data/music_kits.json",
     "Categories": "data/categories.json"
   },
   "EnableAdminReloadCommand": true,
@@ -226,6 +236,7 @@ Currently packaged:
 | Glove types | 8 |
 | Glove skins | 94 |
 | Agents | 63 |
+| Music kits | 92 |
 
 To regenerate the data after a CS2 update, run the included generator — it pulls the latest `items_game.txt` and translation data automatically:
 

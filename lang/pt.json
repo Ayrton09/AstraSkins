@@ -5,11 +5,12 @@
   "astra.command_cooldown": "Aguarde um momento antes de usar este comando novamente.",
   "astra.refresh_done": "Seleções reaplicadas.",
   "astra.reset_all": "Todas as seleções foram redefinidas. O agente padrão volta no próximo spawn.",
-  "astra.reset_usage": "Uso: !wsreset [all|weapons|knife|gloves|agents]",
+  "astra.reset_usage": "Uso: !wsreset [all|weapons|knife|gloves|agents|music]",
   "astra.reset_weapons": "Seleções de armas redefinidas.",
   "astra.reset_knife": "Seleção de faca redefinida.",
   "astra.reset_gloves": "Seleção de luvas redefinida.",
   "astra.reset_agents": "Seleções de agentes redefinidas. O agente padrão volta no próximo spawn.",
+  "astra.reset_music": "Seleção de kit de música redefinida.",
   "astra.not_initialized": "O plugin não está inicializado.",
   "astra.reload_disabled": "O comando de recarga está desativado.",
   "astra.reload_no_permission": "Você não tem permissão para recarregar as definições.",
@@ -53,5 +54,7 @@
   "menu.title.agent_teams": "Escolher agentes",
   "menu.title.agents_ct": "Escolher agente CT",
   "menu.title.agents_t": "Escolher agente T",
-  "menu.title.search": "Busca: {0}"
+  "menu.title.search": "Busca: {0}",
+  "menu.music": "Kit de música",
+  "menu.music.default": "Kit de música padrão"
 }
