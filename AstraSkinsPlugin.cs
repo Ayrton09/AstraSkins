@@ -69,6 +69,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         RegisterListener<Listeners.OnServerPrecacheResources>(OnServerPrecacheResources);
         RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawnPre, HookMode.Pre);
         RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawnPost, HookMode.Post);
+        RegisterEventHandler<EventRoundFreezeEnd>(OnRoundFreezeEndPre, HookMode.Pre);
         RegisterEventHandler<EventPlayerDeath>(OnPlayerDeath);
         RegisterEventHandler<EventRoundMvp>(OnRoundMvp, HookMode.Pre);
         RegisterEventHandler<EventPlayerDisconnect>(OnPlayerDisconnect);
@@ -617,6 +618,21 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         }
 
         AddTimer(delay, ApplyMusicKitToLivePlayers, TimerFlags.STOP_ON_MAPCHANGE);
+    }
+
+    private HookResult OnRoundFreezeEndPre(EventRoundFreezeEnd @event, GameEventInfo info)
+    {
+        if (!_ready || _skinManager is null)
+        {
+            return HookResult.Continue;
+        }
+
+        foreach (var player in Utilities.GetPlayers().Where(IsLiveHuman))
+        {
+            _skinManager.ApplyAgentToPlayer(player, logFailures: false, loadIfMissing: false);
+        }
+
+        return HookResult.Continue;
     }
 
     private void ApplyMusicKitToLivePlayers()
