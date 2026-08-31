@@ -2,6 +2,7 @@
   "astra.not_ready": "Le plugin n'est pas prêt. Vérifiez les logs du serveur.",
   "astra.players_only": "Cette commande ne peut être utilisée que par un joueur humain connecté.",
   "astra.menu_disabled_dead": "Le menu des skins est désactivé quand vous êtes mort.",
+  "astra.menu_while_bot": "Le menu des skins n'est pas disponible pendant que vous contrôlez un bot.",
   "astra.command_cooldown": "Veuillez patienter un instant avant de réutiliser cette commande.",
   "astra.refresh_done": "Sélections réappliquées.",
   "astra.reset_all": "Toutes les sélections ont été réinitialisées. L'agent par défaut reviendra au prochain spawn.",

@@ -2,6 +2,7 @@
   "astra.not_ready": "插件尚未就绪，请检查服务器日志。",
   "astra.players_only": "该命令只能由已连接的真人玩家使用。",
   "astra.menu_disabled_dead": "死亡状态下无法打开皮肤菜单。",
+  "astra.menu_while_bot": "控制机器人时无法打开皮肤菜单。",
   "astra.command_cooldown": "请稍等片刻再使用该命令。",
   "astra.refresh_done": "已重新应用所选皮肤。",
   "astra.reset_all": "已重置所有选择。默认探员将在下次重生时恢复。",

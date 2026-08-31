@@ -2,6 +2,7 @@
   "astra.not_ready": "Plugin is not ready. Check server logs.",
   "astra.players_only": "This command can only be used by a connected human player.",
   "astra.menu_disabled_dead": "The skins menu is disabled while dead.",
+  "astra.menu_while_bot": "The skins menu is not available while controlling a bot.",
   "astra.command_cooldown": "Please wait a moment before using this command again.",
   "astra.refresh_done": "Selections reapplied.",
   "astra.reset_all": "All selections reset. Default agent returns on next spawn.",

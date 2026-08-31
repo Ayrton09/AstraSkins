@@ -69,6 +69,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         RegisterListener<Listeners.OnServerPrecacheResources>(OnServerPrecacheResources);
         RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawnPre, HookMode.Pre);
         RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawnPost, HookMode.Post);
+        RegisterEventHandler<EventBotTakeover>(OnBotTakeover, HookMode.Post);
         RegisterEventHandler<EventRoundFreezeEnd>(OnRoundFreezeEndPre, HookMode.Pre);
         RegisterEventHandler<EventPlayerDeath>(OnPlayerDeath);
         RegisterEventHandler<EventRoundMvp>(OnRoundMvp, HookMode.Pre);
@@ -122,11 +123,12 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         _ready = true;
 
         Logger.LogInformation(
-            "Astra Skins loaded: {Weapons} weapons, {KnifeSkins} knife skins, {GloveSkins} glove skins, {Agents} agents, DB={DatabaseMode}, MusicKitMvpCounter={MusicKitMvpCounter}",
+            "Astra Skins loaded: {Weapons} weapons, {KnifeSkins} knife skins, {GloveSkins} glove skins, {Agents} agents, {MusicKits} music kits, DB={DatabaseMode}, MusicKitMvpCounter={MusicKitMvpCounter}",
             catalog.Weapons.Count,
             catalog.KnifeSkinsById.Count,
             catalog.GloveSkinsById.Count,
             catalog.Agents.Count,
+            catalog.MusicKits.Count,
             config.DatabaseMode,
             config.EnableMusicKitMvpCounter);
     }
@@ -362,7 +364,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         var gloveSkinCount = catalog.Gloves.Sum(g => g.Skins.Count);
         var agentVoiceCount = catalog.Agents.Count(a => !string.IsNullOrWhiteSpace(a.VoicePrefix));
         command.ReplyToCommand($"{FormatPrefix()} Debug: ready={_ready}, db={_config.DatabaseMode}, inputCooldown={_config.Menu.CooldownMilliseconds}ms, selectionCooldown={_config.Menu.SelectionCooldownMilliseconds}ms");
-        command.ReplyToCommand($"{FormatPrefix()} Data: weapons={catalog.Weapons.Count}/{weaponSkinCount}, knives={catalog.Knives.Count}/{knifeSkinCount}, gloves={catalog.Gloves.Count}/{gloveSkinCount}, agents={catalog.Agents.Count} voices={agentVoiceCount}");
+        command.ReplyToCommand($"{FormatPrefix()} Data: weapons={catalog.Weapons.Count}/{weaponSkinCount}, knives={catalog.Knives.Count}/{knifeSkinCount}, gloves={catalog.Gloves.Count}/{gloveSkinCount}, agents={catalog.Agents.Count} voices={agentVoiceCount}, musicKits={catalog.MusicKits.Count}");
 
         if (player is null || !IsLiveHuman(player))
         {
@@ -373,7 +375,11 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         var agentT = profile.AgentIdsByTeam.TryGetValue("t", out var tAgent) ? tAgent : "none";
         var agentCt = profile.AgentIdsByTeam.TryGetValue("ct", out var ctAgent) ? ctAgent : "none";
         command.ReplyToCommand($"{FormatPrefix()} Player: steam={player.SteamID}, team={player.Team}, ownedWeapons={_skinManager.GetOwnedWeaponDefinitions(player).Count}");
-        command.ReplyToCommand($"{FormatPrefix()} Selections: weapons={profile.WeaponSkins.Count}, knifeType={profile.KnifeId ?? "none"}, knifeSkin={profile.KnifeSkinId ?? "none"}, glove={profile.GloveSkinId ?? "none"}, agentT={agentT}, agentCT={agentCt}");
+        var musicMvps = _skinManager.TryGetSelectedMusicKitId(player, out var selectedKitId) &&
+                        profile.MusicKitMvpCounts.TryGetValue(selectedKitId, out var mvps)
+            ? mvps
+            : 0;
+        command.ReplyToCommand($"{FormatPrefix()} Selections: weapons={profile.WeaponSkins.Count}, knifeType={profile.KnifeId ?? "none"}, knifeSkin={profile.KnifeSkinId ?? "none"}, glove={profile.GloveSkinId ?? "none"}, agentT={agentT}, agentCT={agentCt}, musicKit={profile.MusicKitId ?? "none"} mvps={musicMvps}");
     }
 
     private void CommandSeed(CCSPlayerController? player, CommandInfo command)
@@ -621,6 +627,36 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         AddTimer(delay, ApplyMusicKitToLivePlayers, TimerFlags.STOP_ON_MAPCHANGE);
     }
 
+    // Taking over a bot hands the player the bot's pawn, which has none of
+    // their cosmetics on it.
+    // Taking over a bot hands the player the bot's pawn, which has none of
+    // their cosmetics on it. The possessed body needs its own settle time, so
+    // apply shortly after and once more for slower handovers.
+    private HookResult OnBotTakeover(EventBotTakeover @event, GameEventInfo info)
+    {
+        var player = @event.Userid;
+        if (!_ready || !IsLiveHuman(player))
+        {
+            return HookResult.Continue;
+        }
+
+        var slot = player!.Slot;
+        var userId = player.UserId;
+        foreach (var delay in new[] { 0.25f, 1.0f })
+        {
+            AddTimer(delay, () =>
+            {
+                var current = Utilities.GetPlayerFromSlot(slot);
+                if (_ready && IsLiveHuman(current) && current!.UserId == userId)
+                {
+                    _skinManager?.ApplyToPossessedPawnWhenProfileReady(current);
+                }
+            }, TimerFlags.STOP_ON_MAPCHANGE);
+        }
+
+        return HookResult.Continue;
+    }
+
     private HookResult OnRoundFreezeEndPre(EventRoundFreezeEnd @event, GameEventInfo info)
     {
         if (!_ready || _skinManager is null)
@@ -630,7 +666,9 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
 
         foreach (var player in Utilities.GetPlayers().Where(IsLiveHuman))
         {
-            _skinManager.ApplyAgentToPlayer(player, logFailures: false, loadIfMissing: false);
+            // loadIfMissing keeps a slow first profile read from leaving the
+            // player on the default agent for the whole round.
+            _skinManager.ApplyAgentToPlayer(player, logFailures: false, loadIfMissing: true);
         }
 
         return HookResult.Continue;
@@ -914,6 +952,16 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
 
     private bool RequireMenuAllowed(CCSPlayerController player, CommandInfo command)
     {
+        // While possessing a bot, button input still comes from the player's
+        // own (dead) pawn, so the menu would open but never respond to keys.
+        var possessed = player.Pawn.Value;
+        var ownPawn = player.PlayerPawn.Value;
+        if (possessed is not null && ownPawn is not null && possessed.Handle != ownPawn.Handle)
+        {
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.menu_while_bot")}");
+            return false;
+        }
+
         if (_config!.Menu.AllowWhileDead || player.PawnIsAlive)
         {
             return true;

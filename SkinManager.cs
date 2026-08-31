@@ -21,7 +21,12 @@ public sealed class SkinManager : IDisposable
     private readonly ILogger _logger;
     private readonly EconAttributeApplicator _econAttributes;
     private readonly Dictionary<ulong, PlayerSkinProfile> _profiles = new();
+    // _profiles can hold a placeholder while a read is in flight, so loaded
+    // completion is tracked separately; without this a failed read leaves the
+    // placeholder blocking every retry until the player reconnects.
+    private readonly HashSet<ulong> _loadedProfiles = new();
     private readonly HashSet<ulong> _loadingProfiles = new();
+    private readonly HashSet<ulong> _applyAfterLoadRequests = new();
     private readonly HashSet<ulong> _activeSteamIds = new();
     private readonly Dictionary<ulong, ulong> _profileEpochs = new();
     private readonly object _storageQueueLock = new();
@@ -111,7 +116,9 @@ public sealed class SkinManager : IDisposable
     {
         _disposed = true;
         _activeSteamIds.Clear();
+        _loadedProfiles.Clear();
         _loadingProfiles.Clear();
+        _applyAfterLoadRequests.Clear();
         _profiles.Clear();
         _profileEpochs.Clear();
 
@@ -164,19 +171,27 @@ public sealed class SkinManager : IDisposable
     {
         if (TryGetSteamId64(player, out var steamId))
         {
-            _profiles.Remove(steamId);
-            _loadingProfiles.Remove(steamId);
-            _activeSteamIds.Remove(steamId);
-            _profileEpochs.Remove(steamId);
+            Forget(steamId);
         }
     }
 
     public void Forget(ulong steamId64)
     {
         _profiles.Remove(steamId64);
-        _loadingProfiles.Remove(steamId64);
+        _loadedProfiles.Remove(steamId64);
+        _applyAfterLoadRequests.Remove(steamId64);
         _activeSteamIds.Remove(steamId64);
-        _profileEpochs.Remove(steamId64);
+
+        // A read still in flight must come back stale: bump the epoch instead
+        // of deleting it so the callback can tell this lifecycle ended.
+        if (_loadingProfiles.Contains(steamId64))
+        {
+            BumpProfileEpoch(steamId64);
+        }
+        else
+        {
+            _profileEpochs.Remove(steamId64);
+        }
     }
 
     public void ApplyToPlayerWhenProfileReady(CCSPlayerController player, bool logFailures = false)
@@ -196,7 +211,7 @@ public sealed class SkinManager : IDisposable
             return;
         }
 
-        if (_profiles.ContainsKey(steamId))
+        if (_loadedProfiles.Contains(steamId))
         {
             ApplyToPlayer(player, logFailures);
             return;
@@ -223,7 +238,7 @@ public sealed class SkinManager : IDisposable
             return;
         }
 
-        if (_profiles.ContainsKey(steamId))
+        if (_loadedProfiles.Contains(steamId))
         {
             ApplyMusicKitToPlayer(player, logFailures);
             return;
@@ -269,6 +284,36 @@ public sealed class SkinManager : IDisposable
         }
 
         ApplyMusicKitState(player, kitId, mvpCount, logFailures);
+    }
+
+    // While possessing a bot the controller's PlayerPawn still points at the
+    // player's own (dead) pawn; the possessed body is in Pawn instead.
+    public void ApplyToPossessedPawnWhenProfileReady(CCSPlayerController player, bool logFailures = false)
+    {
+        if (_disposed || !TryGetSteamId64(player, out var steamId))
+        {
+            return;
+        }
+
+        if (!_loadedProfiles.Contains(steamId))
+        {
+            _activeSteamIds.Add(steamId);
+            LoadProfileInBackground(steamId, applyAfterLoad: true, logFailures);
+            return;
+        }
+
+        var possessed = player.Pawn.Value;
+        if (possessed is null || !possessed.IsValid)
+        {
+            return;
+        }
+
+        var pawn = new CCSPlayerPawn(possessed.Handle);
+        var profile = GetProfile(player);
+        ApplyWeapons(player, pawn, profile, logFailures);
+        ApplyGloves(player, pawn, profile, logFailures);
+        ApplyAgent(player, pawn, profile, logFailures);
+        ApplyMusicKitToPlayer(player, logFailures);
     }
 
     public void PreloadProfile(CCSPlayerController player)
@@ -539,6 +584,8 @@ public sealed class SkinManager : IDisposable
         BumpProfileEpoch(steamId);
         QueueStorageWrite($"profile reset for {steamId}", () => _storage.ResetProfile(steamId));
         _profiles.Remove(steamId);
+        _loadedProfiles.Remove(steamId);
+        _applyAfterLoadRequests.Remove(steamId);
         ClearPlayerCosmetics(player, logFailures: true);
         ApplyMusicKitState(player, 0, 0, logFailures: true);
     }
@@ -640,8 +687,10 @@ public sealed class SkinManager : IDisposable
         {
             if (loadIfMissing)
             {
+                // Apply once the profile lands so the player does not stay on
+                // defaults for the round the read raced against.
                 _activeSteamIds.Add(steamId);
-                LoadProfileInBackground(steamId, applyAfterLoad: false, logFailures);
+                LoadProfileInBackground(steamId, applyAfterLoad: true, logFailures);
             }
 
             return;
@@ -1154,9 +1203,26 @@ public sealed class SkinManager : IDisposable
             return;
         }
 
-        if (_profiles.ContainsKey(steamId64) || !_loadingProfiles.Add(steamId64))
+        if (_loadedProfiles.Contains(steamId64))
         {
             return;
+        }
+
+        // A read is already in flight: remember that someone wants cosmetics
+        // applied when it lands instead of dropping the request.
+        if (!_loadingProfiles.Add(steamId64))
+        {
+            if (applyAfterLoad)
+            {
+                _applyAfterLoadRequests.Add(steamId64);
+            }
+
+            return;
+        }
+
+        if (applyAfterLoad)
+        {
+            _applyAfterLoadRequests.Add(steamId64);
         }
 
         var epoch = GetProfileEpoch(steamId64);
@@ -1181,6 +1247,22 @@ public sealed class SkinManager : IDisposable
                 }
 
                 _loadingProfiles.Remove(steamId64);
+                var applyAfterLoadRequested = _applyAfterLoadRequests.Remove(steamId64);
+
+                // The player left while this read was in flight.
+                if (!_activeSteamIds.Contains(steamId64))
+                {
+                    _profileEpochs.Remove(steamId64);
+                    return;
+                }
+
+                // The lifecycle changed (reset, or reconnect during the read):
+                // this result is stale, so read again for the current one.
+                if (GetProfileEpoch(steamId64) != epoch)
+                {
+                    LoadProfileInBackground(steamId64, applyAfterLoadRequested, logFailures);
+                    return;
+                }
 
                 if (failure is not null)
                 {
@@ -1202,13 +1284,6 @@ public sealed class SkinManager : IDisposable
                     return;
                 }
 
-                // A changed epoch means the profile was reset while this load
-                // was in flight; its data is stale and must be discarded.
-                if (!_activeSteamIds.Contains(steamId64) || GetProfileEpoch(steamId64) != epoch)
-                {
-                    return;
-                }
-
                 if (_profiles.TryGetValue(steamId64, out var existing))
                 {
                     MergeLoadedProfile(existing, loaded);
@@ -1218,7 +1293,9 @@ public sealed class SkinManager : IDisposable
                     _profiles[steamId64] = loaded;
                 }
 
-                if (!applyAfterLoad)
+                _loadedProfiles.Add(steamId64);
+
+                if (!applyAfterLoadRequested)
                 {
                     return;
                 }
