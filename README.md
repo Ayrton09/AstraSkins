@@ -90,7 +90,7 @@
 
 Overrides apply on top of the selected skin, take effect instantly, and persist in the database. They target the weapon currently held (knife included); pass `gloves` as the first argument to target equipped gloves instead. A skin must be selected for the item first.
 
-StatTrak works the same way: enable it on a weapon or knife and the counter goes up with every kill you get with that item, persisting across reconnects and map changes.
+StatTrak works the same way: enable it on a weapon or knife and the counter goes up with every kill you get with that item, persisting across reconnects and map changes. With `EnableAllWeaponsStatTrak` enabled (the default), every selected weapon or knife skin starts with StatTrak at `0`; set it to `false` to require `!stattrak` for each item.
 
 > **Tip:** seeds only change finishes whose pattern placement varies — Case Hardened, Crimson Web, Marble Fade, Fade. Most other skins look identical on every seed.
 
@@ -168,6 +168,7 @@ If `data/music_kits.json` is missing, the category simply stays hidden.
     "Permission": "",
     "MaxNameTagLength": 20
   },
+  "EnableAllWeaponsStatTrak": true,
   "EnableMusicKitMvpCounter": false,
   "Definitions": {
     "Weapons": "data/weapons.json",
@@ -195,6 +196,7 @@ If `data/music_kits.json` is missing, the category simply stays hidden.
 | `Customization.Enabled` | Master switch for `!seed` / `!wear` / `!nametag` |
 | `Customization.Permission` | Restrict customization to a flag; empty = everyone |
 | `Customization.MaxNameTagLength` | Name tag cap, 4–32 (default 20 matches the real game) |
+| `EnableAllWeaponsStatTrak` | Apply StatTrak at count 0 to every selected weapon/knife by default; set `false` to require `!stattrak` |
 | `EnableMusicKitMvpCounter` | Track per-player MVP counts for selected music kits |
 
 ### SQLite

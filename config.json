@@ -24,6 +24,7 @@
     "Permission": "",
     "MaxNameTagLength": 20
   },
+  "EnableAllWeaponsStatTrak": true,
   "EnableMusicKitMvpCounter": false,
   "Definitions": {
     "Weapons": "data/weapons.json",

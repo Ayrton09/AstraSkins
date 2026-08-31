@@ -20,8 +20,11 @@ public sealed class SkinManager : IDisposable
     private readonly ISkinStorage _storage;
     private readonly ILogger _logger;
     private readonly EconAttributeApplicator _econAttributes;
+    private readonly bool _enableAllWeaponsStatTrak;
     private readonly Dictionary<ulong, PlayerSkinProfile> _profiles = new();
+    private readonly HashSet<ulong> _loadedProfiles = new();
     private readonly HashSet<ulong> _loadingProfiles = new();
+    private readonly HashSet<ulong> _applyAfterLoadRequests = new();
     private readonly HashSet<ulong> _activeSteamIds = new();
     private readonly Dictionary<ulong, ulong> _profileEpochs = new();
     private readonly object _storageQueueLock = new();
@@ -90,11 +93,17 @@ public sealed class SkinManager : IDisposable
 
     public DefinitionCatalog Catalog { get; private set; }
 
-    public SkinManager(ISkinStorage storage, DefinitionCatalog catalog, ILogger logger, Action<float, Action>? scheduleDelayed = null)
+    public SkinManager(
+        ISkinStorage storage,
+        DefinitionCatalog catalog,
+        ILogger logger,
+        Action<float, Action>? scheduleDelayed = null,
+        bool enableAllWeaponsStatTrak = true)
     {
         _storage = storage;
         Catalog = catalog;
         _logger = logger;
+        _enableAllWeaponsStatTrak = enableAllWeaponsStatTrak;
         _scheduleDelayed = scheduleDelayed;
         _econAttributes = new EconAttributeApplicator(logger);
     }
@@ -111,7 +120,9 @@ public sealed class SkinManager : IDisposable
     {
         _disposed = true;
         _activeSteamIds.Clear();
+        _loadedProfiles.Clear();
         _loadingProfiles.Clear();
+        _applyAfterLoadRequests.Clear();
         _profiles.Clear();
         _profileEpochs.Clear();
 
@@ -165,18 +176,34 @@ public sealed class SkinManager : IDisposable
         if (TryGetSteamId64(player, out var steamId))
         {
             _profiles.Remove(steamId);
-            _loadingProfiles.Remove(steamId);
+            _loadedProfiles.Remove(steamId);
+            _applyAfterLoadRequests.Remove(steamId);
             _activeSteamIds.Remove(steamId);
-            _profileEpochs.Remove(steamId);
+            if (_loadingProfiles.Contains(steamId))
+            {
+                BumpProfileEpoch(steamId);
+            }
+            else
+            {
+                _profileEpochs.Remove(steamId);
+            }
         }
     }
 
     public void Forget(ulong steamId64)
     {
         _profiles.Remove(steamId64);
-        _loadingProfiles.Remove(steamId64);
+        _loadedProfiles.Remove(steamId64);
+        _applyAfterLoadRequests.Remove(steamId64);
         _activeSteamIds.Remove(steamId64);
-        _profileEpochs.Remove(steamId64);
+        if (_loadingProfiles.Contains(steamId64))
+        {
+            BumpProfileEpoch(steamId64);
+        }
+        else
+        {
+            _profileEpochs.Remove(steamId64);
+        }
     }
 
     public void ApplyToPlayerWhenProfileReady(CCSPlayerController player, bool logFailures = false)
@@ -196,7 +223,7 @@ public sealed class SkinManager : IDisposable
             return;
         }
 
-        if (_profiles.ContainsKey(steamId))
+        if (_loadedProfiles.Contains(steamId))
         {
             ApplyToPlayer(player, logFailures);
             return;
@@ -539,6 +566,8 @@ public sealed class SkinManager : IDisposable
         BumpProfileEpoch(steamId);
         QueueStorageWrite($"profile reset for {steamId}", () => _storage.ResetProfile(steamId));
         _profiles.Remove(steamId);
+        _loadedProfiles.Remove(steamId);
+        _applyAfterLoadRequests.Remove(steamId);
         ClearPlayerCosmetics(player, logFailures: true);
         ApplyMusicKitState(player, 0, 0, logFailures: true);
     }
@@ -810,7 +839,35 @@ public sealed class SkinManager : IDisposable
         }
 
         var target = IsKnife(weaponName) ? KnifeTarget : weaponName;
-        if (!profile.Customizations.TryGetValue(target, out var customization) || customization.StatTrak is null)
+        var hasSelectedItem = IsKnife(weaponName)
+            ? profile.KnifeSkinId is not null || profile.KnifeId is not null
+            : profile.WeaponSkins.ContainsKey(weaponName);
+        if (!hasSelectedItem && !profile.Customizations.ContainsKey(target))
+        {
+            return;
+        }
+
+        if (!profile.Customizations.TryGetValue(target, out var customization))
+        {
+            if (!_enableAllWeaponsStatTrak)
+            {
+                return;
+            }
+
+            customization = new WeaponCustomization { StatTrak = 0 };
+            profile.Customizations[target] = customization;
+        }
+        else if (customization.StatTrak is null)
+        {
+            if (!_enableAllWeaponsStatTrak)
+            {
+                return;
+            }
+
+            customization.StatTrak = 0;
+        }
+
+        if (customization.StatTrak is null)
         {
             return;
         }
@@ -1154,9 +1211,29 @@ public sealed class SkinManager : IDisposable
             return;
         }
 
-        if (_profiles.ContainsKey(steamId64) || !_loadingProfiles.Add(steamId64))
+        if (_loadedProfiles.Contains(steamId64))
         {
             return;
+        }
+
+        if (_loadingProfiles.Contains(steamId64))
+        {
+            if (applyAfterLoad)
+            {
+                _applyAfterLoadRequests.Add(steamId64);
+            }
+
+            return;
+        }
+
+        if (!_loadingProfiles.Add(steamId64))
+        {
+            return;
+        }
+
+        if (applyAfterLoad)
+        {
+            _applyAfterLoadRequests.Add(steamId64);
         }
 
         var epoch = GetProfileEpoch(steamId64);
@@ -1181,6 +1258,23 @@ public sealed class SkinManager : IDisposable
                 }
 
                 _loadingProfiles.Remove(steamId64);
+                var applyAfterLoadRequested = _applyAfterLoadRequests.Remove(steamId64);
+
+                // The player disconnected or reset while this read was in
+                // flight. A reconnect may already be waiting on this load, so
+                // start a fresh read for the current lifecycle instead of
+                // accepting or reporting the stale result.
+                if (!_activeSteamIds.Contains(steamId64))
+                {
+                    _profileEpochs.Remove(steamId64);
+                    return;
+                }
+
+                if (GetProfileEpoch(steamId64) != epoch)
+                {
+                    LoadProfileInBackground(steamId64, applyAfterLoadRequested, logFailures);
+                    return;
+                }
 
                 if (failure is not null)
                 {
@@ -1202,13 +1296,6 @@ public sealed class SkinManager : IDisposable
                     return;
                 }
 
-                // A changed epoch means the profile was reset while this load
-                // was in flight; its data is stale and must be discarded.
-                if (!_activeSteamIds.Contains(steamId64) || GetProfileEpoch(steamId64) != epoch)
-                {
-                    return;
-                }
-
                 if (_profiles.TryGetValue(steamId64, out var existing))
                 {
                     MergeLoadedProfile(existing, loaded);
@@ -1218,7 +1305,9 @@ public sealed class SkinManager : IDisposable
                     _profiles[steamId64] = loaded;
                 }
 
-                if (!applyAfterLoad)
+                _loadedProfiles.Add(steamId64);
+
+                if (!applyAfterLoadRequested)
                 {
                     return;
                 }
@@ -1614,7 +1703,7 @@ public sealed class SkinManager : IDisposable
             var seed = customization?.Seed ?? cosmetic.Seed;
             var wear = customization?.Wear ?? cosmetic.Wear;
 
-            var statTrak = customization?.StatTrak;
+            var statTrak = customization?.StatTrak ?? (_enableAllWeaponsStatTrak ? 0 : null);
 
             weapon.FallbackPaintKit = cosmetic.PaintKit;
             weapon.FallbackSeed = seed;
@@ -1966,7 +2055,7 @@ public sealed class SkinManager : IDisposable
                 return false;
             }
 
-            var statTrak = GetCustomization(player, KnifeTarget)?.StatTrak;
+            var statTrak = GetCustomization(player, KnifeTarget)?.StatTrak ?? (_enableAllWeaponsStatTrak ? 0 : null);
 
             TryChangeKnifeSubclass(weapon, knife.ItemDefinitionIndex);
             weapon.FallbackPaintKit = 0;

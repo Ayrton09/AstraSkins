@@ -69,6 +69,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         RegisterListener<Listeners.OnServerPrecacheResources>(OnServerPrecacheResources);
         RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawnPre, HookMode.Pre);
         RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawnPost, HookMode.Post);
+        RegisterEventHandler<EventBotTakeover>(OnBotTakeover, HookMode.Post);
         RegisterEventHandler<EventRoundFreezeEnd>(OnRoundFreezeEndPre, HookMode.Pre);
         RegisterEventHandler<EventPlayerDeath>(OnPlayerDeath);
         RegisterEventHandler<EventRoundMvp>(OnRoundMvp, HookMode.Pre);
@@ -116,18 +117,20 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         _config = config;
         _storage = storage;
         _skinManager = new SkinManager(storage, catalog, Logger,
-            (delay, action) => AddTimer(delay, () => action(), TimerFlags.STOP_ON_MAPCHANGE));
+            (delay, action) => AddTimer(delay, () => action(), TimerFlags.STOP_ON_MAPCHANGE),
+            config.EnableAllWeaponsStatTrak);
         _menuManager = new MenuManager(_skinManager, config, Localizer, Logger);
         _nextMusicKitHealthCheckUtc = DateTime.MinValue;
         _ready = true;
 
         Logger.LogInformation(
-            "Astra Skins loaded: {Weapons} weapons, {KnifeSkins} knife skins, {GloveSkins} glove skins, {Agents} agents, DB={DatabaseMode}, MusicKitMvpCounter={MusicKitMvpCounter}",
+            "Astra Skins loaded: {Weapons} weapons, {KnifeSkins} knife skins, {GloveSkins} glove skins, {Agents} agents, DB={DatabaseMode}, AllWeaponsStatTrak={AllWeaponsStatTrak}, MusicKitMvpCounter={MusicKitMvpCounter}",
             catalog.Weapons.Count,
             catalog.KnifeSkinsById.Count,
             catalog.GloveSkinsById.Count,
             catalog.Agents.Count,
             config.DatabaseMode,
+            config.EnableAllWeaponsStatTrak,
             config.EnableMusicKitMvpCounter);
     }
 
@@ -611,6 +614,28 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         return HookResult.Continue;
     }
 
+    private HookResult OnBotTakeover(EventBotTakeover @event, GameEventInfo info)
+    {
+        var player = @event.Userid;
+        if (!_ready || !IsLiveHuman(player))
+        {
+            return HookResult.Continue;
+        }
+
+        var playerSlot = player!.Slot;
+        var userId = player.UserId;
+        Server.NextFrame(() =>
+        {
+            var current = Utilities.GetPlayerFromSlot(playerSlot);
+            if (_ready && IsLiveHuman(current) && current!.UserId == userId)
+            {
+                _skinManager?.ApplyToPlayerWhenProfileReady(current);
+            }
+        });
+
+        return HookResult.Continue;
+    }
+
     private void ScheduleMusicKitReapply(float delay)
     {
         if (!_ready || _skinManager is null)
@@ -630,7 +655,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
 
         foreach (var player in Utilities.GetPlayers().Where(IsLiveHuman))
         {
-            _skinManager.ApplyAgentToPlayer(player, logFailures: false, loadIfMissing: false);
+            _skinManager.ApplyToPlayerWhenProfileReady(player, logFailures: false);
         }
 
         return HookResult.Continue;
