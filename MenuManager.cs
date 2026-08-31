@@ -40,7 +40,7 @@ public sealed class MenuManager
         state.Weapon = null;
         state.Knife = null;
         state.Glove = null;
-        ResetInputState(state);
+        ResetInputState(player, state);
         ChangeView(player, state, MenuView.Main);
     }
 
@@ -48,7 +48,7 @@ public sealed class MenuManager
     {
         var state = GetState(player);
         state.BackStack.Clear();
-        ResetInputState(state);
+        ResetInputState(player, state);
         ChangeView(player, state, MenuView.KnifeTypes);
     }
 
@@ -56,7 +56,7 @@ public sealed class MenuManager
     {
         var state = GetState(player);
         state.BackStack.Clear();
-        ResetInputState(state);
+        ResetInputState(player, state);
         ChangeView(player, state, MenuView.GloveTypes);
     }
 
@@ -65,7 +65,7 @@ public sealed class MenuManager
         var state = GetState(player);
         state.BackStack.Clear();
         state.AgentTeam = null;
-        ResetInputState(state);
+        ResetInputState(player, state);
         ChangeView(player, state, MenuView.AgentTeams);
     }
 
@@ -74,7 +74,7 @@ public sealed class MenuManager
         var state = GetState(player);
         state.BackStack.Clear();
         state.SearchQuery = query;
-        ResetInputState(state);
+        ResetInputState(player, state);
         ChangeView(player, state, MenuView.Search);
     }
 
@@ -127,7 +127,50 @@ public sealed class MenuManager
             }
 
             Freeze(player);
+
+            // The button-change listener reads the player's own pawn, which
+            // receives no input while dead; poll the observer path instead.
+            if (!player.PawnIsAlive)
+            {
+                PollDeadPlayerButtons(player, state);
+                if (!_states.ContainsKey(player.Slot) || !state.IsOpen)
+                {
+                    continue;
+                }
+            }
+            else
+            {
+                state.DeadPollingActive = false;
+            }
+
             Render(player, state);
+        }
+    }
+
+    private void PollDeadPlayerButtons(CCSPlayerController player, PlayerMenuState state)
+    {
+        PlayerButtons current;
+        try
+        {
+            current = player.Buttons;
+        }
+        catch
+        {
+            return;
+        }
+
+        if (!state.DeadPollingActive)
+        {
+            state.DeadPollingActive = true;
+            state.PreviousButtons = current;
+            return;
+        }
+
+        var pressed = current & ~state.PreviousButtons;
+        state.PreviousButtons = current;
+        if (pressed != 0)
+        {
+            OnButtonsChanged(player, pressed);
         }
     }
 
@@ -142,7 +185,7 @@ public sealed class MenuManager
         return state;
     }
 
-    private static void ResetInputState(PlayerMenuState state)
+    private static void ResetInputState(CCSPlayerController player, PlayerMenuState state)
     {
         var now = DateTime.UtcNow;
         state.OpenedAtUtc = now;
@@ -150,6 +193,15 @@ public sealed class MenuManager
         state.LastSelectionUtc = DateTime.MinValue;
         state.LastSelectionKey = null;
         state.LastInteractionUtc = now;
+        state.DeadPollingActive = false;
+        try
+        {
+            state.PreviousButtons = player.Buttons;
+        }
+        catch
+        {
+            state.PreviousButtons = 0;
+        }
     }
 
     private void ChangeView(CCSPlayerController player, PlayerMenuState state, MenuView view, bool push = false)
@@ -287,15 +339,25 @@ public sealed class MenuManager
 
         var options = new List<MenuOption>();
         var visualIndex = 1;
+        var profile = _skinManager.GetProfile(player);
         options.Add(new MenuOption($"{visualIndex++}. {_localizer.ForPlayer(player, "menu.configure_all")}", () =>
         {
             var current = Utilities.GetPlayerFromSlot(state.Slot);
             if (current is null) return;
             ChangeView(current, state, MenuView.Categories, push: true);
-        }));
+        }, LabelColor: "#f0b65a"));
 
         foreach (var weapon in _skinManager.GetOwnedWeaponDefinitions(player))
         {
+            // Tint each owned weapon with the rarity of its equipped skin so
+            // the main view reads like the real inventory.
+            string? equippedRarity = null;
+            if (profile.WeaponSkins.TryGetValue(weapon.EntityName, out var equippedId) &&
+                _skinManager.Catalog.WeaponSkinsById.TryGetValue(equippedId, out var equippedSkin))
+            {
+                equippedRarity = equippedSkin.Rarity;
+            }
+
             var label = $"{visualIndex++}. {weapon.DisplayName}";
             options.Add(new MenuOption(label, () =>
             {
@@ -303,11 +365,17 @@ public sealed class MenuManager
                 if (current is null) return;
                 state.Weapon = weapon;
                 ChangeView(current, state, MenuView.WeaponSkins, push: true);
-            }));
+            }, LabelColor: RarityColor(equippedRarity)));
         }
 
         var knife = _skinManager.GetCurrentKnifeDefinition(player);
         var knifeLabel = knife is null ? _localizer.ForPlayer(player, "menu.knife") : $"* {knife.DisplayName}";
+        string? knifeRarity = null;
+        if (profile.KnifeSkinId is not null &&
+            _skinManager.Catalog.KnifeSkinsById.TryGetValue(profile.KnifeSkinId, out var equippedKnifeSkin))
+        {
+            knifeRarity = equippedKnifeSkin.Rarity;
+        }
         options.Add(new MenuOption($"{visualIndex++}. {knifeLabel}", () =>
         {
             var current = Utilities.GetPlayerFromSlot(state.Slot);
@@ -320,25 +388,25 @@ public sealed class MenuManager
 
             state.Knife = knife;
             ChangeView(current, state, MenuView.KnifeSkins, push: true);
-        }));
+        }, LabelColor: RarityColor(knifeRarity) ?? "#8bdcff"));
 
         options.Add(new MenuOption($"{visualIndex++}. {_localizer.ForPlayer(player, "menu.gloves")}", () =>
         {
             var current = Utilities.GetPlayerFromSlot(state.Slot);
             if (current is not null) ChangeView(current, state, MenuView.GloveTypes, push: true);
-        }));
+        }, LabelColor: "#8bdcff"));
 
         options.Add(new MenuOption($"{visualIndex++}. {_localizer.ForPlayer(player, "menu.agents")}", () =>
         {
             var current = Utilities.GetPlayerFromSlot(state.Slot);
             if (current is not null) ChangeView(current, state, MenuView.AgentTeams, push: true);
-        }));
+        }, LabelColor: "#b58fff"));
 
         options.Add(new MenuOption($"{visualIndex++}. {_localizer.ForPlayer(player, "menu.music")}", () =>
         {
             var current = Utilities.GetPlayerFromSlot(state.Slot);
             if (current is not null) ChangeView(current, state, MenuView.MusicKits, push: true);
-        }));
+        }, LabelColor: "#f08ac8"));
 
         return options;
     }
@@ -542,7 +610,7 @@ public sealed class MenuManager
                     : $"{AstraSkinsPlugin.FormatPrefix()} {_localizer.ForPlayer(current, "menu.save_failed")}");
                 state.LastInteractionUtc = DateTime.UtcNow;
                 Render(current, state);
-            }, s.Id.Equals(selectedId, StringComparison.OrdinalIgnoreCase), ThrottleSelection: true))
+            }, s.Id.Equals(selectedId, StringComparison.OrdinalIgnoreCase), ThrottleSelection: true, LabelColor: RarityColor(s.Rarity)))
             .ToList();
     }
 
@@ -604,7 +672,7 @@ public sealed class MenuManager
                     : $"{AstraSkinsPlugin.FormatPrefix()} {_localizer.ForPlayer(current, "menu.save_failed")}");
                 state.LastInteractionUtc = DateTime.UtcNow;
                 Render(current, state);
-            }, s.Id.Equals(selectedId, StringComparison.OrdinalIgnoreCase), ThrottleSelection: true))
+            }, s.Id.Equals(selectedId, StringComparison.OrdinalIgnoreCase), ThrottleSelection: true, LabelColor: RarityColor(s.Rarity)))
             .ToList();
     }
 
@@ -651,7 +719,7 @@ public sealed class MenuManager
                     : $"{AstraSkinsPlugin.FormatPrefix()} {_localizer.ForPlayer(current, "menu.save_failed")}");
                 state.LastInteractionUtc = DateTime.UtcNow;
                 Render(current, state);
-            }, s.Id.Equals(selectedId, StringComparison.OrdinalIgnoreCase), ThrottleSelection: true))
+            }, s.Id.Equals(selectedId, StringComparison.OrdinalIgnoreCase), ThrottleSelection: true, LabelColor: RarityColor(s.Rarity)))
             .ToList();
     }
 
@@ -716,7 +784,7 @@ public sealed class MenuManager
                     : $"{AstraSkinsPlugin.FormatPrefix()} {_localizer.ForPlayer(current, "menu.save_failed")}");
                 state.LastInteractionUtc = DateTime.UtcNow;
                 Render(current, state);
-            }, a.Id.Equals(selectedId, StringComparison.OrdinalIgnoreCase), ThrottleSelection: true))
+            }, a.Id.Equals(selectedId, StringComparison.OrdinalIgnoreCase), ThrottleSelection: true, LabelColor: RarityColor(a.Rarity)))
             .ToList();
     }
 
@@ -740,7 +808,7 @@ public sealed class MenuManager
         var catalog = _skinManager.Catalog;
         var options = new List<MenuOption>();
 
-        void Add(string label, bool selected, Func<CCSPlayerController, bool> apply)
+        void Add(string label, bool selected, Func<CCSPlayerController, bool> apply, string? rarity = null)
         {
             options.Add(new MenuOption(label, () =>
             {
@@ -756,7 +824,7 @@ public sealed class MenuManager
                     : $"{AstraSkinsPlugin.FormatPrefix()} {_localizer.ForPlayer(current, "menu.save_failed")}");
                 state.LastInteractionUtc = DateTime.UtcNow;
                 Render(current, state);
-            }, selected, ThrottleSelection: true));
+            }, selected, ThrottleSelection: true, LabelColor: RarityColor(rarity)));
         }
 
         foreach (var weapon in catalog.Weapons)
@@ -778,7 +846,7 @@ public sealed class MenuManager
                 var skinId = skin.Id;
                 var selected = profile.WeaponSkins.TryGetValue(entity, out var equipped) &&
                                equipped.Equals(skinId, StringComparison.OrdinalIgnoreCase);
-                Add(label, selected, current => _skinManager.SetWeaponSkin(current, entity, skinId));
+                Add(label, selected, current => _skinManager.SetWeaponSkin(current, entity, skinId), skin.Rarity);
             }
         }
 
@@ -804,7 +872,7 @@ public sealed class MenuManager
 
                 var skinId = skin.Id;
                 var selected = skinId.Equals(profile.KnifeSkinId, StringComparison.OrdinalIgnoreCase);
-                Add(label, selected, current => _skinManager.SetKnifeSkin(current, skinId));
+                Add(label, selected, current => _skinManager.SetKnifeSkin(current, skinId), skin.Rarity);
             }
         }
 
@@ -830,7 +898,7 @@ public sealed class MenuManager
 
                 var skinId = skin.Id;
                 var selected = skinId.Equals(profile.GloveSkinId, StringComparison.OrdinalIgnoreCase);
-                Add(label, selected, current => _skinManager.SetGloveSkin(current, skinId));
+                Add(label, selected, current => _skinManager.SetGloveSkin(current, skinId), skin.Rarity);
             }
         }
 
@@ -851,7 +919,7 @@ public sealed class MenuManager
             var team = agent.Team;
             var selected = profile.AgentIdsByTeam.TryGetValue(team, out var equippedAgent) &&
                            equippedAgent.Equals(agentId, StringComparison.OrdinalIgnoreCase);
-            Add(label, selected, current => _skinManager.SetAgent(current, team, agentId));
+            Add(label, selected, current => _skinManager.SetAgent(current, team, agentId), agent.Rarity);
         }
 
         return options;
@@ -889,11 +957,12 @@ public sealed class MenuManager
         var end = Math.Min(options.Count, start + visibleItems);
 
         var title = GetTitle(player, state);
+        var encodedTitle = WebUtility.HtmlEncode(TrimForOverlay(title, MaxTitleLength));
         var lines = new List<string>
         {
             state.View == MenuView.Main
-                ? $"<b><font color='#f0b65a'>{WebUtility.HtmlEncode(TrimForOverlay(title, MaxTitleLength))}</font></b>"
-                : $"<b><font color='#8bdcff'>{WebUtility.HtmlEncode(TrimForOverlay(title, MaxTitleLength))}</font></b> <font color='#d7f08a'>{state.Cursor + 1}</font>/<font color='#e2e2e2'>{Math.Max(1, options.Count)}</font>",
+                ? $"<font class='fontSize-m' color='#eb4b4b'><b>{encodedTitle}</b></font>"
+                : $"<font class='fontSize-m' color='#8bdcff'><b>{encodedTitle}</b></font> <font color='#8a8f98'>{state.Cursor + 1}/{Math.Max(1, options.Count)}</font>",
         };
 
         if (options.Count == 0)
@@ -905,16 +974,21 @@ public sealed class MenuManager
             for (var index = start; index < end; index++)
             {
                 var option = options[index];
-                var prefix = index == state.Cursor ? "> " : string.Empty;
-                var selected = option.IsSelected ? " *" : string.Empty;
-                var color = index == state.Cursor ? "#f7d774" : "#ffffff";
-                lines.Add($"<font color='{color}'>{prefix}{WebUtility.HtmlEncode(TrimForOverlay(option.Label, MaxItemLabelLength))}{selected}</font>");
+                var isCursor = index == state.Cursor;
+                var label = WebUtility.HtmlEncode(TrimForOverlay(option.Label, MaxItemLabelLength));
+                var labelColor = option.LabelColor ?? (isCursor ? "#f7d774" : "#e8e8e8");
+                var prefix = isCursor ? "<font color='#f0b65a'>► </font>" : "<font color='#f0b65a'>   </font>";
+                var body = isCursor
+                    ? $"<font color='{labelColor}'><b>{label}</b></font>"
+                    : $"<font color='{labelColor}'>{label}</font>";
+                var selected = option.IsSelected ? " <font color='#7dff8a'>✔</font>" : string.Empty;
+                lines.Add($"{prefix}{body}{selected}");
             }
         }
 
         lines.Add(state.View == MenuView.Main
-            ? "<small><small><font color='#f0b65a'>W/S | E | R</font></small></small>"
-            : "<small><small><font color='#f0b65a'>W/S | E | Shift | R</font></small></small>");
+            ? "<small><small><font color='#8a8f98'>W/S · E · R</font></small></small>"
+            : "<small><small><font color='#8a8f98'>W/S · E · Shift · R</font></small></small>");
         SafePrint(player, string.Join("<br>", lines));
     }
 
@@ -1005,6 +1079,25 @@ public sealed class MenuManager
         {
             _logger.LogDebug(ex, "Failed to mark m_flVelocityModifier as changed.");
         }
+    }
+
+    // Official rarity tint per grade, so skins read like the real inventory.
+    private static string? RarityColor(string? rarity)
+    {
+        if (string.IsNullOrWhiteSpace(rarity))
+        {
+            return null;
+        }
+
+        var value = rarity.ToLowerInvariant();
+        if (value.Contains("contraband") || value.Contains("immortal")) return "#e4ae39";
+        if (value.Contains("ancient")) return "#eb4b4b";
+        if (value.Contains("legendary")) return "#d32ce6";
+        if (value.Contains("mythical")) return "#8847ff";
+        if (value.Contains("uncommon")) return "#5e98d9";
+        if (value.Contains("rare")) return "#4b69ff";
+        if (value.Contains("common")) return "#b0c3d9";
+        return null;
     }
 
     private static string TrimForOverlay(string text, int maxLength)

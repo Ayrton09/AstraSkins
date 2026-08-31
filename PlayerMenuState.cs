@@ -31,6 +31,8 @@ public sealed class PlayerMenuState
     public DateTime LastSelectionUtc { get; set; } = DateTime.MinValue;
     public DateTime OpenedAtUtc { get; set; } = DateTime.UtcNow;
     public string? LastSelectionKey { get; set; }
+    public PlayerButtons PreviousButtons { get; set; }
+    public bool DeadPollingActive { get; set; }
     public IReadOnlyList<MenuOption>? CachedOptions { get; set; }
     public DateTime CachedOptionsAtUtc { get; set; }
     public string? SearchQuery { get; set; }
@@ -51,4 +53,4 @@ public sealed record MenuSnapshot(
     KnifeDefinition? Knife,
     GloveDefinition? Glove);
 
-public sealed record MenuOption(string Label, Action Action, bool IsSelected = false, bool ThrottleSelection = false);
+public sealed record MenuOption(string Label, Action Action, bool IsSelected = false, bool ThrottleSelection = false, string? LabelColor = null);

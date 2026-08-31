@@ -954,9 +954,12 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
     {
         // While possessing a bot, button input still comes from the player's
         // own (dead) pawn, so the menu would open but never respond to keys.
+        // Spectating also detaches Pawn from PlayerPawn (observer pawn), but
+        // there the player is dead; possession is the only alive-and-detached
+        // state.
         var possessed = player.Pawn.Value;
         var ownPawn = player.PlayerPawn.Value;
-        if (possessed is not null && ownPawn is not null && possessed.Handle != ownPawn.Handle)
+        if (player.PawnIsAlive && possessed is not null && ownPawn is not null && possessed.Handle != ownPawn.Handle)
         {
             command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.menu_while_bot")}");
             return false;
