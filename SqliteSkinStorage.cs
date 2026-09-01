@@ -241,10 +241,16 @@ public sealed class SqliteSkinStorage : ISkinStorage
         {
             GetOrAddCustomization(profile, target).NameTag = cosmeticId;
         }
-        else if (type.Equals("stattrak", StringComparison.OrdinalIgnoreCase) &&
-                 int.TryParse(cosmeticId, NumberStyles.Integer, CultureInfo.InvariantCulture, out var statTrak))
+        else if (type.Equals("stattrak", StringComparison.OrdinalIgnoreCase))
         {
-            GetOrAddCustomization(profile, target).StatTrak = statTrak;
+            if (cosmeticId.Equals(SkinManager.StatTrakDisabledValue, StringComparison.OrdinalIgnoreCase))
+            {
+                GetOrAddCustomization(profile, target).StatTrakDisabled = true;
+            }
+            else if (int.TryParse(cosmeticId, NumberStyles.Integer, CultureInfo.InvariantCulture, out var statTrak))
+            {
+                GetOrAddCustomization(profile, target).StatTrak = statTrak;
+            }
         }
     }
 

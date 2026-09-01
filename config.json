@@ -25,6 +25,7 @@
     "MaxNameTagLength": 20
   },
   "ApplyPlayerCosmeticsOnBotTakeover": false,
+  "EnableAllWeaponsStatTrak": false,
   "EnableMusicKitMvpCounter": false,
   "Definitions": {
     "Weapons": "data/weapons.json",
