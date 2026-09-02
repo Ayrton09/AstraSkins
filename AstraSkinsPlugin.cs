@@ -628,14 +628,13 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
     }
 
     // Taking over a bot hands the player the bot's pawn, which has none of
-    // their cosmetics on it.
-    // Taking over a bot hands the player the bot's pawn, which has none of
     // their cosmetics on it. The possessed body needs its own settle time, so
-    // apply shortly after and once more for slower handovers.
+    // apply shortly after and once more for slower handovers. Off by default
+    // so bot cosmetics plugins keep their loadout on the possessed body.
     private HookResult OnBotTakeover(EventBotTakeover @event, GameEventInfo info)
     {
         var player = @event.Userid;
-        if (!_ready || !IsLiveHuman(player))
+        if (!_ready || _config is null || !_config.ApplyPlayerCosmeticsOnBotTakeover || !IsLiveHuman(player))
         {
             return HookResult.Continue;
         }
@@ -878,6 +877,13 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
                 return HookResult.Continue;
             }
 
+            // A possessed bot pawn reports the human as its controller, so
+            // weapons bought or picked up during possession land here too.
+            if (_config is not null && !_config.ApplyPlayerCosmeticsOnBotTakeover && IsPossessedPawn(player!, itemServices.Pawn.Value))
+            {
+                return HookResult.Continue;
+            }
+
             Server.NextFrame(() =>
             {
                 if (IsLiveHuman(player) && weapon.IsValid)
@@ -993,6 +999,14 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
     private static bool IsLiveHuman(CCSPlayerController? player)
     {
         return player is not null && player.IsValid && !player.IsBot && player.SteamID != 0;
+    }
+
+    // The controller's PlayerPawn stays on the player's own body while they
+    // possess a bot, so any other pawn attributed to them is a possessed one.
+    private static bool IsPossessedPawn(CCSPlayerController player, CBasePlayerPawn? pawn)
+    {
+        var ownPawn = player.PlayerPawn.Value;
+        return pawn is not null && pawn.IsValid && ownPawn is not null && ownPawn.IsValid && ownPawn.Handle != pawn.Handle;
     }
 
     private static CCSPlayerController? GetPlayerFromItemServices(CCSPlayer_ItemServices itemServices)

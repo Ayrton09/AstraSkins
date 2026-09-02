@@ -24,6 +24,7 @@
 - 💾 **Persistent selections** — SQLite or MySQL, keyed by SteamID64. Selections survive reconnects, map changes, and restarts.
 - 🌍 **7 languages** — per-player localization (English, Spanish, Chinese, Portuguese, German, French, Russian).
 - 🗣️ **Agent radio voices** — agents keep their voice lines where the CS2 schema exposes the voice data.
+- 🤖 **Bot takeover aware** leaves a possessed bot's loadout alone by default, so bot cosmetics plugins keep working. Opt in to see your own skins on the bot instead.
 - 🛡️ **Permission gating** — restrict individual skins, knives, gloves, agents, or the whole customization feature to admin flags.
 - ⚙️ **Admin tooling** — hot reload of definitions and a diagnostics command.
 
@@ -168,6 +169,7 @@ If `data/music_kits.json` is missing, the category simply stays hidden.
     "Permission": "",
     "MaxNameTagLength": 20
   },
+  "ApplyPlayerCosmeticsOnBotTakeover": false,
   "EnableMusicKitMvpCounter": false,
   "Definitions": {
     "Weapons": "data/weapons.json",
@@ -195,6 +197,7 @@ If `data/music_kits.json` is missing, the category simply stays hidden.
 | `Customization.Enabled` | Master switch for `!seed` / `!wear` / `!nametag` |
 | `Customization.Permission` | Restrict customization to a flag; empty = everyone |
 | `Customization.MaxNameTagLength` | Name tag cap, 4–32 (default 20 matches the real game) |
+| `ApplyPlayerCosmeticsOnBotTakeover` | Off by default: a bot you take over keeps its own loadout. Set to `true` to apply your knife, agent and music kit to the possessed bot (guns and gloves already in hand keep their look) |
 | `EnableMusicKitMvpCounter` | Track per-player MVP counts for selected music kits |
 
 ### SQLite

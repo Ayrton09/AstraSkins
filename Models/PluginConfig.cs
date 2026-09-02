@@ -12,6 +12,9 @@ public sealed class PluginConfig : BasePluginConfig
     public MySqlConfig MySql { get; set; } = new();
     public MenuConfig Menu { get; set; } = new();
     public CustomizationConfig Customization { get; set; } = new();
+    // Off by default so a possessed bot keeps whatever cosmetics its pawn has
+    // (for example from a bot randomizer plugin). Opt in to see your own instead.
+    public bool ApplyPlayerCosmeticsOnBotTakeover { get; set; } = false;
     public bool EnableMusicKitMvpCounter { get; set; } = false;
     public DefinitionPathConfig Definitions { get; set; } = new();
     public bool EnableAdminReloadCommand { get; set; } = true;
