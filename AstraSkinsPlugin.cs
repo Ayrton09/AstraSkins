@@ -635,7 +635,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
     private HookResult OnBotTakeover(EventBotTakeover @event, GameEventInfo info)
     {
         var player = @event.Userid;
-        if (!_ready || !IsLiveHuman(player))
+        if (!_ready || _config?.ApplyPlayerCosmeticsOnBotTakeover != true || !IsLiveHuman(player))
         {
             return HookResult.Continue;
         }

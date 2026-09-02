@@ -24,6 +24,7 @@
     "Permission": "",
     "MaxNameTagLength": 20
   },
+  "ApplyPlayerCosmeticsOnBotTakeover": false,
   "EnableMusicKitMvpCounter": false,
   "Definitions": {
     "Weapons": "data/weapons.json",
