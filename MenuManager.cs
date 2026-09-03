@@ -22,6 +22,7 @@ public sealed class MenuManager
     private const int MaxTitleLength = 46;
     private const int MaxItemLabelLength = 34;
     private const int MaxSearchResults = 64;
+    private const string MusicKitColor = "#f08ac8";
 
     public MenuManager(SkinManager skinManager, PluginConfig config, IStringLocalizer localizer, ILogger logger)
     {
@@ -406,7 +407,7 @@ public sealed class MenuManager
         {
             var current = Utilities.GetPlayerFromSlot(state.Slot);
             if (current is not null) ChangeView(current, state, MenuView.MusicKits, push: true);
-        }, LabelColor: "#f08ac8"));
+        }, LabelColor: MusicKitColor));
 
         return options;
     }
@@ -808,7 +809,7 @@ public sealed class MenuManager
         var catalog = _skinManager.Catalog;
         var options = new List<MenuOption>();
 
-        void Add(string label, bool selected, Func<CCSPlayerController, bool> apply, string? rarity = null)
+        void Add(string label, bool selected, Func<CCSPlayerController, bool> apply, string? rarity = null, string? color = null)
         {
             options.Add(new MenuOption(label, () =>
             {
@@ -824,7 +825,7 @@ public sealed class MenuManager
                     : $"{AstraSkinsPlugin.FormatPrefix()} {_localizer.ForPlayer(current, "menu.save_failed")}");
                 state.LastInteractionUtc = DateTime.UtcNow;
                 Render(current, state);
-            }, selected, ThrottleSelection: true, LabelColor: RarityColor(rarity)));
+            }, selected, ThrottleSelection: true, LabelColor: color ?? RarityColor(rarity)));
         }
 
         foreach (var weapon in catalog.Weapons)
@@ -920,6 +921,28 @@ public sealed class MenuManager
             var selected = profile.AgentIdsByTeam.TryGetValue(team, out var equippedAgent) &&
                            equippedAgent.Equals(agentId, StringComparison.OrdinalIgnoreCase);
             Add(label, selected, current => _skinManager.SetAgent(current, team, agentId), agent.Rarity);
+        }
+
+        var preferZh = player.GetLanguage().Name.StartsWith("zh", StringComparison.OrdinalIgnoreCase);
+        var musicLabel = _localizer.ForPlayer(player, "menu.music");
+        foreach (var kit in catalog.MusicKits)
+        {
+            if (options.Count >= MaxSearchResults)
+            {
+                return options;
+            }
+
+            var name = preferZh && !string.IsNullOrWhiteSpace(kit.DisplayNameZh) ? kit.DisplayNameZh! : kit.DisplayName;
+            var label = $"{musicLabel} | {name}";
+            // Match the English name too so a zh player can search either way.
+            if ((!MatchesAllTerms(label, terms) && !MatchesAllTerms(kit.DisplayName, terms)) || !_skinManager.CanUse(player, kit))
+            {
+                continue;
+            }
+
+            var kitId = kit.Id;
+            var selected = kitId.Equals(profile.MusicKitId, StringComparison.OrdinalIgnoreCase);
+            Add(label, selected, current => _skinManager.SetMusicKit(current, kitId), color: MusicKitColor);
         }
 
         return options;

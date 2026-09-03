@@ -19,7 +19,7 @@
 - 🎨 **1,400+ weapon skins, 20 knives with 576 finishes, 8 glove types, 63 agents, 99 music kits** — all data-driven from JSON, no datasets baked into the code.
 - 🕹️ **Built-in WASD menu** — navigate with `W`/`S`, select with `E`. No external menu plugin required.
 - 🔧 **Per-player customization** — custom paint seed, wear/float, name tags, and StatTrak counters via `!seed`, `!wear`, `!nametag`, and `!stattrak`.
-- 🔎 **Search** — `!ws <text>` finds any skin, knife, glove, or agent without scrolling through pages.
+- 🔎 **Search** — `!ws <text>` finds any skin, knife, glove, agent, or music kit without scrolling through pages.
 - 🎵 **Music kits** — pick any of 99 kits from the menu, with an optional per-kit MVP counter shown on the scoreboard.
 - 💾 **Persistent selections** — SQLite or MySQL, keyed by SteamID64. Selections survive reconnects, map changes, and restarts.
 - 🌍 **7 languages** — per-player localization (English, Spanish, Chinese, Portuguese, German, French, Russian).
