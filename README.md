@@ -16,11 +16,11 @@
 
 ## Features
 
-- 🎨 **1,400+ weapon skins, 20 knives with 576 finishes, 8 glove types, 63 agents, 92 music kits** — all data-driven from JSON, no datasets baked into the code.
+- 🎨 **1,400+ weapon skins, 20 knives with 576 finishes, 8 glove types, 63 agents, 99 music kits** — all data-driven from JSON, no datasets baked into the code.
 - 🕹️ **Built-in WASD menu** — navigate with `W`/`S`, select with `E`. No external menu plugin required.
 - 🔧 **Per-player customization** — custom paint seed, wear/float, name tags, and StatTrak counters via `!seed`, `!wear`, `!nametag`, and `!stattrak`.
 - 🔎 **Search** — `!ws <text>` finds any skin, knife, glove, or agent without scrolling through pages.
-- 🎵 **Music kits** — pick any of 92 kits from the menu, with an optional per-kit MVP counter shown on the scoreboard.
+- 🎵 **Music kits** — pick any of 99 kits from the menu, with an optional per-kit MVP counter shown on the scoreboard.
 - 💾 **Persistent selections** — SQLite or MySQL, keyed by SteamID64. Selections survive reconnects, map changes, and restarts.
 - 🌍 **7 languages** — per-player localization (English, Spanish, Chinese, Portuguese, German, French, Russian).
 - 🗣️ **Agent radio voices** — agents keep their voice lines where the CS2 schema exposes the voice data.
@@ -239,7 +239,7 @@ Currently packaged:
 | Glove types | 8 |
 | Glove skins | 94 |
 | Agents | 63 |
-| Music kits | 92 |
+| Music kits | 99 |
 
 To regenerate the data after a CS2 update, run the included generator — it pulls the latest `items_game.txt` and translation data automatically:
 

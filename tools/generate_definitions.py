@@ -575,15 +575,25 @@ def build_music_kits(api_music_kits, api_music_kits_zh):
     for entry in api_music_kits_zh or []:
         zh_names[entry.get("id")] = strip_music_kit_prefix(entry.get("name"))
 
-    kits = []
+    # The kit number is what the game plays; StatTrak is only a variant of the
+    # same kit. Prefer the plain entry, but keep the "_st" one when it is the
+    # only listing (the StatTrak-only kits 32-38 never had a plain version).
+    by_number = {}
     for entry in api_music_kits or []:
         kit_id = entry.get("id") or ""
-        match = re.fullmatch(r"music_kit-(\d+)", kit_id)
+        match = re.fullmatch(r"music_kit-(\d+)(_st)?", kit_id)
         if not match:
-            continue  # skips the "_st" StatTrak variants
+            continue
         number = int(match.group(1))
         if number <= 2:
             continue  # engine default kits, not selectable cosmetics
+        is_stattrak = match.group(2) is not None
+        if number in by_number and not by_number[number][0]:
+            continue  # plain entry already kept
+        by_number[number] = (is_stattrak, kit_id, entry)
+
+    kits = []
+    for number, (_, kit_id, entry) in by_number.items():
         name = strip_music_kit_prefix(entry.get("name"))
         if not name:
             continue

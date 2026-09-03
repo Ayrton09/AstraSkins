@@ -174,6 +174,48 @@
     "displayNameZh": "Darude - CSGO 精彩时刻"
   },
   {
+    "id": "32",
+    "musicKit": 32,
+    "displayName": "Beartooth, Aggressive",
+    "displayNameZh": "Beartooth - 咄咄逼人"
+  },
+  {
+    "id": "33",
+    "musicKit": 33,
+    "displayName": "Blitz Kids, The Good Youth",
+    "displayNameZh": "Blitz Kids - 有为青年"
+  },
+  {
+    "id": "34",
+    "musicKit": 34,
+    "displayName": "Hundredth, FREE",
+    "displayNameZh": "Hundredth - 冲破藩篱"
+  },
+  {
+    "id": "35",
+    "musicKit": 35,
+    "displayName": "Neck Deep, Life's Not Out To Get You",
+    "displayNameZh": "Neck Deep - 人生何处不青山"
+  },
+  {
+    "id": "36",
+    "musicKit": 36,
+    "displayName": "Roam, Backbone",
+    "displayNameZh": "Roam - 决心"
+  },
+  {
+    "id": "37",
+    "musicKit": 37,
+    "displayName": "Twin Atlantic, GLA",
+    "displayNameZh": "Twin Atlantic - GLA"
+  },
+  {
+    "id": "38",
+    "musicKit": 38,
+    "displayName": "Skog, III-Arena",
+    "displayNameZh": "Skog - III-竞技场"
+  },
+  {
     "id": "39",
     "musicKit": 39,
     "displayName": "The Verkkars, EZ4ENCE",
