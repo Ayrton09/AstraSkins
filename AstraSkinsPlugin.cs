@@ -33,7 +33,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
     public PluginConfig Config { get; set; } = new();
 
     public override string ModuleName => "Astra Skins";
-    public override string ModuleVersion => "1.0.10";
+    public override string ModuleVersion => "1.0.10-team-preview-intro";
     public override string ModuleAuthor => "Ayrton09";
     public override string ModuleDescription => string.Empty;
 
@@ -70,6 +70,8 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawnPre, HookMode.Pre);
         RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawnPost, HookMode.Post);
         RegisterEventHandler<EventBotTakeover>(OnBotTakeover, HookMode.Post);
+        RegisterEventHandler<EventRoundPrestart>(OnRoundPrestart);
+        RegisterEventHandler<EventTeamIntroStart>(OnTeamIntroStart);
         RegisterEventHandler<EventRoundFreezeEnd>(OnRoundFreezeEndPre, HookMode.Pre);
         RegisterEventHandler<EventPlayerDeath>(OnPlayerDeath);
         RegisterEventHandler<EventRoundMvp>(OnRoundMvp, HookMode.Pre);
@@ -656,6 +658,54 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         return HookResult.Continue;
     }
 
+    private HookResult OnRoundPrestart(EventRoundPrestart @event, GameEventInfo info)
+    {
+        // Valve fills team_intro Xuid on this event; write after the assignment lands.
+        ScheduleTeamPreviewApply();
+        return HookResult.Continue;
+    }
+
+    private HookResult OnTeamIntroStart(EventTeamIntroStart @event, GameEventInfo info)
+    {
+        ScheduleTeamPreviewApply();
+        return HookResult.Continue;
+    }
+
+    // Team-intro / team-select Xuid is assigned a frame or two after the event.
+    private void ScheduleTeamPreviewApply(CCSPlayerController? player = null)
+    {
+        if (!_ready || _skinManager is null)
+        {
+            return;
+        }
+
+        var slot = player?.Slot;
+        var userId = player?.UserId;
+        void apply()
+        {
+            if (!_ready || _skinManager is null)
+            {
+                return;
+            }
+
+            if (slot is null)
+            {
+                _skinManager.ApplyTeamPreviewCosmetics();
+                return;
+            }
+
+            var current = Utilities.GetPlayerFromSlot(slot.Value);
+            if (IsLiveHuman(current) && current!.UserId == userId)
+            {
+                _skinManager.ApplyTeamPreviewCosmetics(current);
+            }
+        }
+
+        Server.NextFrame(apply);
+        AddTimer(0.10f, apply, TimerFlags.STOP_ON_MAPCHANGE);
+        AddTimer(0.25f, apply, TimerFlags.STOP_ON_MAPCHANGE);
+    }
+
     private HookResult OnRoundFreezeEndPre(EventRoundFreezeEnd @event, GameEventInfo info)
     {
         if (!_ready || _skinManager is null)
@@ -759,6 +809,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             if (_ready && IsLiveHuman(player))
             {
                 _skinManager?.ApplyMusicKitWhenProfileReady(player, logFailures: false);
+                ScheduleTeamPreviewApply(player);
             }
         }
 
