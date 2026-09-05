@@ -15,11 +15,17 @@ public sealed class SkinManager : IDisposable
     public const string KnifeTarget = "knife";
     public const string GloveTarget = "glove";
 
+    // Stored in the cosmetic_id column of a "stattrak" row to mark an explicit
+    // opt-out. It is not a number, so older builds ignore the row instead of
+    // misreading it as a count.
+    public const string StatTrakDisabledValue = "off";
+
     private const ulong MinimumCustomItemId = 65578;
 
     private readonly ISkinStorage _storage;
     private readonly ILogger _logger;
     private readonly EconAttributeApplicator _econAttributes;
+    private readonly bool _enableAllWeaponsStatTrak;
     private readonly Dictionary<ulong, PlayerSkinProfile> _profiles = new();
     // _profiles can hold a placeholder while a read is in flight, so loaded
     // completion is tracked separately; without this a failed read leaves the
@@ -95,12 +101,18 @@ public sealed class SkinManager : IDisposable
 
     public DefinitionCatalog Catalog { get; private set; }
 
-    public SkinManager(ISkinStorage storage, DefinitionCatalog catalog, ILogger logger, Action<float, Action>? scheduleDelayed = null)
+    public SkinManager(
+        ISkinStorage storage,
+        DefinitionCatalog catalog,
+        ILogger logger,
+        Action<float, Action>? scheduleDelayed = null,
+        bool enableAllWeaponsStatTrak = false)
     {
         _storage = storage;
         Catalog = catalog;
         _logger = logger;
         _scheduleDelayed = scheduleDelayed;
+        _enableAllWeaponsStatTrak = enableAllWeaponsStatTrak;
         _econAttributes = new EconAttributeApplicator(logger);
     }
 
@@ -255,7 +267,9 @@ public sealed class SkinManager : IDisposable
             return;
         }
 
-        if (!_profiles.TryGetValue(steamId, out var profile))
+        // A placeholder in _profiles is not a completed read. Treating its
+        // empty MusicKitId as "player chose none" skips retries until reconnect.
+        if (!_loadedProfiles.Contains(steamId) || !_profiles.TryGetValue(steamId, out var profile))
         {
             _activeSteamIds.Add(steamId);
             LoadProfileInBackground(steamId, applyAfterLoad: true, logFailures);
@@ -318,7 +332,7 @@ public sealed class SkinManager : IDisposable
 
     public void PreloadProfile(CCSPlayerController player)
     {
-        if (_disposed || !TryGetSteamId64(player, out var steamId) || _profiles.ContainsKey(steamId))
+        if (_disposed || !TryGetSteamId64(player, out var steamId) || _loadedProfiles.Contains(steamId))
         {
             return;
         }
@@ -329,7 +343,7 @@ public sealed class SkinManager : IDisposable
 
     public void PreloadProfile(ulong steamId64)
     {
-        if (_disposed || steamId64 == 0 || _profiles.ContainsKey(steamId64))
+        if (_disposed || steamId64 == 0 || _loadedProfiles.Contains(steamId64))
         {
             return;
         }
@@ -466,6 +480,34 @@ public sealed class SkinManager : IDisposable
     {
         try
         {
+            if (!TryGetSteamId64(player, out var steamId))
+            {
+                if (logFailures)
+                {
+                    _logger.LogWarning("Astra Skins cannot apply music kit: player SteamID64 is invalid.");
+                }
+
+                return;
+            }
+
+            if (!_loadedProfiles.Contains(steamId))
+            {
+                _activeSteamIds.Add(steamId);
+                LoadProfileInBackground(steamId, applyAfterLoad: true, logFailures);
+                // An in-memory selection (menu pick while the read is in flight)
+                // should still reach the controller. An empty placeholder must
+                // not write kit 0 and wipe a kit the engine still has.
+                if (!_profiles.TryGetValue(steamId, out var pending) ||
+                    string.IsNullOrWhiteSpace(pending.MusicKitId))
+                {
+                    return;
+                }
+
+                var (pendingKitId, pendingMvpCount) = ResolveMusicKitState(pending);
+                ApplyMusicKitState(player, pendingKitId, pendingMvpCount, logFailures);
+                return;
+            }
+
             var profile = GetProfile(player);
             var (kitId, mvpCount) = ResolveMusicKitState(profile);
             ApplyMusicKitState(player, kitId, mvpCount, logFailures);
@@ -477,6 +519,39 @@ public sealed class SkinManager : IDisposable
                 _logger.LogWarning(ex, "Astra Skins failed to resolve music kit for {SteamId}.", TryGetSteamId64(player, out var steamId) ? steamId : 0);
             }
         }
+    }
+
+    // Writes the selected kit onto the controller now, including MvpNoMusic=false.
+    // Used on death and round_mvp so a dead T MVP is not left on deathcam audio.
+    public bool TryApplySelectedMusicKit(CCSPlayerController player, out int musicKitId, bool logFailures = false)
+    {
+        musicKitId = 0;
+        if (_disposed || !TryGetSteamId64(player, out var steamId))
+        {
+            return false;
+        }
+
+        if (!_loadedProfiles.Contains(steamId))
+        {
+            _activeSteamIds.Add(steamId);
+            LoadProfileInBackground(steamId, applyAfterLoad: true, logFailures);
+            return false;
+        }
+
+        if (!_profiles.TryGetValue(steamId, out var profile))
+        {
+            return false;
+        }
+
+        var (kitId, mvpCount) = ResolveMusicKitState(profile);
+        if (kitId <= 0)
+        {
+            return false;
+        }
+
+        ApplyMusicKitState(player, kitId, mvpCount, logFailures);
+        musicKitId = kitId;
+        return true;
     }
 
     private (int KitId, int MvpCount) ResolveMusicKitState(PlayerSkinProfile profile)
@@ -825,18 +900,57 @@ public sealed class SkinManager : IDisposable
 
     public bool SetStatTrak(CCSPlayerController player, string target, int? count)
     {
+        // Turning StatTrak off has to be recorded, not just left empty: with the
+        // global default on, an absent row means "enabled at 0", so !stattrak
+        // reset would be undone the moment the item is applied again.
+        var storedValue = count?.ToString(CultureInfo.InvariantCulture)
+            ?? (_enableAllWeaponsStatTrak ? StatTrakDisabledValue : null);
+
         return SetCustomization(player, target, "stattrak",
-            count?.ToString(CultureInfo.InvariantCulture),
-            customization => customization.StatTrak = count,
+            storedValue,
+            customization =>
+            {
+                customization.StatTrak = count;
+                customization.StatTrakDisabled = count is null && _enableAllWeaponsStatTrak;
+            },
             requiresPaintKit: false);
     }
 
     public int? GetStatTrak(CCSPlayerController player, string target)
     {
-        return GetProfile(player).Customizations.TryGetValue(target, out var customization)
-            ? customization.StatTrak
-            : null;
+        var profile = GetProfile(player);
+        profile.Customizations.TryGetValue(target, out var customization);
+        return ResolveStatTrak(profile, target, customization);
     }
+
+    // The single place that turns stored state plus the global default into the
+    // count to apply. Explicit counts win, an explicit off wins over the
+    // default, and only then does the default hand out a fresh 0.
+    private int? ResolveStatTrak(PlayerSkinProfile profile, string target, WeaponCustomization? customization)
+    {
+        if (customization?.StatTrak is int explicitCount)
+        {
+            return explicitCount;
+        }
+
+        if (customization?.StatTrakDisabled == true || !_enableAllWeaponsStatTrak)
+        {
+            return null;
+        }
+
+        // The default only covers items the player actually picked a skin for,
+        // so stock weapons stay untouched.
+        return HasSelectedSkin(profile, target) ? 0 : null;
+    }
+
+    private static bool HasSelectedSkin(PlayerSkinProfile profile, string target) => target switch
+    {
+        KnifeTarget => profile.KnifeSkinId is not null || profile.KnifeId is not null,
+        // Gloves have no StatTrak in the game, so the default never covers
+        // them; an explicit count is still honoured if one is ever set.
+        GloveTarget => false,
+        _ => profile.WeaponSkins.ContainsKey(target)
+    };
 
     // Bumps the counter in place: no weapon refresh, since re-creating the
     // weapon on every kill would be disastrous.
@@ -859,13 +973,23 @@ public sealed class SkinManager : IDisposable
         }
 
         var target = IsKnife(weaponName) ? KnifeTarget : weaponName;
-        if (!profile.Customizations.TryGetValue(target, out var customization) || customization.StatTrak is null)
+        profile.Customizations.TryGetValue(target, out var customization);
+        if (ResolveStatTrak(profile, target, customization) is not int current)
         {
             return;
         }
 
-        var next = customization.StatTrak.Value + 1;
+        // With the global default on there may be no row yet: the first kill is
+        // what creates it, so a count only reaches storage once it is non-zero.
+        if (customization is null)
+        {
+            customization = new WeaponCustomization();
+            profile.Customizations[target] = customization;
+        }
+
+        var next = current + 1;
         customization.StatTrak = next;
+        customization.StatTrakDisabled = false;
         QueueStorageWrite($"stattrak {next} ({target}) for {steamId}",
             () => _storage.SaveCustomization(steamId, "stattrak", target, next.ToString(CultureInfo.InvariantCulture)));
 
@@ -1687,11 +1811,12 @@ public sealed class SkinManager : IDisposable
 
             // Resolving the entity name on a freshly created weapon is not
             // reliable, so prefer the target the caller already knows.
-            var customization = GetCustomization(player, isKnife ? KnifeTarget : customizationTarget ?? ResolveWeaponEntityName(weapon));
+            var resolvedTarget = isKnife ? KnifeTarget : customizationTarget ?? ResolveWeaponEntityName(weapon);
+            var customization = GetCustomization(player, resolvedTarget);
             var seed = customization?.Seed ?? cosmetic.Seed;
             var wear = customization?.Wear ?? cosmetic.Wear;
 
-            var statTrak = customization?.StatTrak;
+            var statTrak = ResolveStatTrak(GetProfile(player), resolvedTarget, customization);
 
             weapon.FallbackPaintKit = cosmetic.PaintKit;
             weapon.FallbackSeed = seed;
@@ -2043,7 +2168,7 @@ public sealed class SkinManager : IDisposable
                 return false;
             }
 
-            var statTrak = GetCustomization(player, KnifeTarget)?.StatTrak;
+            var statTrak = ResolveStatTrak(GetProfile(player), KnifeTarget, GetCustomization(player, KnifeTarget));
 
             TryChangeKnifeSubclass(weapon, knife.ItemDefinitionIndex);
             weapon.FallbackPaintKit = 0;

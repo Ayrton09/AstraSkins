@@ -15,6 +15,9 @@ public sealed class PluginConfig : BasePluginConfig
     // Off by default so a possessed bot keeps whatever cosmetics its pawn has
     // (for example from a bot randomizer plugin). Opt in to see your own instead.
     public bool ApplyPlayerCosmeticsOnBotTakeover { get; set; } = false;
+    // Off by default so upgrading an existing install does not change what
+    // players see; StatTrak stays opt-in through !stattrak unless enabled.
+    public bool EnableAllWeaponsStatTrak { get; set; } = false;
     public bool EnableMusicKitMvpCounter { get; set; } = false;
     public DefinitionPathConfig Definitions { get; set; } = new();
     public bool EnableAdminReloadCommand { get; set; } = true;
