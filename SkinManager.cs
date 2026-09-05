@@ -267,7 +267,9 @@ public sealed class SkinManager : IDisposable
             return;
         }
 
-        if (!_profiles.TryGetValue(steamId, out var profile))
+        // A placeholder in _profiles is not a completed read. Treating its
+        // empty MusicKitId as "player chose none" skips retries until reconnect.
+        if (!_loadedProfiles.Contains(steamId) || !_profiles.TryGetValue(steamId, out var profile))
         {
             _activeSteamIds.Add(steamId);
             LoadProfileInBackground(steamId, applyAfterLoad: true, logFailures);
@@ -330,7 +332,7 @@ public sealed class SkinManager : IDisposable
 
     public void PreloadProfile(CCSPlayerController player)
     {
-        if (_disposed || !TryGetSteamId64(player, out var steamId) || _profiles.ContainsKey(steamId))
+        if (_disposed || !TryGetSteamId64(player, out var steamId) || _loadedProfiles.Contains(steamId))
         {
             return;
         }
@@ -341,7 +343,7 @@ public sealed class SkinManager : IDisposable
 
     public void PreloadProfile(ulong steamId64)
     {
-        if (_disposed || steamId64 == 0 || _profiles.ContainsKey(steamId64))
+        if (_disposed || steamId64 == 0 || _loadedProfiles.Contains(steamId64))
         {
             return;
         }
@@ -478,6 +480,34 @@ public sealed class SkinManager : IDisposable
     {
         try
         {
+            if (!TryGetSteamId64(player, out var steamId))
+            {
+                if (logFailures)
+                {
+                    _logger.LogWarning("Astra Skins cannot apply music kit: player SteamID64 is invalid.");
+                }
+
+                return;
+            }
+
+            if (!_loadedProfiles.Contains(steamId))
+            {
+                _activeSteamIds.Add(steamId);
+                LoadProfileInBackground(steamId, applyAfterLoad: true, logFailures);
+                // An in-memory selection (menu pick while the read is in flight)
+                // should still reach the controller. An empty placeholder must
+                // not write kit 0 and wipe a kit the engine still has.
+                if (!_profiles.TryGetValue(steamId, out var pending) ||
+                    string.IsNullOrWhiteSpace(pending.MusicKitId))
+                {
+                    return;
+                }
+
+                var (pendingKitId, pendingMvpCount) = ResolveMusicKitState(pending);
+                ApplyMusicKitState(player, pendingKitId, pendingMvpCount, logFailures);
+                return;
+            }
+
             var profile = GetProfile(player);
             var (kitId, mvpCount) = ResolveMusicKitState(profile);
             ApplyMusicKitState(player, kitId, mvpCount, logFailures);
@@ -489,6 +519,39 @@ public sealed class SkinManager : IDisposable
                 _logger.LogWarning(ex, "Astra Skins failed to resolve music kit for {SteamId}.", TryGetSteamId64(player, out var steamId) ? steamId : 0);
             }
         }
+    }
+
+    // Writes the selected kit onto the controller now, including MvpNoMusic=false.
+    // Used on death and round_mvp so a dead T MVP is not left on deathcam audio.
+    public bool TryApplySelectedMusicKit(CCSPlayerController player, out int musicKitId, bool logFailures = false)
+    {
+        musicKitId = 0;
+        if (_disposed || !TryGetSteamId64(player, out var steamId))
+        {
+            return false;
+        }
+
+        if (!_loadedProfiles.Contains(steamId))
+        {
+            _activeSteamIds.Add(steamId);
+            LoadProfileInBackground(steamId, applyAfterLoad: true, logFailures);
+            return false;
+        }
+
+        if (!_profiles.TryGetValue(steamId, out var profile))
+        {
+            return false;
+        }
+
+        var (kitId, mvpCount) = ResolveMusicKitState(profile);
+        if (kitId <= 0)
+        {
+            return false;
+        }
+
+        ApplyMusicKitState(player, kitId, mvpCount, logFailures);
+        musicKitId = kitId;
+        return true;
     }
 
     private (int KitId, int MvpCount) ResolveMusicKitState(PlayerSkinProfile profile)

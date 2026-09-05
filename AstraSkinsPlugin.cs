@@ -26,14 +26,23 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
     private MenuManager? _menuManager;
     private readonly Dictionary<int, ulong> _steamIdsBySlot = new();
     private readonly Dictionary<int, DateTime> _maintenanceCooldownsBySlot = new();
+    private readonly Dictionary<int, PendingMvpCue> _pendingMvpCuesBySlot = new();
     private DateTime _nextMusicKitHealthCheckUtc = DateTime.MinValue;
     private bool _ready;
     private bool _giveNamedItemHooked;
 
+    private readonly record struct PendingMvpCue(
+        int UserId,
+        ulong SteamId,
+        long MusicKitId,
+        long MusicKitMvps,
+        int Reason,
+        long Value);
+
     public PluginConfig Config { get; set; } = new();
 
     public override string ModuleName => "Astra Skins";
-    public override string ModuleVersion => "1.0.10";
+    public override string ModuleVersion => "1.0.10-mkfix8";
     public override string ModuleAuthor => "Ayrton09";
     public override string ModuleDescription => string.Empty;
 
@@ -70,11 +79,14 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawnPre, HookMode.Pre);
         RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawnPost, HookMode.Post);
         RegisterEventHandler<EventBotTakeover>(OnBotTakeover, HookMode.Post);
+        RegisterEventHandler<EventTeamIntroEnd>(OnTeamIntroEndPre, HookMode.Pre);
+        RegisterEventHandler<EventRoundStart>(OnRoundStartPre, HookMode.Pre);
         RegisterEventHandler<EventRoundFreezeEnd>(OnRoundFreezeEndPre, HookMode.Pre);
+        RegisterEventHandler<EventBombPlanted>(OnBombPlantedPre, HookMode.Pre);
         RegisterEventHandler<EventPlayerDeath>(OnPlayerDeath);
         RegisterEventHandler<EventRoundMvp>(OnRoundMvp, HookMode.Pre);
         RegisterEventHandler<EventPlayerDisconnect>(OnPlayerDisconnect);
-        RegisterEventHandler<EventPlayerTeam>(OnPlayerTeam);
+        RegisterEventHandler<EventPlayerTeam>(OnPlayerTeam, HookMode.Pre);
         HookGiveNamedItem();
 
         if (hotReload && _ready)
@@ -95,6 +107,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         _skinManager = null;
         _menuManager = null;
         _steamIdsBySlot.Clear();
+        _pendingMvpCuesBySlot.Clear();
         _ready = false;
     }
 
@@ -124,7 +137,8 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         _ready = true;
 
         Logger.LogInformation(
-            "Astra Skins loaded: {Weapons} weapons, {KnifeSkins} knife skins, {GloveSkins} glove skins, {Agents} agents, {MusicKits} music kits, DB={DatabaseMode}, AllWeaponsStatTrak={AllWeaponsStatTrak}, MusicKitMvpCounter={MusicKitMvpCounter}",
+            "Astra Skins loaded {Version}: {Weapons} weapons, {KnifeSkins} knife skins, {GloveSkins} glove skins, {Agents} agents, {MusicKits} music kits, DB={DatabaseMode}, AllWeaponsStatTrak={AllWeaponsStatTrak}, MusicKitMvpCounter={MusicKitMvpCounter}",
+            ModuleVersion,
             catalog.Weapons.Count,
             catalog.KnifeSkinsById.Count,
             catalog.GloveSkinsById.Count,
@@ -601,7 +615,9 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         if (_ready && player is { IsValid: true, IsBot: true })
         {
             // Bot spawns can make Valve reinitialize controller music for every
-            // player. Reapply after the new entity and inventory have settled.
+            // player. Write immediately for wait/action cues, then once more
+            // after the new entity and inventory have settled.
+            ApplyMusicKitToLivePlayers();
             ScheduleMusicKitReapply(0.25f);
         }
 
@@ -658,6 +674,19 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         return HookResult.Continue;
     }
 
+    private HookResult OnTeamIntroEndPre(EventTeamIntroEnd @event, GameEventInfo info)
+    {
+        ApplyMusicKitToLivePlayers();
+        return HookResult.Continue;
+    }
+
+    private HookResult OnRoundStartPre(EventRoundStart @event, GameEventInfo info)
+    {
+        _pendingMvpCuesBySlot.Clear();
+        ApplyMusicKitToLivePlayers();
+        return HookResult.Continue;
+    }
+
     private HookResult OnRoundFreezeEndPre(EventRoundFreezeEnd @event, GameEventInfo info)
     {
         if (!_ready || _skinManager is null)
@@ -672,6 +701,13 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             _skinManager.ApplyAgentToPlayer(player, logFailures: false, loadIfMissing: true);
         }
 
+        ApplyMusicKitToLivePlayers();
+        return HookResult.Continue;
+    }
+
+    private HookResult OnBombPlantedPre(EventBombPlanted @event, GameEventInfo info)
+    {
+        ApplyMusicKitToLivePlayers();
         return HookResult.Continue;
     }
 
@@ -694,6 +730,43 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         if (player is not null && player.IsValid)
         {
             _menuManager?.Close(player);
+
+            if (string.Equals(@event.Weapon, "planted_c4", StringComparison.OrdinalIgnoreCase) &&
+                _pendingMvpCuesBySlot.TryGetValue(player.Slot, out var pendingMvp) &&
+                pendingMvp.UserId == player.UserId &&
+                pendingMvp.SteamId == player.SteamID)
+            {
+                var slot = player.Slot;
+                var userId = player.UserId;
+                AddTimer(0.1f, () =>
+                {
+                    var current = Utilities.GetPlayerFromSlot(slot);
+                    if (_ready && current is { IsValid: true } &&
+                        !current.IsBot && current.SteamID == pendingMvp.SteamId && current.UserId == userId)
+                    {
+                        ReplayMvpCueToClient(current, pendingMvp);
+                    }
+                }, TimerFlags.STOP_ON_MAPCHANGE);
+            }
+        }
+
+        // Keep the selected kit and MvpNoMusic=false so the death state does not
+        // leave the controller on a death track.
+        if (_ready && IsLiveHuman(player))
+        {
+            _skinManager?.TryApplySelectedMusicKit(player!, out _, logFailures: false);
+            var slot = player!.Slot;
+            var userId = player.UserId;
+            AddTimer(0.15f, () =>
+            {
+                var current = Utilities.GetPlayerFromSlot(slot);
+                if (_ready && IsLiveHuman(current) && current!.UserId == userId)
+                {
+                    // Death processing can overwrite the controller music state;
+                    // apply once after it settles so a C4-killed MVP keeps its anthem.
+                    _skinManager?.TryApplySelectedMusicKit(current, out _, logFailures: false);
+                }
+            }, TimerFlags.STOP_ON_MAPCHANGE);
         }
 
         var attacker = @event.Attacker;
@@ -714,7 +787,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         var player = @event.Userid;
         if (_ready && _skinManager is not null && player is { IsValid: true } && IsLiveHuman(player))
         {
-            var hasSelectedMusicKit = _skinManager.TryGetSelectedMusicKitId(player, out var musicKitId);
+            var hasSelectedMusicKit = _skinManager.TryApplySelectedMusicKit(player, out var musicKitId);
             if (hasSelectedMusicKit)
             {
                 // Keep the scoreboard MVP music consistent with the selected kit.
@@ -730,9 +803,83 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             {
                 @event.Musickitmvps = _skinManager.RecordMusicKitMvp(player, musicKitId);
             }
+
+            if (hasSelectedMusicKit)
+            {
+                var slot = player.Slot;
+                var userId = player.UserId;
+                foreach (var delay in new[] { 0.05f, 0.2f })
+                {
+                    AddTimer(delay, () =>
+                    {
+                        var current = Utilities.GetPlayerFromSlot(slot);
+                        if (_ready && IsLiveHuman(current) && current!.UserId == userId)
+                        {
+                            // C4 death handling can overwrite the controller after
+                            // round_mvp; restore the selected kit after that write.
+                            _skinManager?.TryApplySelectedMusicKit(current, out _, logFailures: false);
+                        }
+                    }, TimerFlags.STOP_ON_MAPCHANGE);
+                }
+            }
+
+            if (@event.Nomusic == 0 && @event.Musickitid > 0)
+            {
+                _pendingMvpCuesBySlot[player.Slot] = new PendingMvpCue(
+                    player.UserId ?? -1,
+                    player.SteamID,
+                    @event.Musickitid,
+                    @event.Musickitmvps,
+                    @event.Reason,
+                    @event.Value);
+            }
+
         }
 
         return HookResult.Continue;
+    }
+
+    private void ReplayMvpCueToClient(CCSPlayerController player, PendingMvpCue pendingMvp)
+    {
+        EventRoundMvp? replay = null;
+        try
+        {
+            replay = new EventRoundMvp(force: true)
+            {
+                Userid = player,
+                Musickitid = pendingMvp.MusicKitId,
+                Musickitmvps = pendingMvp.MusicKitMvps,
+                Nomusic = 0,
+                Reason = pendingMvp.Reason,
+                Value = pendingMvp.Value
+            };
+
+            replay.FireEventToClient(player);
+            Logger.LogInformation(
+                "Astra Skins replayed round_mvp cue to C4-killed MVP: steam={SteamId}, slot={Slot}, kit={MusicKitId}, mvpCount={MusicKitMvps}",
+                player.SteamID,
+                player.Slot,
+                pendingMvp.MusicKitId,
+                pendingMvp.MusicKitMvps);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogWarning(ex, "Astra Skins failed to replay round_mvp cue to C4-killed MVP {SteamId}.", player.SteamID);
+        }
+        finally
+        {
+            if (replay is not null)
+            {
+                try
+                {
+                    replay.Free();
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogWarning(ex, "Astra Skins failed to free replayed round_mvp event.");
+                }
+            }
+        }
     }
 
     private HookResult OnPlayerDisconnect(EventPlayerDisconnect @event, GameEventInfo info)
@@ -742,6 +889,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         {
             _menuManager?.CloseSlot(player.Slot);
             _maintenanceCooldownsBySlot.Remove(player.Slot);
+            _pendingMvpCuesBySlot.Remove(player.Slot);
             _skinManager?.Forget(player);
             if (_steamIdsBySlot.Remove(player.Slot, out var steamId))
             {
@@ -762,6 +910,16 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             {
                 _skinManager?.ApplyMusicKitWhenProfileReady(player, logFailures: false);
             }
+            else if (_ready && player.IsBot)
+            {
+                // bot_add of a dead bot may never spawn. Valve still resets
+                // human music kits when the bot joins a team. Reapply after
+                // the team change settles so wait/action cues see the kit.
+                ApplyMusicKitToLivePlayers();
+                ScheduleMusicKitReapply(0.01f);
+                ScheduleMusicKitReapply(0.15f);
+                ScheduleMusicKitReapply(0.5f);
+            }
         }
 
         return HookResult.Continue;
@@ -777,15 +935,16 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         if (steamId.SteamId64 != 0)
         {
             _steamIdsBySlot[playerSlot] = steamId.SteamId64;
+            // Auth often fires before the controller is a live human. Start the
+            // profile read so team-select music is not waiting on a first spawn.
+            _skinManager.PreloadProfile(steamId.SteamId64);
         }
 
         var player = Utilities.GetPlayerFromSlot(playerSlot);
         if (IsLiveHuman(player))
         {
             _skinManager.ApplyMusicKitWhenProfileReady(player!, logFailures: false);
-            return;
         }
-
     }
 
     private void OnMapStart(string mapName)
