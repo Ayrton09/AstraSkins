@@ -30,7 +30,6 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
     // DeathCam on the MVP's own client replaces the anthem; the 1s kit
     // reconcile does not replay the cue.
     private PendingMvpCue? _pendingMvpCue;
-    private DateTime _nextMusicKitHealthCheckUtc = DateTime.MinValue;
     private bool _ready;
     private bool _giveNamedItemHooked;
 
@@ -136,7 +135,6 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             (delay, action) => AddTimer(delay, () => action(), TimerFlags.STOP_ON_MAPCHANGE),
             config.EnableStatTrakByDefault);
         _menuManager = new MenuManager(_skinManager, config, Localizer, Logger);
-        _nextMusicKitHealthCheckUtc = DateTime.MinValue;
         _ready = true;
 
         Logger.LogInformation(
@@ -696,13 +694,6 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
     private HookResult OnPlayerSpawnPost(EventPlayerSpawn @event, GameEventInfo info)
     {
         var player = @event.Userid;
-        if (_ready && player is { IsValid: true, IsBot: true })
-        {
-            // Bot spawns can make Valve reinitialize controller music for every
-            // player. Reapply after the new entity and inventory have settled.
-            ScheduleMusicKitReapply(0.25f);
-        }
-
         if (_ready && IsLiveHuman(player))
         {
             AddTimer(0.25f, () =>
@@ -715,16 +706,6 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         }
 
         return HookResult.Continue;
-    }
-
-    private void ScheduleMusicKitReapply(float delay)
-    {
-        if (!_ready || _skinManager is null)
-        {
-            return;
-        }
-
-        AddTimer(delay, ApplyMusicKitToLivePlayers, TimerFlags.STOP_ON_MAPCHANGE);
     }
 
     // Taking over a bot hands the player the bot's pawn, which has none of
@@ -819,19 +800,6 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         }
 
         return HookResult.Continue;
-    }
-
-    private void ApplyMusicKitToLivePlayers()
-    {
-        if (!_ready || _skinManager is null)
-        {
-            return;
-        }
-
-        foreach (var player in Utilities.GetPlayers().Where(IsLiveHuman))
-        {
-            _skinManager.ApplyMusicKitWhenProfileReady(player, logFailures: false);
-        }
     }
 
     private HookResult OnPlayerDeath(EventPlayerDeath @event, GameEventInfo info)
@@ -1015,12 +983,6 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
     private void OnMapStart(string mapName)
     {
         _skinManager?.ResetTeamPreviewTracking();
-        if (!_ready || _skinManager is null)
-        {
-            return;
-        }
-
-        AddTimer(1.0f, ApplyMusicKitToLivePlayers, TimerFlags.STOP_ON_MAPCHANGE);
     }
 
     private void OnTick()
@@ -1032,17 +994,14 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
 
         _menuManager?.OnTick();
         _skinManager?.ReconcileTeamPreview();
-
-        var now = DateTime.UtcNow;
-        if (now < _nextMusicKitHealthCheckUtc)
-        {
-            return;
-        }
-
-        _nextMusicKitHealthCheckUtc = now.AddSeconds(1);
         EnsureMusicKitForLivePlayers();
     }
 
+    // Runs every tick. Valve resets controller music on its own schedule (a
+    // bot joining or spawning, the round boundary) and the cues sample the
+    // value right away, so the fix has to land on the next tick rather than
+    // on a timer guessed per event. Reads a few fields per player, writes
+    // only on a mismatch.
     private void EnsureMusicKitForLivePlayers()
     {
         if (!_ready || _skinManager is null)
@@ -1050,9 +1009,16 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             return;
         }
 
-        foreach (var player in Utilities.GetPlayers().Where(IsLiveHuman))
+        try
         {
-            _skinManager.EnsureMusicKitWhenProfileReady(player);
+            foreach (var player in Utilities.GetPlayers().Where(IsLiveHuman))
+            {
+                _skinManager.EnsureMusicKitWhenProfileReady(player);
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogDebug(ex, "Astra Skins failed to reconcile music kits.");
         }
     }
 

@@ -255,6 +255,25 @@ To regenerate the data after a CS2 update, run the included generator — it pul
 python tools/generate_definitions.py --output data
 ```
 
+### Permissions
+
+Every entry in the data files accepts an optional `permission` field: weapon, knife and glove skins (the `skins` arrays), knife and glove types, agents and music kits. The shipped files do not include it, so everything is open by default. Add it to the entries you want to restrict:
+
+```json
+{
+  "id": "weapon_ak47:801",
+  "displayName": "Asiimov",
+  "paintKit": 801,
+  "permission": "@css/vip"
+}
+```
+
+Any CounterStrikeSharp flag (`@css/vip`) or group (`#css/vip`) works, and `@css/root` passes everything. The flag is per entry, so different entries can require different flags, and a flag on a knife or glove type covers all of its skins. Players without the flag do not see the entry in the menu or in the `!ws` search and cannot select it. The same check runs when cosmetics are applied, so a saved selection whose flag expired stops applying at the next spawn (music kits within a tick) and comes back as soon as the flag does. Flags are read live, nothing is cached per player.
+
+`Customization.Permission` in `config.json` is separate: it gates the `!seed`, `!wear`, `!nametag` and `!stattrak` commands. The plugin does not grant flags itself; use `configs/admins.json` or any VIP/rank plugin that assigns flags.
+
+The generator rewrites the data files, so re-apply your permissions after regenerating.
+
 ## Gamedata
 
 Copy `gamedata/astra_skins.json` to `addons/counterstrikesharp/gamedata/`. It contains the single memory signature used to apply paint attributes visually.

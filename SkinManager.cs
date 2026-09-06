@@ -35,6 +35,9 @@ public sealed class SkinManager : IDisposable
     private readonly HashSet<ulong> _applyAfterLoadRequests = new();
     private readonly HashSet<ulong> _activeSteamIds = new();
     private readonly Dictionary<ulong, ulong> _profileEpochs = new();
+    // Kit ids this plugin wrote per player, so a clear only touches players
+    // we painted and everyone else keeps the value Valve put there.
+    private readonly Dictionary<ulong, int> _appliedMusicKits = new();
     private readonly object _storageQueueLock = new();
     private Task _storageQueue = Task.CompletedTask;
     private ulong _nextItemId = MinimumCustomItemId;
@@ -140,6 +143,7 @@ public sealed class SkinManager : IDisposable
         _applyAfterLoadRequests.Clear();
         _profiles.Clear();
         _profileEpochs.Clear();
+        _appliedMusicKits.Clear();
 
         Task pendingStorageWork;
         lock (_storageQueueLock)
@@ -200,6 +204,7 @@ public sealed class SkinManager : IDisposable
         _loadedProfiles.Remove(steamId64);
         _applyAfterLoadRequests.Remove(steamId64);
         _activeSteamIds.Remove(steamId64);
+        _appliedMusicKits.Remove(steamId64);
 
         // A read still in flight must come back stale: bump the epoch instead
         // of deleting it so the callback can tell this lifecycle ended.
@@ -281,27 +286,9 @@ public sealed class SkinManager : IDisposable
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(profile.MusicKitId))
-        {
-            return;
-        }
-
-        var (kitId, mvpCount) = ResolveMusicKitState(profile);
-        if (kitId <= 0)
-        {
-            return;
-        }
-
-        var inventory = player.InventoryServices;
-        var inventoryMatches = inventory is null || inventory.MusicID == (ushort)Math.Clamp(kitId, 0, ushort.MaxValue);
-        if (player.MusicKitID == kitId &&
-            player.MusicKitMVPs == mvpCount &&
-            !player.MvpNoMusic &&
-            inventoryMatches)
-        {
-            return;
-        }
-
+        // Runs every tick. The write side compares before sending, so this is
+        // a handful of field reads per player unless Valve reset something.
+        var (kitId, mvpCount) = ResolveMusicKitState(player, profile);
         ApplyMusicKitState(player, kitId, mvpCount, logFailures);
     }
 
@@ -424,6 +411,12 @@ public sealed class SkinManager : IDisposable
             return false;
         }
 
+        var gloveType = FindGloveType(glove);
+        if (gloveType is not null && !CanUse(player, gloveType))
+        {
+            return false;
+        }
+
         var steamId = GetSteamId64(player);
         var profile = GetProfile(player);
         profile.GloveSkinId = cosmeticId;
@@ -486,7 +479,7 @@ public sealed class SkinManager : IDisposable
         try
         {
             var profile = GetProfile(player);
-            var (kitId, mvpCount) = ResolveMusicKitState(profile);
+            var (kitId, mvpCount) = ResolveMusicKitState(player, profile);
             ApplyMusicKitState(player, kitId, mvpCount, logFailures);
         }
         catch (Exception ex)
@@ -498,14 +491,16 @@ public sealed class SkinManager : IDisposable
         }
     }
 
-    private (int KitId, int MvpCount) ResolveMusicKitState(PlayerSkinProfile profile)
+    // A kit whose flag the player lost resolves to 0: it stops applying on the
+    // next reconcile while the selection stays saved for when the flag returns.
+    private (int KitId, int MvpCount) ResolveMusicKitState(CCSPlayerController player, PlayerSkinProfile profile)
     {
         var kitId = 0;
         if (!string.IsNullOrWhiteSpace(profile.MusicKitId))
         {
             if (Catalog.MusicKitsById.TryGetValue(profile.MusicKitId!, out var kit))
             {
-                kitId = kit.MusicKit;
+                kitId = CanUse(player, kit) ? kit.MusicKit : 0;
             }
             else if (int.TryParse(profile.MusicKitId, out var parsed))
             {
@@ -523,10 +518,36 @@ public sealed class SkinManager : IDisposable
         return (kitId, mvpCount);
     }
 
+    // Valve's own value for a player without a kit is 1, the stock kit. A kit
+    // of 0 means "nothing selected" for us: players we painted go back to the
+    // stock kit, everyone else is left alone so a real kit is never overwritten.
+    private const int DefaultMusicKitId = 1;
+
+    private void ApplyMusicKitState(CCSPlayerController player, int kitId, int mvpCount, bool logFailures)
+    {
+        if (!TryGetSteamId64(player, out var steamId))
+        {
+            return;
+        }
+
+        if (kitId <= 0)
+        {
+            if (_appliedMusicKits.Remove(steamId))
+            {
+                WriteMusicKitState(player, DefaultMusicKitId, 0, logFailures);
+            }
+
+            return;
+        }
+
+        WriteMusicKitState(player, kitId, mvpCount, logFailures);
+        _appliedMusicKits[steamId] = kitId;
+    }
+
     // The client plays wait/intro from m_pInventoryServices.m_unMusicID.
     // Flag that pointer or the value stays server-side. Only dirty fields
-    // that actually changed so the 1s reconcile does not resend.
-    private void ApplyMusicKitState(CCSPlayerController player, int kitId, int mvpCount, bool logFailures)
+    // that actually changed so the per-tick reconcile does not resend.
+    private void WriteMusicKitState(CCSPlayerController player, int kitId, int mvpCount, bool logFailures)
     {
         try
         {
@@ -568,20 +589,8 @@ public sealed class SkinManager : IDisposable
 
     public bool TryGetSelectedMusicKitId(CCSPlayerController player, out int musicKitId)
     {
-        musicKitId = 0;
-        var profile = GetProfile(player);
-        if (string.IsNullOrWhiteSpace(profile.MusicKitId))
-        {
-            return false;
-        }
-
-        if (Catalog.MusicKitsById.TryGetValue(profile.MusicKitId!, out var kit))
-        {
-            musicKitId = kit.MusicKit;
-            return true;
-        }
-
-        return int.TryParse(profile.MusicKitId, out musicKitId);
+        (musicKitId, _) = ResolveMusicKitState(player, GetProfile(player));
+        return musicKitId > 0;
     }
 
     public int RecordMusicKitMvp(CCSPlayerController player, int musicKitId)
@@ -609,7 +618,14 @@ public sealed class SkinManager : IDisposable
             : 0;
         var nextCount = currentCount == int.MaxValue ? int.MaxValue : currentCount + 1;
         profile.MusicKitMvpCounts[musicKitId] = nextCount;
-        ApplyMusicKitState(player, musicKitId, nextCount, logFailures: true);
+        // Only touch the controller for the kit this plugin applies. A kit
+        // Valve put there stays Valve's; the count is just remembered in case
+        // the player selects that kit here later.
+        if (ResolveMusicKitState(player, profile).KitId == musicKitId)
+        {
+            ApplyMusicKitState(player, musicKitId, nextCount, logFailures: true);
+        }
+
         QueueStorageWrite($"music kit MVP {musicKitId} for {steamId}", () => _storage.IncrementMusicKitMvp(steamId, musicKitId));
         return nextCount;
     }
@@ -909,6 +925,109 @@ public sealed class SkinManager : IDisposable
         return ApplyMatchingWeapon(player, weapon, GetProfile(player), logFailures);
     }
 
+    // Apply side of the permission rule. Menu, search and selection already
+    // filter on CanUse; a saved selection whose flag the player lost has to
+    // stop applying too. The selection itself stays stored and comes back as
+    // soon as the flag does. A flag on a knife or glove type covers its skins.
+    private CosmeticEntry? ResolveUsableWeaponSkin(CCSPlayerController player, PlayerSkinProfile profile, string weaponEntity)
+    {
+        if (!profile.WeaponSkins.TryGetValue(weaponEntity, out var cosmeticId) ||
+            !Catalog.WeaponSkinsById.TryGetValue(cosmeticId, out var skin))
+        {
+            return null;
+        }
+
+        return CanUse(player, skin) ? skin : null;
+    }
+
+    private CosmeticEntry? ResolveUsableKnifeSkin(CCSPlayerController player, PlayerSkinProfile profile)
+    {
+        if (profile.KnifeSkinId is null ||
+            !Catalog.KnifeSkinsById.TryGetValue(profile.KnifeSkinId, out var skin) ||
+            !KnifeSkinMatchesSelectedKnife(profile, skin) ||
+            !CanUse(player, skin))
+        {
+            return null;
+        }
+
+        var knife = Catalog.Knives.FirstOrDefault(k => k.ItemDefinitionIndex == skin.ItemDefinitionIndex);
+        return knife is null || CanUse(player, knife) ? skin : null;
+    }
+
+    private KnifeDefinition? ResolveUsableKnifeType(CCSPlayerController player, PlayerSkinProfile profile)
+    {
+        if (profile.KnifeId is null)
+        {
+            return null;
+        }
+
+        var knife = Catalog.Knives.FirstOrDefault(k => k.Id.Equals(profile.KnifeId, StringComparison.OrdinalIgnoreCase));
+        return knife is not null && CanUse(player, knife) ? knife : null;
+    }
+
+    private CosmeticEntry? ResolveUsableGloveSkin(CCSPlayerController player, PlayerSkinProfile profile, bool logFailures)
+    {
+        if (profile.GloveSkinId is null)
+        {
+            return null;
+        }
+
+        if (!Catalog.GloveSkinsById.TryGetValue(profile.GloveSkinId, out var glove))
+        {
+            if (logFailures)
+            {
+                _logger.LogWarning("Astra Skins glove selection {CosmeticId} is not present in loaded definitions for player {SteamId}.", profile.GloveSkinId, player.SteamID);
+            }
+
+            return null;
+        }
+
+        if (!CanUse(player, glove))
+        {
+            return null;
+        }
+
+        var gloveType = FindGloveType(glove);
+        return gloveType is null || CanUse(player, gloveType) ? glove : null;
+    }
+
+    private AgentDefinition? ResolveUsableAgent(CCSPlayerController player, PlayerSkinProfile profile, string? team, bool logFailures)
+    {
+        if (string.IsNullOrWhiteSpace(team) || !profile.AgentIdsByTeam.TryGetValue(team, out var agentId))
+        {
+            return null;
+        }
+
+        if (!Catalog.AgentsById.TryGetValue(agentId, out var agent))
+        {
+            if (logFailures)
+            {
+                _logger.LogWarning("Astra Skins agent selection {AgentId} is not present in loaded definitions for player {SteamId}.", agentId, player.SteamID);
+            }
+
+            return null;
+        }
+
+        if (!agent.Team.Equals(team, StringComparison.OrdinalIgnoreCase))
+        {
+            if (logFailures)
+            {
+                _logger.LogWarning("Astra Skins agent {AgentId} does not match player team {Team} for player {SteamId}.", agent.Id, team, player.SteamID);
+            }
+
+            return null;
+        }
+
+        return CanUse(player, agent) ? agent : null;
+    }
+
+    private GloveDefinition? FindGloveType(CosmeticEntry glove)
+    {
+        return glove.ItemDefinitionIndex.HasValue
+            ? Catalog.Gloves.FirstOrDefault(g => g.ItemDefinitionIndex == glove.ItemDefinitionIndex.Value)
+            : null;
+    }
+
     public bool CanUse(CCSPlayerController player, CosmeticEntry entry)
     {
         return string.IsNullOrWhiteSpace(entry.Permission) || AdminManager.PlayerHasPermissions(player, entry.Permission);
@@ -1182,29 +1301,29 @@ public sealed class SkinManager : IDisposable
                 // (changing knife type does not clear it). Applying it blindly
                 // would switch the player back to the old knife, so fall back to
                 // the selected knife type, exactly like ApplyMatchingWeapon does.
-                if (profile.KnifeSkinId is not null &&
-                    Catalog.KnifeSkinsById.TryGetValue(profile.KnifeSkinId, out var knifeSkin) &&
-                    KnifeSkinMatchesSelectedKnife(profile, knifeSkin))
+                var knifeSkin = ResolveUsableKnifeSkin(player, profile);
+                if (knifeSkin is not null)
                 {
                     ApplyKnifeSelection(player, knifeSkin, logFailures: true);
+                    break;
                 }
-                else if (profile.KnifeId is not null)
+
+                var selectedKnife = ResolveUsableKnifeType(player, profile);
+                if (selectedKnife is not null)
                 {
-                    var selectedKnife = Catalog.Knives.FirstOrDefault(k => k.Id.Equals(profile.KnifeId, StringComparison.OrdinalIgnoreCase));
-                    if (selectedKnife is not null)
-                    {
-                        ApplyKnifeTypeSelection(player, selectedKnife, logFailures: true);
-                    }
+                    ApplyKnifeTypeSelection(player, selectedKnife, logFailures: true);
                 }
                 break;
             case GloveTarget:
-                if (profile.GloveSkinId is not null && Catalog.GloveSkinsById.TryGetValue(profile.GloveSkinId, out var glove))
+                var glove = ResolveUsableGloveSkin(player, profile, logFailures: true);
+                if (glove is not null)
                 {
                     ApplyGloveSelection(player, glove, logFailures: true);
                 }
                 break;
             default:
-                if (profile.WeaponSkins.TryGetValue(target, out var cosmeticId) && Catalog.WeaponSkinsById.TryGetValue(cosmeticId, out var skin))
+                var skin = ResolveUsableWeaponSkin(player, profile, target);
+                if (skin is not null)
                 {
                     ApplyWeaponSelection(player, target, skin, logFailures: true);
                 }
@@ -1320,7 +1439,7 @@ public sealed class SkinManager : IDisposable
 
         foreach (var weaponEntity in profile.WeaponSkins.Keys)
         {
-            if (!appliedWeaponEntities.Contains(weaponEntity))
+            if (!appliedWeaponEntities.Contains(weaponEntity) && ResolveUsableWeaponSkin(player, profile, weaponEntity) is not null)
             {
                 _logger.LogWarning("Astra Skins weapon not found for player {SteamId}: {WeaponEntity}. Selection remains saved.", player.SteamID, weaponEntity);
             }
@@ -1351,25 +1470,18 @@ public sealed class SkinManager : IDisposable
 
         if (IsKnife(weaponName))
         {
-            if (profile.KnifeSkinId is not null &&
-                Catalog.KnifeSkinsById.TryGetValue(profile.KnifeSkinId, out var knifeSkin) &&
-                KnifeSkinMatchesSelectedKnife(profile, knifeSkin))
+            var knifeSkin = ResolveUsableKnifeSkin(player, profile);
+            if (knifeSkin is not null)
             {
                 return ApplyCosmeticToWeapon(player, weapon, knifeSkin, isKnife: true, logFailures);
             }
 
-            if (profile.KnifeId is not null)
-            {
-                var knife = Catalog.Knives.FirstOrDefault(k => k.Id.Equals(profile.KnifeId, StringComparison.OrdinalIgnoreCase));
-                return knife is not null && ApplyKnifeTypeToWeapon(player, weapon, knife, logFailures);
-            }
-
-            return false;
+            var knife = ResolveUsableKnifeType(player, profile);
+            return knife is not null && ApplyKnifeTypeToWeapon(player, weapon, knife, logFailures);
         }
 
-        return profile.WeaponSkins.TryGetValue(weaponName, out var cosmeticId) &&
-               Catalog.WeaponSkinsById.TryGetValue(cosmeticId, out var skin) &&
-               ApplyCosmeticToWeapon(player, weapon, skin, isKnife: false, logFailures, weaponName);
+        var skin = ResolveUsableWeaponSkin(player, profile, weaponName);
+        return skin is not null && ApplyCosmeticToWeapon(player, weapon, skin, isKnife: false, logFailures, weaponName);
     }
 
     private bool ApplyWeaponSelection(CCSPlayerController player, string weaponEntity, CosmeticEntry skin, bool logFailures)
@@ -1714,22 +1826,8 @@ public sealed class SkinManager : IDisposable
 
     private bool ApplyGloves(CCSPlayerController player, CCSPlayerPawn pawn, PlayerSkinProfile profile, bool logFailures)
     {
-        if (profile.GloveSkinId is null)
-        {
-            return false;
-        }
-
-        if (!Catalog.GloveSkinsById.TryGetValue(profile.GloveSkinId, out var glove))
-        {
-            if (logFailures)
-            {
-                _logger.LogWarning("Astra Skins glove selection {CosmeticId} is not present in loaded definitions for player {SteamId}.", profile.GloveSkinId, player.SteamID);
-            }
-
-            return false;
-        }
-
-        return ApplyGloveCosmetic(player, pawn, glove, logFailures);
+        var glove = ResolveUsableGloveSkin(player, profile, logFailures);
+        return glove is not null && ApplyGloveCosmetic(player, pawn, glove, logFailures);
     }
 
     private bool ApplyGloveCosmetic(CCSPlayerController player, CCSPlayerPawn pawn, CosmeticEntry glove, bool logFailures)
@@ -1791,38 +1889,8 @@ public sealed class SkinManager : IDisposable
 
     private bool ApplyAgent(CCSPlayerController player, CCSPlayerPawn pawn, PlayerSkinProfile profile, bool logFailures)
     {
-        var team = GetPlayerTeamKey(player);
-        if (team is null)
-        {
-            return false;
-        }
-
-        if (!profile.AgentIdsByTeam.TryGetValue(team, out var agentId))
-        {
-            return false;
-        }
-
-        if (!Catalog.AgentsById.TryGetValue(agentId, out var agent))
-        {
-            if (logFailures)
-            {
-                _logger.LogWarning("Astra Skins agent selection {AgentId} is not present in loaded definitions for player {SteamId}.", agentId, player.SteamID);
-            }
-
-            return false;
-        }
-
-        if (!agent.Team.Equals(team, StringComparison.OrdinalIgnoreCase))
-        {
-            if (logFailures)
-            {
-                _logger.LogWarning("Astra Skins agent {AgentId} does not match player team {Team} for player {SteamId}.", agent.Id, team, player.SteamID);
-            }
-
-            return false;
-        }
-
-        return ApplyAgentModel(player, pawn, agent, logFailures);
+        var agent = ResolveUsableAgent(player, profile, GetPlayerTeamKey(player), logFailures);
+        return agent is not null && ApplyAgentModel(player, pawn, agent, logFailures);
     }
 
     private bool ApplyAgentModel(CCSPlayerController player, CCSPlayerPawn pawn, AgentDefinition agent, bool logFailures)
@@ -2615,26 +2683,8 @@ public sealed class SkinManager : IDisposable
         string? team,
         bool logFailures)
     {
-        if (string.IsNullOrWhiteSpace(team) ||
-            !profile.AgentIdsByTeam.TryGetValue(team, out var agentId))
-        {
-            return;
-        }
-
-        if (!Catalog.AgentsById.TryGetValue(agentId, out var agent))
-        {
-            if (logFailures)
-            {
-                _logger.LogWarning(
-                    "Astra Skins agent selection {AgentId} is not present in loaded definitions for player {SteamId}.",
-                    agentId,
-                    player.SteamID);
-            }
-
-            return;
-        }
-
-        if (!agent.Team.Equals(team, StringComparison.OrdinalIgnoreCase))
+        var agent = ResolveUsableAgent(player, profile, team, logFailures);
+        if (agent is null)
         {
             return;
         }
@@ -2655,21 +2705,9 @@ public sealed class SkinManager : IDisposable
         PlayerSkinProfile profile,
         bool logFailures)
     {
-        if (profile.GloveSkinId is null)
+        var glove = ResolveUsableGloveSkin(player, profile, logFailures);
+        if (glove is null)
         {
-            return;
-        }
-
-        if (!Catalog.GloveSkinsById.TryGetValue(profile.GloveSkinId, out var glove))
-        {
-            if (logFailures)
-            {
-                _logger.LogWarning(
-                    "Astra Skins glove selection {CosmeticId} is not present in loaded definitions for player {SteamId}.",
-                    profile.GloveSkinId,
-                    player.SteamID);
-            }
-
             return;
         }
 
@@ -2723,29 +2761,25 @@ public sealed class SkinManager : IDisposable
 
         if (IsKnife(weaponName))
         {
-            if (profile.KnifeSkinId is not null &&
-                Catalog.KnifeSkinsById.TryGetValue(profile.KnifeSkinId, out var knifeSkin) &&
-                KnifeSkinMatchesSelectedKnife(profile, knifeSkin) &&
+            var knifeSkin = ResolveUsableKnifeSkin(player, profile);
+            if (knifeSkin is not null &&
                 ApplyPreviewPaint(player, item, knifeSkin, isKnife: true, KnifeTarget, logFailures, "team preview knife"))
             {
                 TrySetStateChanged(preview, "CCSGO_TeamPreviewCharacterPosition", "m_weaponItem");
                 return;
             }
 
-            if (profile.KnifeId is not null)
+            var knife = ResolveUsableKnifeType(player, profile);
+            if (knife is not null && ApplyPreviewKnifeType(player, item, knife))
             {
-                var knife = Catalog.Knives.FirstOrDefault(k => k.Id.Equals(profile.KnifeId, StringComparison.OrdinalIgnoreCase));
-                if (knife is not null && ApplyPreviewKnifeType(player, item, knife))
-                {
-                    TrySetStateChanged(preview, "CCSGO_TeamPreviewCharacterPosition", "m_weaponItem");
-                }
+                TrySetStateChanged(preview, "CCSGO_TeamPreviewCharacterPosition", "m_weaponItem");
             }
 
             return;
         }
 
-        if (profile.WeaponSkins.TryGetValue(weaponName, out var cosmeticId) &&
-            Catalog.WeaponSkinsById.TryGetValue(cosmeticId, out var skin) &&
+        var skin = ResolveUsableWeaponSkin(player, profile, weaponName);
+        if (skin is not null &&
             ApplyPreviewPaint(player, item, skin, isKnife: false, weaponName, logFailures, $"team preview {weaponName}"))
         {
             TrySetStateChanged(preview, "CCSGO_TeamPreviewCharacterPosition", "m_weaponItem");
