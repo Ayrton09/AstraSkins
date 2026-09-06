@@ -523,22 +523,39 @@ public sealed class SkinManager : IDisposable
         return (kitId, mvpCount);
     }
 
+    // The client plays wait/intro from m_pInventoryServices.m_unMusicID.
+    // Flag that pointer or the value stays server-side. Only dirty fields
+    // that actually changed so the 1s reconcile does not resend.
     private void ApplyMusicKitState(CCSPlayerController player, int kitId, int mvpCount, bool logFailures)
     {
         try
         {
             var inventory = player.InventoryServices;
-            if (inventory is not null)
+            var inventoryKitId = checked((ushort)Math.Clamp(kitId, 0, ushort.MaxValue));
+            if (inventory is not null && inventory.MusicID != inventoryKitId)
             {
-                inventory.MusicID = checked((ushort)Math.Clamp(kitId, 0, ushort.MaxValue));
+                inventory.MusicID = inventoryKitId;
+                Utilities.SetStateChanged(player, "CCSPlayerController", "m_pInventoryServices");
             }
 
-            player.MusicKitID = kitId;
-            Utilities.SetStateChanged(player, "CCSPlayerController", "m_iMusicKitID");
-            player.MusicKitMVPs = Math.Max(0, mvpCount);
-            Utilities.SetStateChanged(player, "CCSPlayerController", "m_iMusicKitMVPs");
-            player.MvpNoMusic = false;
-            Utilities.SetStateChanged(player, "CCSPlayerController", "m_bMvpNoMusic");
+            if (player.MusicKitID != kitId)
+            {
+                player.MusicKitID = kitId;
+                Utilities.SetStateChanged(player, "CCSPlayerController", "m_iMusicKitID");
+            }
+
+            var clampedMvpCount = Math.Max(0, mvpCount);
+            if (player.MusicKitMVPs != clampedMvpCount)
+            {
+                player.MusicKitMVPs = clampedMvpCount;
+                Utilities.SetStateChanged(player, "CCSPlayerController", "m_iMusicKitMVPs");
+            }
+
+            if (player.MvpNoMusic)
+            {
+                player.MvpNoMusic = false;
+                Utilities.SetStateChanged(player, "CCSPlayerController", "m_bMvpNoMusic");
+            }
         }
         catch (Exception ex)
         {
