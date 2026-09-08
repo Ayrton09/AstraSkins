@@ -77,6 +77,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         RegisterListener<Listeners.OnClientAuthorized>(OnClientAuthorized);
         RegisterListener<Listeners.OnMapStart>(OnMapStart);
         RegisterListener<Listeners.OnTick>(OnTick);
+        RegisterListener<Listeners.CheckTransmit>(OnCheckTransmit);
         RegisterListener<Listeners.OnPlayerButtonsChanged>(OnPlayerButtonsChanged);
         RegisterListener<Listeners.OnServerPrecacheResources>(OnServerPrecacheResources);
         RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawnPre, HookMode.Pre);
@@ -994,14 +995,21 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
 
         _menuManager?.OnTick();
         _skinManager?.ReconcileTeamPreview();
+    }
+
+    // Music kits are reconciled right before the server builds each tick's
+    // snapshot, after all game logic and client packet processing of the
+    // tick. Valve rewrites the kit on its own schedule (once the client is
+    // fully connected, on spawns, on bot joins, at the round boundary), and
+    // a client that sees the stock kit for even one snapshot starts the
+    // default team select track and never stops it when the kit switches
+    // back. Doing the compare here means the client only ever sees the
+    // selected kit. Reads a few fields per player, writes only on a mismatch.
+    private void OnCheckTransmit(CCheckTransmitInfoList infoList)
+    {
         EnsureMusicKitForLivePlayers();
     }
 
-    // Runs every tick. Valve resets controller music on its own schedule (a
-    // bot joining or spawning, the round boundary) and the cues sample the
-    // value right away, so the fix has to land on the next tick rather than
-    // on a timer guessed per event. Reads a few fields per player, writes
-    // only on a mismatch.
     private void EnsureMusicKitForLivePlayers()
     {
         if (!_ready || _skinManager is null)
