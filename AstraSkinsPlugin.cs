@@ -25,7 +25,16 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
     private SkinManager? _skinManager;
     private MenuManager? _menuManager;
     private readonly Dictionary<int, ulong> _steamIdsBySlot = new();
+    // Humans dropped by the level shutdown (player_disconnect with reason
+    // SHUTDOWN fires for everyone before OnMapEnd) and, once the map has
+    // ended, the ones expected back on the next map: the only clients that
+    // can carry a looping track across the load.
+    private readonly HashSet<ulong> _shutdownSteamIds = new();
+    private readonly HashSet<ulong> _carriedOverSteamIds = new();
     private readonly Dictionary<int, DateTime> _maintenanceCooldownsBySlot = new();
+    // Agent models handed to the engine at map load; a catalog reloaded
+    // mid-map can list models the engine does not have.
+    private readonly HashSet<string> _precachedModels = new(StringComparer.OrdinalIgnoreCase);
     // Set on round_mvp, consumed if that same player then dies to planted_c4.
     // DeathCam on the MVP's own client replaces the anthem; the 1s kit
     // reconcile does not replay the cue.
@@ -76,6 +85,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
 
         RegisterListener<Listeners.OnClientAuthorized>(OnClientAuthorized);
         RegisterListener<Listeners.OnMapStart>(OnMapStart);
+        RegisterListener<Listeners.OnMapEnd>(OnMapEnd);
         RegisterListener<Listeners.OnTick>(OnTick);
         RegisterListener<Listeners.CheckTransmit>(OnCheckTransmit);
         RegisterListener<Listeners.OnPlayerButtonsChanged>(OnPlayerButtonsChanged);
@@ -96,6 +106,9 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         {
             foreach (var player in Utilities.GetPlayers().Where(IsLiveHuman))
             {
+                // OnClientAuthorized does not fire again for players who were
+                // already in, so the slot table has to be rebuilt here.
+                _steamIdsBySlot[player.Slot] = player.SteamID;
                 _skinManager?.ApplyToPlayer(player);
             }
         }
@@ -134,7 +147,9 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         _storage = storage;
         _skinManager = new SkinManager(storage, catalog, Logger,
             (delay, action) => AddTimer(delay, () => action(), TimerFlags.STOP_ON_MAPCHANGE),
-            config.EnableStatTrakByDefault);
+            config.EnableStatTrakByDefault,
+            // No precache pass seen yet (plugin loaded mid-map): nothing to check against.
+            model => _precachedModels.Count == 0 || _precachedModels.Contains(model));
         _menuManager = new MenuManager(_skinManager, config, Localizer, Logger);
         _ready = true;
 
@@ -397,6 +412,12 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         if (_config is null)
         {
             command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.not_initialized")}");
+            return;
+        }
+
+        if (!_ready || _skinManager is null)
+        {
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.not_ready")}");
             return;
         }
 
@@ -716,6 +737,13 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
     private HookResult OnBotTakeover(EventBotTakeover @event, GameEventInfo info)
     {
         var player = @event.Userid;
+        // Button input keeps coming from the player's own pawn during the
+        // possession, so an open menu would sit there unresponsive.
+        if (player is { IsValid: true })
+        {
+            _menuManager?.Close(player);
+        }
+
         if (!_ready || _config is null || !_config.ApplyPlayerCosmeticsOnBotTakeover || !IsLiveHuman(player))
         {
             return HookResult.Continue;
@@ -840,7 +868,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             var weapon = attacker!.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
             if (weapon is not null && weapon.IsValid)
             {
-                _skinManager?.IncrementStatTrak(attacker, weapon);
+                _skinManager?.IncrementStatTrak(attacker, weapon, @event.Weapon);
             }
         }
 
@@ -935,9 +963,18 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             _menuManager?.CloseSlot(player.Slot);
             _maintenanceCooldownsBySlot.Remove(player.Slot);
             _skinManager?.Forget(player);
-            if (_steamIdsBySlot.Remove(player.Slot, out var steamId))
+            if (!_steamIdsBySlot.Remove(player.Slot, out var steamId))
+            {
+                steamId = player.IsBot ? 0 : player.SteamID;
+            }
+
+            if (steamId != 0)
             {
                 _skinManager?.Forget(steamId);
+                if (@event.Reason == (int)CounterStrikeSharp.API.ValveConstants.Protobuf.NetworkDisconnectionReason.NETWORK_DISCONNECT_SHUTDOWN)
+                {
+                    _shutdownSteamIds.Add(steamId);
+                }
             }
         }
 
@@ -950,6 +987,12 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         if (player is not null && player.IsValid)
         {
             _menuManager?.Close(player);
+            // Safe point for the leftover stop: the menu just closed and took
+            // the selection music with it, so only the old loop can be playing.
+            if (_ready && !player.IsBot && @event.Oldteam == 0 && @event.Team is 2 or 3 && _carriedOverSteamIds.Remove(player.SteamID))
+            {
+                EmitToClient(player, "StopSoundEvents.StopAllMusic", "first team join");
+            }
             if (_ready && IsLiveHuman(player))
             {
                 _skinManager?.ApplyMusicKitWhenProfileReady(player, logFailures: false);
@@ -981,9 +1024,41 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
 
     }
 
+    private void EmitToClient(CCSPlayerController player, string soundEvent, string context)
+    {
+        try
+        {
+            NativeAPI.EmitSoundFilter(1UL << player.Slot, (uint)player.Index, soundEvent, 1f, 0f);
+            Logger.LogDebug("Astra Skins emitted {Sound} to slot {Slot} ({Context}).", soundEvent, player.Slot, context);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogWarning(ex, "Astra Skins could not emit {Sound} to slot {Slot}.", soundEvent, player.Slot);
+        }
+    }
+
     private void OnMapStart(string mapName)
     {
         _skinManager?.ResetTeamPreviewTracking();
+    }
+
+    // The client keeps music alive across map loads, and the round start
+    // track loops until the player first moves. A player who never moved
+    // carries that loop into the next map, where nothing replaces it until
+    // the first team intro (round start music is deferred during warmup).
+    // Remember who was in when the map ended: on the next map, the first
+    // time each of them joins a team the menu has just closed and stopped
+    // the selection music, so only the old loop can still be playing and a
+    // plain StopAllMusic is safe. Earlier moments are not: before the client
+    // is in the game it ignores sound messages, and at put-in-server the
+    // stop lands after the team select music started. A fresh connection has
+    // nothing to stop and is left alone.
+    private void OnMapEnd()
+    {
+        _carriedOverSteamIds.Clear();
+        _carriedOverSteamIds.UnionWith(_shutdownSteamIds);
+        _shutdownSteamIds.Clear();
+        Logger.LogDebug("Astra Skins map end: {Count} humans carried over.", _carriedOverSteamIds.Count);
     }
 
     private void OnTick()
@@ -1048,11 +1123,13 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             return;
         }
 
+        _precachedModels.Clear();
         foreach (var agent in catalog.Agents)
         {
             if (!string.IsNullOrWhiteSpace(agent.Model))
             {
                 manifest.AddResource(agent.Model);
+                _precachedModels.Add(agent.Model);
             }
         }
     }

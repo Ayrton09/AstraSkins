@@ -799,7 +799,8 @@ public sealed class MenuManager
             return Array.Empty<MenuOption>();
         }
 
-        var terms = state.SearchQuery.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        // Any whitespace, so an ideographic space from a Chinese IME splits too.
+        var terms = state.SearchQuery.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         var zh = state.PreferZh;
         if (terms.Length == 0)
         {

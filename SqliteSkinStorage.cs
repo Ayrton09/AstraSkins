@@ -164,6 +164,9 @@ public sealed class SqliteSkinStorage : ISkinStorage
 
     public void Dispose()
     {
+        // Connections are pooled per process; release them so the database
+        // file is closed when the plugin unloads.
+        SqliteConnection.ClearAllPools();
     }
 
     private SqliteConnection Open()

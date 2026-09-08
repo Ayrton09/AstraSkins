@@ -187,6 +187,7 @@ public sealed class MySqlSkinStorage : ISkinStorage
 
     public void Dispose()
     {
+        MySqlConnection.ClearAllPools();
     }
 
     private MySqlConnection Open()

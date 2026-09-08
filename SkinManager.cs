@@ -116,17 +116,26 @@ public sealed class SkinManager : IDisposable
 
     public DefinitionCatalog Catalog { get; private set; }
 
-    public SkinManager(ISkinStorage storage, DefinitionCatalog catalog, ILogger logger, Action<float, Action>? scheduleDelayed = null, bool statTrakByDefault = false)
+    public SkinManager(ISkinStorage storage, DefinitionCatalog catalog, ILogger logger, Action<float, Action>? scheduleDelayed = null, bool statTrakByDefault = false, Func<string, bool>? isModelPrecached = null)
     {
         _storage = storage;
         Catalog = catalog;
         _logger = logger;
         _scheduleDelayed = scheduleDelayed;
         _statTrakByDefault = statTrakByDefault;
+        _isModelPrecached = isModelPrecached;
         _econAttributes = new EconAttributeApplicator(logger);
     }
 
+    private const int ProfileRetrySeconds = 10;
     private readonly Action<float, Action>? _scheduleDelayed;
+    // Answers whether a model was precached for the current map; a model
+    // added by a reload mid-map must not be set on a pawn.
+    private readonly Func<string, bool>? _isModelPrecached;
+    private readonly HashSet<string> _unprecachedModelsWarned = new(StringComparer.OrdinalIgnoreCase);
+    // A failed profile read is not retried before this time, otherwise the
+    // per-tick music reconcile would hammer a database that is down.
+    private readonly Dictionary<ulong, DateTime> _profileRetryAfterUtc = new();
 
     public void ReplaceCatalog(DefinitionCatalog catalog)
     {
@@ -144,6 +153,7 @@ public sealed class SkinManager : IDisposable
         _profiles.Clear();
         _profileEpochs.Clear();
         _appliedMusicKits.Clear();
+        _profileRetryAfterUtc.Clear();
 
         Task pendingStorageWork;
         lock (_storageQueueLock)
@@ -205,6 +215,7 @@ public sealed class SkinManager : IDisposable
         _applyAfterLoadRequests.Remove(steamId64);
         _activeSteamIds.Remove(steamId64);
         _appliedMusicKits.Remove(steamId64);
+        _profileRetryAfterUtc.Remove(steamId64);
 
         // A read still in flight must come back stale: bump the epoch instead
         // of deleting it so the callback can tell this lifecycle ended.
@@ -1167,7 +1178,7 @@ public sealed class SkinManager : IDisposable
 
     // Bumps the counter in place: no weapon refresh, since re-creating the
     // weapon on every kill would be disastrous.
-    public void IncrementStatTrak(CCSPlayerController player, CBasePlayerWeapon weapon)
+    public void IncrementStatTrak(CCSPlayerController player, CBasePlayerWeapon weapon, string? killWeapon = null)
     {
         if (_disposed || !IsUsablePlayer(player) || weapon is null || !weapon.IsValid)
         {
@@ -1179,8 +1190,20 @@ public sealed class SkinManager : IDisposable
             return;
         }
 
+        // The stored counter is not known yet: counting now would write an
+        // absolute value over it. A kill in that window is not credited.
+        if (!_loadedProfiles.Contains(steamId))
+        {
+            return;
+        }
+
         var weaponName = ResolveWeaponEntityName(weapon);
         if (string.IsNullOrWhiteSpace(weaponName))
+        {
+            return;
+        }
+
+        if (!string.IsNullOrWhiteSpace(killWeapon) && !KillWeaponMatches(weaponName, killWeapon))
         {
             return;
         }
@@ -1538,6 +1561,11 @@ public sealed class SkinManager : IDisposable
             return;
         }
 
+        if (_profileRetryAfterUtc.TryGetValue(steamId64, out var retryAfter) && DateTime.UtcNow < retryAfter)
+        {
+            return;
+        }
+
         // A read is already in flight: remember that someone wants cosmetics
         // applied when it lands instead of dropping the request.
         if (!_loadingProfiles.Add(steamId64))
@@ -1596,23 +1624,22 @@ public sealed class SkinManager : IDisposable
 
                 if (failure is not null)
                 {
-                    if (logFailures)
-                    {
-                        _logger.LogWarning(failure, "Astra Skins failed to load profile for player {SteamId}.", steamId64);
-                    }
-
+                    // Always logged: the reconcile paths pass logFailures false
+                    // and a database outage must not stay invisible. The
+                    // cooldown keeps it to one line per player per interval.
+                    _profileRetryAfterUtc[steamId64] = DateTime.UtcNow.AddSeconds(ProfileRetrySeconds);
+                    _logger.LogWarning(failure, "Astra Skins failed to load profile for player {SteamId}; retrying in {Seconds}s.", steamId64, ProfileRetrySeconds);
                     return;
                 }
 
                 if (loaded is null)
                 {
-                    if (logFailures)
-                    {
-                        _logger.LogWarning("Astra Skins storage returned no profile for player {SteamId}.", steamId64);
-                    }
-
+                    _profileRetryAfterUtc[steamId64] = DateTime.UtcNow.AddSeconds(ProfileRetrySeconds);
+                    _logger.LogWarning("Astra Skins storage returned no profile for player {SteamId}; retrying in {Seconds}s.", steamId64, ProfileRetrySeconds);
                     return;
                 }
+
+                _profileRetryAfterUtc.Remove(steamId64);
 
                 if (_profiles.TryGetValue(steamId64, out var existing))
                 {
@@ -1719,6 +1746,11 @@ public sealed class SkinManager : IDisposable
                 existing.Seed ??= loadedCustomization.Seed;
                 existing.Wear ??= loadedCustomization.Wear;
                 existing.NameTag ??= loadedCustomization.NameTag;
+                if (existing.StatTrak is null && !existing.StatTrakDisabled)
+                {
+                    existing.StatTrak = loadedCustomization.StatTrak;
+                    existing.StatTrakDisabled = loadedCustomization.StatTrakDisabled;
+                }
             }
             else
             {
@@ -1921,6 +1953,16 @@ public sealed class SkinManager : IDisposable
             return false;
         }
 
+        if (_isModelPrecached is not null && !_isModelPrecached(agent.Model))
+        {
+            if (_unprecachedModelsWarned.Add(agent.Model))
+            {
+                _logger.LogWarning("Astra Skins agent {AgentId} model {Model} is not precached on this map (added after map start?); it applies from the next map.", agent.Id, agent.Model);
+            }
+
+            return false;
+        }
+
         try
         {
             var itemDefinitionIndex = agent.ItemDefinitionIndex.GetValueOrDefault();
@@ -2045,9 +2087,14 @@ public sealed class SkinManager : IDisposable
         var weaponServices = pawn!.WeaponServices;
         if (weaponServices is not null)
         {
-            foreach (var weaponHandle in weaponServices.MyWeapons)
+            // Snapshot: the loop hands out replacement weapons, which the
+            // engine may append to the very list being walked.
+            var weapons = weaponServices.MyWeapons
+                .Select(handle => handle.Value)
+                .Where(weapon => weapon is { IsValid: true })
+                .ToList();
+            foreach (var weapon in weapons)
             {
-                var weapon = weaponHandle.Value;
                 if (weapon is null || !weapon.IsValid)
                 {
                     continue;
@@ -2098,14 +2145,14 @@ public sealed class SkinManager : IDisposable
             var oldReserve = oldWeapon.ReserveAmmo.Length > 0 ? Math.Max(0, oldWeapon.ReserveAmmo[0]) : 0;
 
             ClearWeaponCosmetic(player, oldWeapon);
-            oldWeapon.AddEntityIOEvent("Kill", oldWeapon, null, string.Empty, 0.01f);
-
             var newWeapon = player.GiveNamedItem<CBasePlayerWeapon>(weaponEntity);
             if (newWeapon is null)
             {
                 _logger.LogWarning("Astra Skins could not create the stock {WeaponEntity} for player {SteamId} after a reset.", weaponEntity, player.SteamID);
                 return;
             }
+
+            oldWeapon.AddEntityIOEvent("Kill", oldWeapon, null, string.Empty, 0.01f);
 
             Server.NextFrame(() =>
             {
@@ -2117,7 +2164,9 @@ public sealed class SkinManager : IDisposable
                 RestoreAmmo(newWeapon, oldClip, oldReserve);
                 _scheduleDelayed?.Invoke(0.2f, () =>
                 {
-                    if (IsUsablePlayer(player) && newWeapon.IsValid)
+                    // Only undo an engine refill; a clip that went down in the
+                    // meantime was fired and must not be refunded.
+                    if (IsUsablePlayer(player) && newWeapon.IsValid && newWeapon.Clip1 > oldClip)
                     {
                         RestoreAmmo(newWeapon, oldClip, oldReserve);
                     }
@@ -2143,14 +2192,14 @@ public sealed class SkinManager : IDisposable
         {
             var wasActive = IsActiveWeapon(player, oldKnife);
             ClearWeaponCosmetic(player, oldKnife);
-            oldKnife.AddEntityIOEvent("Kill", oldKnife, null, string.Empty, 0.01f);
-
             var newKnife = player.GiveNamedItem<CBasePlayerWeapon>("weapon_knife");
             if (newKnife is null)
             {
                 _logger.LogWarning("Astra Skins could not create the stock knife for player {SteamId} after a reset.", player.SteamID);
                 return;
             }
+
+            oldKnife.AddEntityIOEvent("Kill", oldKnife, null, string.Empty, 0.01f);
 
             if (wasActive)
             {
@@ -2233,14 +2282,14 @@ public sealed class SkinManager : IDisposable
             oldReserve = oldWeapon.ReserveAmmo.Length > 0 ? Math.Max(0, oldWeapon.ReserveAmmo[0]) : 0;
 
             ApplyCosmeticToWeapon(player, oldWeapon, skin, isKnife: false, logFailures);
-            oldWeapon.AddEntityIOEvent("Kill", oldWeapon, null, string.Empty, 0.01f);
-
             var newWeapon = player.GiveNamedItem<CBasePlayerWeapon>(weaponEntity);
             if (newWeapon is null)
             {
                 _logger.LogWarning("Astra Skins could not create replacement {WeaponEntity} for player {SteamId}.", weaponEntity, player.SteamID);
                 return false;
             }
+
+            oldWeapon.AddEntityIOEvent("Kill", oldWeapon, null, string.Empty, 0.01f);
 
             Server.NextFrame(() =>
             {
@@ -2261,7 +2310,13 @@ public sealed class SkinManager : IDisposable
                     {
                         if (IsUsablePlayer(player) && newWeapon.IsValid)
                         {
-                            RestoreAmmo(newWeapon, oldClip, oldReserve);
+                            // Only undo an engine refill; a clip that went down
+                            // in the meantime was fired and must not be refunded.
+                            if (newWeapon.Clip1 > oldClip)
+                            {
+                                RestoreAmmo(newWeapon, oldClip, oldReserve);
+                            }
+
                             ApplyCosmeticToWeapon(player, newWeapon, skin, isKnife: false, logFailures: false, weaponEntity);
                         }
                     });
@@ -2328,8 +2383,6 @@ public sealed class SkinManager : IDisposable
                 ApplyCosmeticToWeapon(player, oldKnife, skin, isKnife: true, logFailures);
             }
 
-            oldKnife.AddEntityIOEvent("Kill", oldKnife, null, string.Empty, 0.01f);
-
             var newKnife = player.GiveNamedItem<CBasePlayerWeapon>("weapon_knife");
             if (newKnife is null)
             {
@@ -2340,6 +2393,8 @@ public sealed class SkinManager : IDisposable
 
                 return false;
             }
+
+            oldKnife.AddEntityIOEvent("Kill", oldKnife, null, string.Empty, 0.01f);
 
             Server.NextFrame(() =>
             {
@@ -2504,6 +2559,23 @@ public sealed class SkinManager : IDisposable
                 }
             }
         }
+    }
+
+    // player_death names the item that killed ("ak47", "hegrenade",
+    // "knife_karambit", "planted_c4"). Only the weapon in hand carries the
+    // counter, so a kill by anything else is not credited to it.
+    private static bool KillWeaponMatches(string weaponEntity, string killWeapon)
+    {
+        var held = weaponEntity.StartsWith("weapon_", StringComparison.OrdinalIgnoreCase) ? weaponEntity[7..] : weaponEntity;
+        var kill = killWeapon.StartsWith("weapon_", StringComparison.OrdinalIgnoreCase) ? killWeapon[7..] : killWeapon;
+        if (held.Equals(kill, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        // Knives report their model name while the held entity can be the
+        // stock knife or a subclassed one; any knife kill counts for the knife.
+        return IsKnife(held) && (kill.StartsWith("knife", StringComparison.OrdinalIgnoreCase) || kill.Equals("bayonet", StringComparison.OrdinalIgnoreCase));
     }
 
     private static bool IsKnife(string weaponName)
@@ -2696,7 +2768,7 @@ public sealed class SkinManager : IDisposable
         }
 
         preview.AgentItem.ItemDefinitionIndex = defIndex;
-        TrySetStateChanged(preview, "CCSGO_TeamPreviewCharacterPosition", "m_agentItem");
+        MarkEconItemStateChanged(preview, "CCSGO_TeamPreviewCharacterPosition", "m_agentItem");
     }
 
     private void ApplyTeamPreviewGloves(
@@ -2732,7 +2804,7 @@ public sealed class SkinManager : IDisposable
             seed,
             wear,
             $"team preview gloves player {player.SteamID}");
-        TrySetStateChanged(preview, "CCSGO_TeamPreviewCharacterPosition", "m_glovesItem");
+        MarkEconItemStateChanged(preview, "CCSGO_TeamPreviewCharacterPosition", "m_glovesItem");
     }
 
     private void ApplyTeamPreviewWeapon(
@@ -2765,14 +2837,14 @@ public sealed class SkinManager : IDisposable
             if (knifeSkin is not null &&
                 ApplyPreviewPaint(player, item, knifeSkin, isKnife: true, KnifeTarget, logFailures, "team preview knife"))
             {
-                TrySetStateChanged(preview, "CCSGO_TeamPreviewCharacterPosition", "m_weaponItem");
+                MarkEconItemStateChanged(preview, "CCSGO_TeamPreviewCharacterPosition", "m_weaponItem");
                 return;
             }
 
             var knife = ResolveUsableKnifeType(player, profile);
             if (knife is not null && ApplyPreviewKnifeType(player, item, knife))
             {
-                TrySetStateChanged(preview, "CCSGO_TeamPreviewCharacterPosition", "m_weaponItem");
+                MarkEconItemStateChanged(preview, "CCSGO_TeamPreviewCharacterPosition", "m_weaponItem");
             }
 
             return;
@@ -2782,7 +2854,7 @@ public sealed class SkinManager : IDisposable
         if (skin is not null &&
             ApplyPreviewPaint(player, item, skin, isKnife: false, weaponName, logFailures, $"team preview {weaponName}"))
         {
-            TrySetStateChanged(preview, "CCSGO_TeamPreviewCharacterPosition", "m_weaponItem");
+            MarkEconItemStateChanged(preview, "CCSGO_TeamPreviewCharacterPosition", "m_weaponItem");
         }
     }
 
@@ -2968,8 +3040,38 @@ public sealed class SkinManager : IDisposable
 
     private void MarkGlovesStateChanged(CCSPlayerPawn pawn)
     {
-        TrySetStateChanged(pawn, "CCSPlayerPawn", "m_EconGloves");
+        MarkEconItemStateChanged(pawn, "CCSPlayerPawn", "m_EconGloves");
         TrySetStateChanged(pawn, "CCSPlayerPawn", "m_nEconGlovesChanged");
+    }
+
+    // Leaf fields of CEconItemView this plugin writes. Flagging the embedded
+    // struct itself makes the engine log "Couldn't resolve offset": that
+    // offset is not a networked leaf, so the change list has to name each
+    // field. Which of them are networked is asked from the schema once.
+    private static readonly string[] EconItemFields =
+    {
+        "m_bInitialized",
+        "m_iItemDefinitionIndex",
+        "m_iEntityQuality",
+        "m_iItemIDHigh",
+        "m_iItemIDLow",
+        "m_iAccountID",
+        "m_szCustomName",
+        "m_szCustomNameOverride",
+    };
+
+    private static readonly Lazy<(string Name, int Offset)[]> NetworkedEconItemFields = new(() =>
+        EconItemFields
+            .Where(f => NativeAPI.IsSchemaFieldNetworked("CEconItemView", f))
+            .Select(f => (f, (int)NativeAPI.GetSchemaOffset("CEconItemView", f)))
+            .ToArray());
+
+    private void MarkEconItemStateChanged(CBaseEntity entity, string className, string fieldName)
+    {
+        foreach (var (_, offset) in NetworkedEconItemFields.Value)
+        {
+            TrySetStateChanged(entity, className, fieldName, offset);
+        }
     }
 
     private static bool IsActiveWeapon(CCSPlayerController player, CBasePlayerWeapon weapon)
@@ -2996,11 +3098,11 @@ public sealed class SkinManager : IDisposable
         }
     }
 
-    private void TrySetStateChanged(CBaseEntity entity, string className, string fieldName)
+    private void TrySetStateChanged(CBaseEntity entity, string className, string fieldName, int extraOffset = 0)
     {
         try
         {
-            Utilities.SetStateChanged(entity, className, fieldName);
+            Utilities.SetStateChanged(entity, className, fieldName, extraOffset);
         }
         catch (Exception ex)
         {

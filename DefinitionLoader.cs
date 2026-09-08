@@ -63,6 +63,20 @@ public sealed class DefinitionLoader
                 throw new InvalidOperationException($"{label} definition file is empty: {path}");
             }
 
+            // A literal null in the array deserializes to a null element and
+            // would surface as a NullReferenceException past the validation.
+            if (result is System.Collections.IList list)
+            {
+                for (var i = list.Count - 1; i >= 0; i--)
+                {
+                    if (list[i] is null)
+                    {
+                        _logger.LogWarning("Skipping null entry in the {Label} definition file.", label);
+                        list.RemoveAt(i);
+                    }
+                }
+            }
+
             return result;
         }
         catch (JsonException ex)
@@ -120,6 +134,8 @@ internal sealed class DefinitionValidation
         List<CategoryDefinition> categories,
         List<MusicKitDefinition> musicKits)
     {
+        // Validate first so a category dropped here is also unknown to weapons.
+        ValidateCategories(categories);
         var categoryIds = categories.Where(c => c.Enabled).Select(c => c.Id).ToHashSet(StringComparer.OrdinalIgnoreCase);
         var validWeapons = new List<WeaponDefinition>();
         var validKnives = new List<KnifeDefinition>();
@@ -132,8 +148,8 @@ internal sealed class DefinitionValidation
         var gloveSkinsById = new Dictionary<string, CosmeticEntry>(StringComparer.OrdinalIgnoreCase);
         var agentsById = new Dictionary<string, AgentDefinition>(StringComparer.OrdinalIgnoreCase);
         var musicKitsById = new Dictionary<string, MusicKitDefinition>(StringComparer.OrdinalIgnoreCase);
-
-        ValidateCategories(categories);
+        var knifeIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var gloveIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var weapon in weapons)
         {
@@ -171,6 +187,12 @@ internal sealed class DefinitionValidation
                 continue;
             }
 
+            if (!knifeIds.Add(knife.Id))
+            {
+                _logger.LogWarning("Skipping duplicate knife definition Id={Id}.", knife.Id);
+                continue;
+            }
+
             knife.Skins = ValidateCosmetics(knife.Skins, $"knife {knife.Id}", knifeSkinsById, requireItemDefinition: false, defaultItemDefinition: knife.ItemDefinitionIndex);
             if (knife.Skins.Count > 0)
             {
@@ -188,6 +210,12 @@ internal sealed class DefinitionValidation
             if (string.IsNullOrWhiteSpace(glove.Id) || string.IsNullOrWhiteSpace(glove.DisplayName) || glove.ItemDefinitionIndex == 0)
             {
                 _logger.LogWarning("Skipping invalid glove definition with Id={Id}. Id, DisplayName, and ItemDefinitionIndex are required.", glove.Id);
+                continue;
+            }
+
+            if (!gloveIds.Add(glove.Id))
+            {
+                _logger.LogWarning("Skipping duplicate glove definition Id={Id}.", glove.Id);
                 continue;
             }
 
@@ -367,9 +395,20 @@ internal sealed class DefinitionValidation
     {
         var valid = new List<CosmeticEntry>();
         var localIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (entries is null)
+        {
+            _logger.LogWarning("Skipping {Owner}: its skins list is null.", owner);
+            return valid;
+        }
 
         foreach (var entry in entries)
         {
+            if (entry is null)
+            {
+                _logger.LogWarning("Skipping null cosmetic entry in {Owner}.", owner);
+                continue;
+            }
+
             if (!entry.Enabled)
             {
                 continue;
