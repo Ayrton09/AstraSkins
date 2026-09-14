@@ -4,6 +4,9 @@ using Microsoft.Extensions.Logging;
 
 namespace AstraSkins;
 
+// One sticker on one of the weapon's five slots (0 to 4).
+internal readonly record struct StickerAttachment(int Slot, int StickerId);
+
 internal sealed class EconAttributeApplicator
 {
     private const string SignatureKey = "AstraSkins_CAttributeList_SetOrAddAttributeValueByName";
@@ -36,7 +39,16 @@ internal sealed class EconAttributeApplicator
         }
     }
 
-    public bool ApplyPaintAttributes(CEconItemView item, string cosmeticId, int paintKit, int seed, float wear, string context, int? statTrak = null)
+    public bool ApplyPaintAttributes(
+        CEconItemView item,
+        string cosmeticId,
+        int paintKit,
+        int seed,
+        float wear,
+        string context,
+        int? statTrak = null,
+        IReadOnlyList<StickerAttachment>? stickers = null,
+        int? keychainId = null)
     {
         if (item.Handle == IntPtr.Zero)
         {
@@ -60,6 +72,8 @@ internal sealed class EconAttributeApplicator
 
             SetPaintAttributes(item.AttributeList.Handle, paintKit, seed, wear);
             SetPaintAttributes(item.NetworkedDynamicAttributes.Handle, paintKit, seed, wear);
+            SetAttachmentAttributes(item.AttributeList.Handle, stickers, keychainId);
+            SetAttachmentAttributes(item.NetworkedDynamicAttributes.Handle, stickers, keychainId);
             SetStatTrakAttributes(item, statTrak);
             return true;
         }
@@ -127,6 +141,32 @@ internal sealed class EconAttributeApplicator
         {
             _setOrAddAttributeValueByName.Invoke(handle, "kill eater", count);
             _setOrAddAttributeValueByName.Invoke(handle, "kill eater score type", scoreType);
+        }
+    }
+
+    // Sticker and charm ids are integer attributes like the kill counter, so
+    // the int bits go through the float parameter unchanged. Only the ids are
+    // written: wear, scale, rotation and offsets left absent render the
+    // sticker at its stock size and position, the way a freshly applied
+    // sticker looks in the game.
+    private void SetAttachmentAttributes(nint attributeListHandle, IReadOnlyList<StickerAttachment>? stickers, int? keychainId)
+    {
+        if (stickers is not null)
+        {
+            foreach (var sticker in stickers)
+            {
+                if (sticker.Slot < 0 || sticker.StickerId <= 0)
+                {
+                    continue;
+                }
+
+                _setOrAddAttributeValueByName!.Invoke(attributeListHandle, $"sticker slot {sticker.Slot} id", BitConverter.Int32BitsToSingle(sticker.StickerId));
+            }
+        }
+
+        if (keychainId is > 0)
+        {
+            _setOrAddAttributeValueByName!.Invoke(attributeListHandle, "keychain slot 0 id", BitConverter.Int32BitsToSingle(keychainId.Value));
         }
     }
 

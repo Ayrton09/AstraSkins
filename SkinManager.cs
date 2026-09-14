@@ -20,12 +20,20 @@ public sealed class SkinManager : IDisposable
     // row instead of reading it as a count.
     public const string StatTrakDisabledValue = "off";
 
+    // Sticker slots a gun exposes in the game (0 to 4).
+    public const int StickerSlots = 5;
+
     private const ulong MinimumCustomItemId = 65578;
 
     private readonly ISkinStorage _storage;
     private readonly ILogger _logger;
     private readonly EconAttributeApplicator _econAttributes;
     private readonly bool _statTrakByDefault;
+    private readonly StickersConfig _stickersConfig;
+    private readonly KeychainsConfig _keychainsConfig;
+    // Kit 0 entries handed to guns that carry stickers or a charm without a
+    // skin: the client renders the stock finish with the attachments on.
+    private readonly Dictionary<string, CosmeticEntry> _vanillaEntries = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<ulong, PlayerSkinProfile> _profiles = new();
     // _profiles can hold a placeholder while a read is in flight, so loaded
     // completion is tracked separately; without this a failed read leaves the
@@ -116,7 +124,15 @@ public sealed class SkinManager : IDisposable
 
     public DefinitionCatalog Catalog { get; private set; }
 
-    public SkinManager(ISkinStorage storage, DefinitionCatalog catalog, ILogger logger, Action<float, Action>? scheduleDelayed = null, bool statTrakByDefault = false, Func<string, bool>? isModelPrecached = null)
+    public SkinManager(
+        ISkinStorage storage,
+        DefinitionCatalog catalog,
+        ILogger logger,
+        Action<float, Action>? scheduleDelayed = null,
+        bool statTrakByDefault = false,
+        Func<string, bool>? isModelPrecached = null,
+        StickersConfig? stickers = null,
+        KeychainsConfig? keychains = null)
     {
         _storage = storage;
         Catalog = catalog;
@@ -124,6 +140,8 @@ public sealed class SkinManager : IDisposable
         _scheduleDelayed = scheduleDelayed;
         _statTrakByDefault = statTrakByDefault;
         _isModelPrecached = isModelPrecached;
+        _stickersConfig = stickers ?? new StickersConfig();
+        _keychainsConfig = keychains ?? new KeychainsConfig();
         _econAttributes = new EconAttributeApplicator(logger);
     }
 
@@ -456,6 +474,90 @@ public sealed class SkinManager : IDisposable
         return true;
     }
 
+    public static string StickerTarget(string weaponEntity, int slot)
+    {
+        return $"{weaponEntity}:{slot.ToString(CultureInfo.InvariantCulture)}";
+    }
+
+    public bool SetSticker(CCSPlayerController player, string weaponEntity, int slot, string stickerId)
+    {
+        if (slot is < 0 or >= StickerSlots ||
+            !Catalog.WeaponsByEntity.ContainsKey(weaponEntity) ||
+            !Catalog.StickersById.TryGetValue(stickerId, out var sticker) ||
+            !CanUseStickers(player) ||
+            !CanUse(player, sticker))
+        {
+            return false;
+        }
+
+        var steamId = GetSteamId64(player);
+        var profile = GetProfile(player);
+        if (!profile.Stickers.TryGetValue(weaponEntity, out var slots))
+        {
+            slots = new Dictionary<int, string>();
+            profile.Stickers[weaponEntity] = slots;
+        }
+
+        slots[slot] = stickerId;
+        var target = StickerTarget(weaponEntity, slot);
+        QueueStorageWrite($"sticker {stickerId} ({target}) for {steamId}", () => _storage.SaveCustomization(steamId, "sticker", target, stickerId));
+        ReapplyTarget(player, profile, weaponEntity);
+        return true;
+    }
+
+    // Removing never needs the flag: a player who lost it can still clean up.
+    public bool ClearSticker(CCSPlayerController player, string weaponEntity, int slot)
+    {
+        var profile = GetProfile(player);
+        if (!profile.Stickers.TryGetValue(weaponEntity, out var slots) || !slots.Remove(slot))
+        {
+            return false;
+        }
+
+        if (slots.Count == 0)
+        {
+            profile.Stickers.Remove(weaponEntity);
+        }
+
+        var steamId = GetSteamId64(player);
+        var target = StickerTarget(weaponEntity, slot);
+        QueueStorageWrite($"sticker reset ({target}) for {steamId}", () => _storage.ClearCustomization(steamId, "sticker", target));
+        ReapplyTarget(player, profile, weaponEntity, clearWhenBare: true);
+        return true;
+    }
+
+    public bool SetKeychain(CCSPlayerController player, string weaponEntity, string keychainId)
+    {
+        if (!Catalog.WeaponsByEntity.ContainsKey(weaponEntity) ||
+            !Catalog.KeychainsById.TryGetValue(keychainId, out var keychain) ||
+            !CanUseKeychains(player) ||
+            !CanUse(player, keychain))
+        {
+            return false;
+        }
+
+        var steamId = GetSteamId64(player);
+        var profile = GetProfile(player);
+        profile.Keychains[weaponEntity] = keychainId;
+        QueueStorageWrite($"keychain {keychainId} ({weaponEntity}) for {steamId}", () => _storage.SaveCustomization(steamId, "keychain", weaponEntity, keychainId));
+        ReapplyTarget(player, profile, weaponEntity);
+        return true;
+    }
+
+    public bool ClearKeychain(CCSPlayerController player, string weaponEntity)
+    {
+        var profile = GetProfile(player);
+        if (!profile.Keychains.Remove(weaponEntity))
+        {
+            return false;
+        }
+
+        var steamId = GetSteamId64(player);
+        QueueStorageWrite($"keychain reset ({weaponEntity}) for {steamId}", () => _storage.ClearCustomization(steamId, "keychain", weaponEntity));
+        ReapplyTarget(player, profile, weaponEntity, clearWhenBare: true);
+        return true;
+    }
+
     public bool SetMusicKit(CCSPlayerController player, string cosmeticId)
     {
         if (!Catalog.MusicKitsById.TryGetValue(cosmeticId, out var kit) || !CanUse(player, kit))
@@ -646,11 +748,30 @@ public sealed class SkinManager : IDisposable
         var steamId = GetSteamId64(player);
         BumpProfileEpoch(steamId);
         QueueStorageWrite($"profile reset for {steamId}", () => _storage.ResetProfile(steamId));
+        var attachmentWeapons = _profiles.TryGetValue(steamId, out var profile) ? AttachmentWeapons(player, profile) : null;
         _profiles.Remove(steamId);
         _loadedProfiles.Remove(steamId);
         _applyAfterLoadRequests.Remove(steamId);
-        ClearPlayerCosmetics(player, logFailures: true);
+        ClearPlayerCosmetics(player, logFailures: true, attachmentWeapons);
         ApplyMusicKitState(player, 0, 0, logFailures: true);
+    }
+
+    // Guns whose stickers or charm actually reached the weapon (feature on,
+    // flags held, ids known): with no skin their paint kit is 0, so a reset
+    // has to be told to re-create them too. A stored attachment that never
+    // applied leaves the gun alone.
+    private HashSet<string> AttachmentWeapons(CCSPlayerController player, PlayerSkinProfile profile)
+    {
+        var weapons = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var weaponEntity in profile.Stickers.Keys.Concat(profile.Keychains.Keys))
+        {
+            if (HasUsableAttachments(player, profile, weaponEntity))
+            {
+                weapons.Add(weaponEntity);
+            }
+        }
+
+        return weapons;
     }
 
     // Admin reset for a player who is not connected: drop storage and cache so
@@ -702,7 +823,10 @@ public sealed class SkinManager : IDisposable
         switch (normalized)
         {
             case "weapons":
+                var attachmentWeapons = AttachmentWeapons(player, profile);
                 profile.WeaponSkins.Clear();
+                profile.Stickers.Clear();
+                profile.Keychains.Clear();
                 foreach (var customizationTarget in profile.Customizations.Keys.ToArray())
                 {
                     if (customizationTarget is not KnifeTarget and not GloveTarget)
@@ -710,7 +834,21 @@ public sealed class SkinManager : IDisposable
                         profile.Customizations.Remove(customizationTarget);
                     }
                 }
-                ClearWeaponCosmetics(player, includeKnives: false, logFailures: true);
+                ClearWeaponCosmetics(player, includeKnives: false, logFailures: true, alsoReplace: attachmentWeapons);
+                break;
+            case "stickers":
+                var stickerWeapons = profile.Stickers.Keys
+                    .Where(weaponEntity => ResolveUsableStickers(player, profile, weaponEntity) is not null)
+                    .ToArray();
+                profile.Stickers.Clear();
+                ReapplyWeapons(player, profile, stickerWeapons);
+                break;
+            case "keychains":
+                var keychainWeapons = profile.Keychains.Keys
+                    .Where(weaponEntity => ResolveUsableKeychain(player, profile, weaponEntity) is not null)
+                    .ToArray();
+                profile.Keychains.Clear();
+                ReapplyWeapons(player, profile, keychainWeapons);
                 break;
             case "knife":
                 profile.KnifeId = null;
@@ -1032,6 +1170,69 @@ public sealed class SkinManager : IDisposable
         return CanUse(player, agent) ? agent : null;
     }
 
+    // Apply side for attachments: the feature switch and its flag first, then
+    // each entry's own flag; an entry missing from the catalog is skipped.
+    private IReadOnlyList<StickerAttachment>? ResolveUsableStickers(CCSPlayerController player, PlayerSkinProfile profile, string weaponEntity)
+    {
+        if (!profile.Stickers.TryGetValue(weaponEntity, out var slots) || slots.Count == 0 || !CanUseStickers(player))
+        {
+            return null;
+        }
+
+        List<StickerAttachment>? result = null;
+        foreach (var (slot, stickerId) in slots)
+        {
+            if (slot is < 0 or >= StickerSlots ||
+                !Catalog.StickersById.TryGetValue(stickerId, out var sticker) ||
+                !CanUse(player, sticker))
+            {
+                continue;
+            }
+
+            (result ??= new List<StickerAttachment>()).Add(new StickerAttachment(slot, sticker.StickerId));
+        }
+
+        return result;
+    }
+
+    private int? ResolveUsableKeychain(CCSPlayerController player, PlayerSkinProfile profile, string weaponEntity)
+    {
+        if (!profile.Keychains.TryGetValue(weaponEntity, out var keychainId) ||
+            !CanUseKeychains(player) ||
+            !Catalog.KeychainsById.TryGetValue(keychainId, out var keychain) ||
+            !CanUse(player, keychain))
+        {
+            return null;
+        }
+
+        return keychain.KeychainId;
+    }
+
+    private bool HasUsableAttachments(CCSPlayerController player, PlayerSkinProfile profile, string weaponEntity)
+    {
+        return ResolveUsableStickers(player, profile, weaponEntity) is not null ||
+               ResolveUsableKeychain(player, profile, weaponEntity) is not null;
+    }
+
+    // What to paint on a gun: the selected skin, or the stock finish when
+    // only stickers or a charm are attached. Null leaves the gun alone.
+    private CosmeticEntry? ResolveWeaponPaint(CCSPlayerController player, PlayerSkinProfile profile, string weaponEntity)
+    {
+        return ResolveUsableWeaponSkin(player, profile, weaponEntity)
+               ?? (HasUsableAttachments(player, profile, weaponEntity) ? VanillaEntry(weaponEntity) : null);
+    }
+
+    private CosmeticEntry VanillaEntry(string weaponEntity)
+    {
+        if (!_vanillaEntries.TryGetValue(weaponEntity, out var entry))
+        {
+            entry = new CosmeticEntry { Id = $"{weaponEntity}:0", DisplayName = "Vanilla", PaintKit = 0, Seed = 0, Wear = 0f, LegacyModel = false };
+            _vanillaEntries[weaponEntity] = entry;
+        }
+
+        return entry;
+    }
+
     private GloveDefinition? FindGloveType(CosmeticEntry glove)
     {
         return glove.ItemDefinitionIndex.HasValue
@@ -1062,6 +1263,34 @@ public sealed class SkinManager : IDisposable
     public bool CanUse(CCSPlayerController player, MusicKitDefinition entry)
     {
         return string.IsNullOrWhiteSpace(entry.Permission) || AdminManager.PlayerHasPermissions(player, entry.Permission);
+    }
+
+    public bool CanUse(CCSPlayerController player, StickerDefinition entry)
+    {
+        return string.IsNullOrWhiteSpace(entry.Permission) || AdminManager.PlayerHasPermissions(player, entry.Permission);
+    }
+
+    public bool CanUse(CCSPlayerController player, KeychainDefinition entry)
+    {
+        return string.IsNullOrWhiteSpace(entry.Permission) || AdminManager.PlayerHasPermissions(player, entry.Permission);
+    }
+
+    // Feature switches: the section must be on and have data, and the section
+    // flag (if any) is checked live like every other permission.
+    public bool StickersAvailable => _stickersConfig.Enabled && Catalog.Stickers.Count > 0;
+
+    public bool KeychainsAvailable => _keychainsConfig.Enabled && Catalog.Keychains.Count > 0;
+
+    public bool CanUseStickers(CCSPlayerController player)
+    {
+        return StickersAvailable &&
+               (string.IsNullOrWhiteSpace(_stickersConfig.Permission) || AdminManager.PlayerHasPermissions(player, _stickersConfig.Permission));
+    }
+
+    public bool CanUseKeychains(CCSPlayerController player)
+    {
+        return KeychainsAvailable &&
+               (string.IsNullOrWhiteSpace(_keychainsConfig.Permission) || AdminManager.PlayerHasPermissions(player, _keychainsConfig.Permission));
     }
 
     public IReadOnlyList<WeaponDefinition> GetOwnedWeaponDefinitions(CCSPlayerController player)
@@ -1120,6 +1349,14 @@ public sealed class SkinManager : IDisposable
         }
 
         return Catalog.WeaponsByEntity.ContainsKey(entityName) ? entityName : null;
+    }
+
+    // Attachment target of the held weapon: a catalog gun, or null. Knives
+    // and everything else carry neither stickers nor charms.
+    public string? GetHeldAttachmentTarget(CCSPlayerController player)
+    {
+        var target = GetHeldCustomizationTarget(player);
+        return target is null || target.Equals(KnifeTarget, StringComparison.OrdinalIgnoreCase) ? null : target;
     }
 
     public bool SetStatTrak(CCSPlayerController player, string target, int? count)
@@ -1315,7 +1552,10 @@ public sealed class SkinManager : IDisposable
         };
     }
 
-    private void ReapplyTarget(CCSPlayerController player, PlayerSkinProfile profile, string target)
+    // clearWhenBare: the caller just removed a sticker or charm, so a gun left
+    // with nothing to paint gets the stock entity back. Customization commands
+    // never set it: a gun whose saved skin is unusable must stay as it is.
+    private void ReapplyTarget(CCSPlayerController player, PlayerSkinProfile profile, string target, bool logFailures = true, bool clearWhenBare = false)
     {
         switch (target)
         {
@@ -1327,30 +1567,65 @@ public sealed class SkinManager : IDisposable
                 var knifeSkin = ResolveUsableKnifeSkin(player, profile);
                 if (knifeSkin is not null)
                 {
-                    ApplyKnifeSelection(player, knifeSkin, logFailures: true);
+                    ApplyKnifeSelection(player, knifeSkin, logFailures);
                     break;
                 }
 
                 var selectedKnife = ResolveUsableKnifeType(player, profile);
                 if (selectedKnife is not null)
                 {
-                    ApplyKnifeTypeSelection(player, selectedKnife, logFailures: true);
+                    ApplyKnifeTypeSelection(player, selectedKnife, logFailures);
                 }
                 break;
             case GloveTarget:
-                var glove = ResolveUsableGloveSkin(player, profile, logFailures: true);
+                var glove = ResolveUsableGloveSkin(player, profile, logFailures);
                 if (glove is not null)
                 {
-                    ApplyGloveSelection(player, glove, logFailures: true);
+                    ApplyGloveSelection(player, glove, logFailures);
                 }
                 break;
             default:
-                var skin = ResolveUsableWeaponSkin(player, profile, target);
+                var skin = ResolveWeaponPaint(player, profile, target);
                 if (skin is not null)
                 {
-                    ApplyWeaponSelection(player, target, skin, logFailures: true);
+                    ApplyWeaponSelection(player, target, skin, logFailures);
+                }
+                else if (clearWhenBare)
+                {
+                    // The last sticker or charm left a gun without a skin:
+                    // hand out the stock gun so the attachment goes away now.
+                    ClearWeaponSelection(player, target);
                 }
                 break;
+        }
+    }
+
+    private void ReapplyWeapons(CCSPlayerController player, PlayerSkinProfile profile, IEnumerable<string> weaponEntities)
+    {
+        foreach (var weaponEntity in weaponEntities)
+        {
+            ReapplyTarget(player, profile, weaponEntity, logFailures: false, clearWhenBare: true);
+        }
+    }
+
+    private void ClearWeaponSelection(CCSPlayerController player, string weaponEntity)
+    {
+        if (!TryGetPawn(player, out var pawn, logFailures: false) || pawn!.WeaponServices is null)
+        {
+            return;
+        }
+
+        var weapons = pawn.WeaponServices.MyWeapons
+            .Select(handle => handle.Value)
+            .Where(weapon => weapon is { IsValid: true })
+            .ToList();
+        foreach (var weapon in weapons)
+        {
+            if (ResolveWeaponEntityName(weapon!).Equals(weaponEntity, StringComparison.OrdinalIgnoreCase))
+            {
+                ReplaceWeaponWithStock(player, weapon!, weaponEntity);
+                return;
+            }
         }
     }
 
@@ -1503,7 +1778,7 @@ public sealed class SkinManager : IDisposable
             return knife is not null && ApplyKnifeTypeToWeapon(player, weapon, knife, logFailures);
         }
 
-        var skin = ResolveUsableWeaponSkin(player, profile, weaponName);
+        var skin = ResolveWeaponPaint(player, profile, weaponName);
         return skin is not null && ApplyCosmeticToWeapon(player, weapon, skin, isKnife: false, logFailures, weaponName);
     }
 
@@ -1650,6 +1925,7 @@ public sealed class SkinManager : IDisposable
                     _profiles[steamId64] = loaded;
                 }
 
+                PruneUnknownSelections(_profiles[steamId64]);
                 _loadedProfiles.Add(steamId64);
 
                 if (!applyAfterLoadRequested)
@@ -1737,6 +2013,25 @@ public sealed class SkinManager : IDisposable
         foreach (var (team, agentId) in loaded.AgentIdsByTeam)
         {
             target.AgentIdsByTeam.TryAdd(team, agentId);
+        }
+
+        foreach (var (weaponEntity, loadedSlots) in loaded.Stickers)
+        {
+            if (!target.Stickers.TryGetValue(weaponEntity, out var slots))
+            {
+                target.Stickers[weaponEntity] = loadedSlots;
+                continue;
+            }
+
+            foreach (var (slot, stickerId) in loadedSlots)
+            {
+                slots.TryAdd(slot, stickerId);
+            }
+        }
+
+        foreach (var (weaponEntity, keychainId) in loaded.Keychains)
+        {
+            target.Keychains.TryAdd(weaponEntity, keychainId);
         }
 
         foreach (var (customizationTarget, loadedCustomization) in loaded.Customizations)
@@ -1986,7 +2281,18 @@ public sealed class SkinManager : IDisposable
     // Everything that lives on the CEconItemView itself, shared by live weapons
     // and the team intro preview slots. Quality 9 is what makes the client
     // render the StatTrak counter.
-    private bool PaintEconItem(CCSPlayerController player, CEconItemView item, CosmeticEntry cosmetic, bool isKnife, int seed, float wear, int? statTrak, string? nameTag, string context)
+    private bool PaintEconItem(
+        CCSPlayerController player,
+        CEconItemView item,
+        CosmeticEntry cosmetic,
+        bool isKnife,
+        int seed,
+        float wear,
+        int? statTrak,
+        string? nameTag,
+        string context,
+        IReadOnlyList<StickerAttachment>? stickers = null,
+        int? keychainId = null)
     {
         if (cosmetic.ItemDefinitionIndex.HasValue)
         {
@@ -1996,7 +2302,7 @@ public sealed class SkinManager : IDisposable
         item.EntityQuality = statTrak.HasValue ? 9 : isKnife ? 3 : 0;
         UpdateEconItemIdentity(item, player);
         ApplyCustomName(item, cosmetic, nameTag);
-        return _econAttributes.ApplyPaintAttributes(item, cosmetic.Id, cosmetic.PaintKit, seed, wear, context, statTrak);
+        return _econAttributes.ApplyPaintAttributes(item, cosmetic.Id, cosmetic.PaintKit, seed, wear, context, statTrak, stickers, keychainId);
     }
 
     private bool ApplyCosmeticToWeapon(CCSPlayerController player, CBasePlayerWeapon weapon, CosmeticEntry cosmetic, bool isKnife, bool logFailures, string? customizationTarget = null)
@@ -2036,7 +2342,10 @@ public sealed class SkinManager : IDisposable
             var seed = customization?.Seed ?? cosmetic.Seed;
             var wear = customization?.Wear ?? cosmetic.Wear;
 
-            var statTrak = ResolveStatTrak(GetProfile(player), resolvedTarget, customization);
+            var profile = GetProfile(player);
+            var statTrak = ResolveStatTrak(profile, resolvedTarget, customization);
+            var stickers = isKnife ? null : ResolveUsableStickers(player, profile, resolvedTarget);
+            var keychainId = isKnife ? null : ResolveUsableKeychain(player, profile, resolvedTarget);
 
             weapon.FallbackPaintKit = cosmetic.PaintKit;
             weapon.FallbackSeed = seed;
@@ -2046,7 +2355,7 @@ public sealed class SkinManager : IDisposable
             weapon.OriginalOwnerXuidHigh = (uint)(player.SteamID >> 32);
 
             var attributesApplied = PaintEconItem(player, item, cosmetic, isKnife, seed, wear, statTrak, customization?.NameTag,
-                $"{ResolveWeaponEntityName(weapon)} entity {weapon.Index}");
+                $"{ResolveWeaponEntityName(weapon)} entity {weapon.Index}", stickers, keychainId);
             ApplyWeaponBodyGroup(weapon, cosmetic);
             ApplyStatTrakBodyGroup(weapon, statTrak.HasValue);
             MarkWeaponStateChanged(weapon);
@@ -2066,9 +2375,9 @@ public sealed class SkinManager : IDisposable
         }
     }
 
-    private void ClearPlayerCosmetics(CCSPlayerController player, bool logFailures)
+    private void ClearPlayerCosmetics(CCSPlayerController player, bool logFailures, ISet<string>? attachmentWeapons = null)
     {
-        ClearWeaponCosmetics(player, includeKnives: true, logFailures: logFailures);
+        ClearWeaponCosmetics(player, includeKnives: true, logFailures: logFailures, alsoReplace: attachmentWeapons);
         if (!TryGetPawn(player, out var pawn, logFailures))
         {
             return;
@@ -2077,7 +2386,7 @@ public sealed class SkinManager : IDisposable
         ClearGloveCosmetic(player, pawn!);
     }
 
-    private void ClearWeaponCosmetics(CCSPlayerController player, bool includeKnives, bool onlyKnives = false, bool logFailures = false)
+    private void ClearWeaponCosmetics(CCSPlayerController player, bool includeKnives, bool onlyKnives = false, bool logFailures = false, ISet<string>? alsoReplace = null)
     {
         if (!TryGetPawn(player, out var pawn, logFailures))
         {
@@ -2117,8 +2426,10 @@ public sealed class SkinManager : IDisposable
 
                 // Same for guns: a paint cleared in place stays visible until
                 // the entity is re-created. Only catalog weapons that carry a
-                // paint are replaced, so grenades and the C4 are never touched.
-                if (!string.IsNullOrWhiteSpace(weaponName) && weapon.FallbackPaintKit > 0)
+                // paint (or attachments on the stock finish, kit 0) are
+                // replaced, so grenades and the C4 are never touched.
+                if (!string.IsNullOrWhiteSpace(weaponName) &&
+                    (weapon.FallbackPaintKit > 0 || alsoReplace?.Contains(weaponName) == true))
                 {
                     ReplaceWeaponWithStock(player, weapon, weaponName);
                     continue;
@@ -2528,35 +2839,68 @@ public sealed class SkinManager : IDisposable
     {
         foreach (var profile in _profiles.Values)
         {
-            foreach (var weapon in profile.WeaponSkins.Keys.ToArray())
+            PruneUnknownSelections(profile);
+        }
+    }
+
+    // Drops ids the catalog does not know (entries disabled, removed or
+    // regenerated) so the menu never shows a selection it cannot name. The
+    // rows stay in storage; an entry the player merely lacks the flag for is
+    // known and stays too.
+    private void PruneUnknownSelections(PlayerSkinProfile profile)
+    {
+        foreach (var weapon in profile.WeaponSkins.Keys.ToArray())
+        {
+            if (!Catalog.WeaponSkinsById.ContainsKey(profile.WeaponSkins[weapon]))
             {
-                if (!Catalog.WeaponSkinsById.ContainsKey(profile.WeaponSkins[weapon]))
+                profile.WeaponSkins.Remove(weapon);
+            }
+        }
+
+        if (profile.KnifeSkinId is not null && !Catalog.KnifeSkinsById.ContainsKey(profile.KnifeSkinId))
+        {
+            profile.KnifeSkinId = null;
+        }
+
+        if (profile.KnifeId is not null && !Catalog.Knives.Any(k => k.Id.Equals(profile.KnifeId, StringComparison.OrdinalIgnoreCase)))
+        {
+            profile.KnifeId = null;
+        }
+
+        if (profile.GloveSkinId is not null && !Catalog.GloveSkinsById.ContainsKey(profile.GloveSkinId))
+        {
+            profile.GloveSkinId = null;
+        }
+
+        foreach (var team in profile.AgentIdsByTeam.Keys.ToArray())
+        {
+            if (!Catalog.AgentsById.ContainsKey(profile.AgentIdsByTeam[team]))
+            {
+                profile.AgentIdsByTeam.Remove(team);
+            }
+        }
+
+        foreach (var (weaponEntity, slots) in profile.Stickers.ToArray())
+        {
+            foreach (var slot in slots.Keys.ToArray())
+            {
+                if (!Catalog.StickersById.ContainsKey(slots[slot]))
                 {
-                    profile.WeaponSkins.Remove(weapon);
+                    slots.Remove(slot);
                 }
             }
 
-            if (profile.KnifeSkinId is not null && !Catalog.KnifeSkinsById.ContainsKey(profile.KnifeSkinId))
+            if (slots.Count == 0)
             {
-                profile.KnifeSkinId = null;
+                profile.Stickers.Remove(weaponEntity);
             }
+        }
 
-            if (profile.KnifeId is not null && !Catalog.Knives.Any(k => k.Id.Equals(profile.KnifeId, StringComparison.OrdinalIgnoreCase)))
+        foreach (var weaponEntity in profile.Keychains.Keys.ToArray())
+        {
+            if (!Catalog.KeychainsById.ContainsKey(profile.Keychains[weaponEntity]))
             {
-                profile.KnifeId = null;
-            }
-
-            if (profile.GloveSkinId is not null && !Catalog.GloveSkinsById.ContainsKey(profile.GloveSkinId))
-            {
-                profile.GloveSkinId = null;
-            }
-
-            foreach (var team in profile.AgentIdsByTeam.Keys.ToArray())
-            {
-                if (!Catalog.AgentsById.ContainsKey(profile.AgentIdsByTeam[team]))
-                {
-                    profile.AgentIdsByTeam.Remove(team);
-                }
+                profile.Keychains.Remove(weaponEntity);
             }
         }
     }
@@ -2660,6 +3004,8 @@ public sealed class SkinManager : IDisposable
             "glove" or "gloves" => "gloves",
             "agent" or "agents" => "agents",
             "music" or "musickit" or "musickits" => "music",
+            "sticker" or "stickers" => "stickers",
+            "keychain" or "keychains" or "charm" or "charms" => "keychains",
             _ => null
         };
     }
@@ -2850,7 +3196,7 @@ public sealed class SkinManager : IDisposable
             return;
         }
 
-        var skin = ResolveUsableWeaponSkin(player, profile, weaponName);
+        var skin = ResolveWeaponPaint(player, profile, weaponName);
         if (skin is not null &&
             ApplyPreviewPaint(player, item, skin, isKnife: false, weaponName, logFailures, $"team preview {weaponName}"))
         {
@@ -2872,9 +3218,12 @@ public sealed class SkinManager : IDisposable
             var customization = GetCustomization(player, customizationTarget);
             var seed = customization?.Seed ?? cosmetic.Seed;
             var wear = customization?.Wear ?? cosmetic.Wear;
-            var statTrak = ResolveStatTrak(GetProfile(player), customizationTarget, customization);
+            var profile = GetProfile(player);
+            var statTrak = ResolveStatTrak(profile, customizationTarget, customization);
+            var stickers = isKnife ? null : ResolveUsableStickers(player, profile, customizationTarget);
+            var keychainId = isKnife ? null : ResolveUsableKeychain(player, profile, customizationTarget);
 
-            var attributesApplied = PaintEconItem(player, item, cosmetic, isKnife, seed, wear, statTrak, customization?.NameTag, context);
+            var attributesApplied = PaintEconItem(player, item, cosmetic, isKnife, seed, wear, statTrak, customization?.NameTag, context, stickers, keychainId);
             if (!attributesApplied && logFailures)
             {
                 _logger.LogWarning(

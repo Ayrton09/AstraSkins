@@ -25,6 +25,14 @@
     "MaxNameTagLength": 20,
     "BlockedNameTagWords": []
   },
+  "Stickers": {
+    "Enabled": true,
+    "Permission": ""
+  },
+  "Keychains": {
+    "Enabled": true,
+    "Permission": ""
+  },
   "ApplyPlayerCosmeticsOnBotTakeover": false,
   "EnableStatTrakByDefault": false,
   "EnableMusicKitMvpCounter": false,
@@ -34,6 +42,8 @@
     "Gloves": "data/gloves.json",
     "Agents": "data/agents.json",
     "MusicKits": "data/music_kits.json",
+    "Stickers": "data/stickers.json",
+    "Keychains": "data/keychains.json",
     "Categories": "data/categories.json"
   },
   "EnableAdminReloadCommand": true,

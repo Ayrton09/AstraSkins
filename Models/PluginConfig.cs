@@ -12,6 +12,8 @@ public sealed class PluginConfig : BasePluginConfig
     public MySqlConfig MySql { get; set; } = new();
     public MenuConfig Menu { get; set; } = new();
     public CustomizationConfig Customization { get; set; } = new();
+    public StickersConfig Stickers { get; set; } = new();
+    public KeychainsConfig Keychains { get; set; } = new();
     // Off by default so a possessed bot keeps whatever cosmetics its pawn has
     // (for example from a bot randomizer plugin). Opt in to see your own instead.
     public bool ApplyPlayerCosmeticsOnBotTakeover { get; set; } = false;
@@ -64,6 +66,20 @@ public sealed class CustomizationConfig
     public List<string> BlockedNameTagWords { get; set; } = new();
 }
 
+// Stickers and charms each have their own switch and flag, separate from the
+// Customization commands, so a server can hand them out to different ranks.
+public sealed class StickersConfig
+{
+    public bool Enabled { get; set; } = true;
+    public string Permission { get; set; } = string.Empty;
+}
+
+public sealed class KeychainsConfig
+{
+    public bool Enabled { get; set; } = true;
+    public string Permission { get; set; } = string.Empty;
+}
+
 public sealed class DefinitionPathConfig
 {
     public string Weapons { get; set; } = "data/weapons.json";
@@ -71,5 +87,7 @@ public sealed class DefinitionPathConfig
     public string Gloves { get; set; } = "data/gloves.json";
     public string Agents { get; set; } = "data/agents.json";
     public string MusicKits { get; set; } = "data/music_kits.json";
+    public string Stickers { get; set; } = "data/stickers.json";
+    public string Keychains { get; set; } = "data/keychains.json";
     public string? Categories { get; set; } = "data/categories.json";
 }

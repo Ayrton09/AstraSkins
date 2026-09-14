@@ -2,12 +2,13 @@
 
 # Astra Skins
 
-**Weapon skins, knives, gloves, and agents for Counter-Strike 2 — with a built-in WASD menu, per-player customization, and database-backed persistence.**
+**Weapon skins, knives, gloves, agents, stickers and charms for Counter-Strike 2 — with a built-in WASD menu, per-player customization, and database-backed persistence.**
 
 [![CS2](https://img.shields.io/badge/game-Counter--Strike%202-orange)](https://www.counter-strike.net/)
 [![CounterStrikeSharp](https://img.shields.io/badge/CounterStrikeSharp-%E2%89%A5%201.0.369-blue)](https://github.com/roflmuffin/CounterStrikeSharp)
 [![.NET](https://img.shields.io/badge/.NET-10-512BD4)](https://dotnet.microsoft.com/)
 [![CI](https://github.com/Ayrton09/AstraSkins/actions/workflows/ci.yml/badge.svg)](https://github.com/Ayrton09/AstraSkins/actions/workflows/ci.yml)
+[![Downloads](https://img.shields.io/github/downloads/Ayrton09/AstraSkins/total?label=downloads&color=brightgreen)](https://github.com/Ayrton09/AstraSkins/releases)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 </div>
@@ -16,17 +17,18 @@
 
 ## Features
 
-- 🎨 **1,400+ weapon skins, 20 knives with 576 finishes, 8 glove types, 63 agents, 99 music kits** — all data-driven from JSON, no datasets baked into the code.
+- 🎨 **1,400+ weapon skins, 20 knives with 576 finishes, 8 glove types, 63 agents, 99 music kits, 11,000+ stickers, 78 charms** — all data-driven from JSON, no datasets baked into the code.
 - 🕹️ **Built-in WASD menu** — navigate with `W`/`S`, select with `E`. No external menu plugin required.
 - 🔧 **Per-player customization** — custom paint seed, wear/float, name tags, and StatTrak counters via `!seed`, `!wear`, `!nametag`, and `!stattrak`.
 - 🔎 **Search** — `!ws <text>` finds any skin, knife, glove, agent, or music kit without scrolling through pages.
+- 🏷️ **Stickers and charms** — up to five stickers and a charm on every gun, with or without a skin, browsed by tournament and capsule or found with `!stickers <text>` and `!charms <text>`.
 - 🎵 **Music kits** — pick any of 99 kits from the menu, with an optional per-kit MVP counter shown on the scoreboard.
 - 💾 **Persistent selections** — SQLite or MySQL, keyed by SteamID64. Selections survive reconnects, map changes, and restarts.
 - 🌍 **7 languages** — per-player localization (English, Spanish, Chinese, Portuguese, German, French, Russian). Chinese players also get skin, knife, glove, agent, category, and music kit names in Chinese, and can search in either language.
 - 🎬 **Team intro** shows your agent, gloves, and weapon skins on the match intro and on the team select screen once you are on a team (the very first team select after connecting has no owner assigned by the engine, so it keeps the defaults).
 - 🗣️ **Agent radio voices** — agents keep their voice lines where the CS2 schema exposes the voice data.
 - 🤖 **Bot takeover aware** leaves a possessed bot's loadout alone by default, so bot cosmetics plugins keep working. Opt in to see your own skins on the bot instead.
-- 🛡️ **Permission gating** — restrict individual skins, knives, gloves, agents, or the whole customization feature to admin flags.
+- 🛡️ **Permission gating** — restrict individual skins, knives, gloves, agents, stickers, charms, or the whole customization, sticker or charm feature to admin flags.
 - ⚙️ **Admin tooling** — hot reload of definitions and a diagnostics command.
 
 ## Requirements
@@ -78,8 +80,12 @@
 | `!knife` | Open the knife menu |
 | `!gloves` | Open the gloves menu |
 | `!agents` | Open the agents menu |
+| `!stickers` | Sticker slots of the held gun (weapon picker when nothing usable is held) |
+| `!stickers <search>` | Search every sticker for the held gun, then pick the slot |
+| `!charms` | Charm of the held gun · `!keychains` works too |
+| `!charms <search>` | Search every charm for the held gun |
 | `!wsrefresh` | Reapply saved selections |
-| `!wsreset [all\|weapons\|knife\|gloves\|agents\|music]` | Reset saved selections, all or per category |
+| `!wsreset [all\|weapons\|knife\|gloves\|agents\|music\|stickers\|charms]` | Reset saved selections, all or per category |
 
 ### Customization
 
@@ -102,7 +108,7 @@ StatTrak works the same way: enable it on a weapon or knife and the counter goes
 | --- | --- | --- |
 | `!wsreload` | `@css/config` | Reload the JSON definitions and reapply skins to everyone |
 | `!wsdebug` | `@css/config` | Diagnostics: load counts, database mode, and the caller's selections |
-| `css_wsresetplayer <steamid64> [all\|weapons\|knife\|gloves\|agents\|music]` | `@css/config` | Reset a player's selections by SteamID64, connected or not (server console or admin) |
+| `css_wsresetplayer <steamid64> [all\|weapons\|knife\|gloves\|agents\|music\|stickers\|charms]` | `@css/config` | Reset a player's selections by SteamID64, connected or not (server console or admin) |
 
 Both can be disabled entirely in the config.
 
@@ -140,6 +146,23 @@ With `EnableMusicKitMvpCounter` set to `true`, the plugin also tracks how many M
 
 If `data/music_kits.json` is missing, the category simply stays hidden.
 
+## Stickers and Charms
+
+Every gun takes up to five stickers and one charm, on top of its skin or on the stock finish. The main menu has **Stickers** and **Charms** entries that start with the guns in hand and continue with the full catalog by category; `!stickers` and `!charms` jump straight to the held gun. Stickers are grouped by tournament, newest first, and then by the capsule of that event, with the other capsules and collections after them; charms are grouped by collection. Each slot row shows what is on it, and a slot that has a sticker offers a remove entry.
+
+With 11,000 stickers the search is the fast way in: `!stickers <text>` lists the matching stickers for the held gun and asks for the slot, `!charms <text>` does the same for charms. Every whitespace-separated term has to match, on the sticker name or its event:
+
+```text
+!stickers natus holo    → Natus Vincere holo stickers from every event
+!stickers ropz gold     → ropz gold autographs
+!stickers donk holo     → donk holo autographs
+!charms lil ava         → the Lil' Ava charm
+```
+
+Both features have their own `Enabled` switch and `Permission` flag in the config (the `Stickers` and `Keychains` sections), separate from the customization commands, and every entry in `data/stickers.json` and `data/keychains.json` accepts the usual `permission` field. Selections persist like everything else and are cleared with `!wsreset stickers`, `!wsreset charms`, or `!wsreset weapons`. If a data file is missing, its menu entry stays hidden.
+
+Stickers use the game's stock placement, size and wear for each slot; there is no scraping or moving.
+
 ## Configuration
 
 `configs/plugins/AstraSkins/AstraSkins.json` — the defaults are safe to publish and use placeholder credentials:
@@ -172,6 +195,14 @@ If `data/music_kits.json` is missing, the category simply stays hidden.
     "MaxNameTagLength": 20,
     "BlockedNameTagWords": []
   },
+  "Stickers": {
+    "Enabled": true,
+    "Permission": ""
+  },
+  "Keychains": {
+    "Enabled": true,
+    "Permission": ""
+  },
   "ApplyPlayerCosmeticsOnBotTakeover": false,
   "EnableStatTrakByDefault": false,
   "EnableMusicKitMvpCounter": false,
@@ -181,6 +212,8 @@ If `data/music_kits.json` is missing, the category simply stays hidden.
     "Gloves": "data/gloves.json",
     "Agents": "data/agents.json",
     "MusicKits": "data/music_kits.json",
+    "Stickers": "data/stickers.json",
+    "Keychains": "data/keychains.json",
     "Categories": "data/categories.json"
   },
   "EnableAdminReloadCommand": true,
@@ -204,6 +237,8 @@ If `data/music_kits.json` is missing, the category simply stays hidden.
 | `Customization.Permission` | Restrict customization to a flag; empty = everyone |
 | `Customization.MaxNameTagLength` | Name tag cap, 4–32 (default 20 matches the real game) |
 | `Customization.BlockedNameTagWords` | Words a name tag may not contain, matched as case-insensitive substrings. Empty by default, each server adds its own, for example `["badword", "slur"]`. Avoid short or common words (`puta` would also block `computadora`) |
+| `Stickers.Enabled` / `Stickers.Permission` | Switch and flag for stickers; empty flag = everyone. Off hides the menu entry and stops applying saved stickers |
+| `Keychains.Enabled` / `Keychains.Permission` | Same for charms |
 | `ApplyPlayerCosmeticsOnBotTakeover` | Off by default: a bot you take over keeps its own loadout. Set to `true` to apply your knife, agent and music kit to the possessed bot (guns and gloves already in hand keep their look) |
 | `EnableStatTrakByDefault` | Every weapon and knife with a selected skin starts with a StatTrak counter at 0; players can still turn it off per item with `!stattrak reset` |
 | `EnableMusicKitMvpCounter` | Track per-player MVP counts for selected music kits |
@@ -248,6 +283,8 @@ Currently packaged:
 | Glove skins | 94 |
 | Agents | 63 |
 | Music kits | 99 |
+| Stickers | 11,134 |
+| Charms | 78 |
 
 To regenerate the data after a CS2 update, run the included generator — it pulls the latest `items_game.txt` and translation data automatically:
 
@@ -257,7 +294,7 @@ python tools/generate_definitions.py --output data
 
 ### Permissions
 
-Every entry in the data files accepts an optional `permission` field: weapon, knife and glove skins (the `skins` arrays), knife and glove types, agents and music kits. The shipped files do not include it, so everything is open by default. Add it to the entries you want to restrict:
+Every entry in the data files accepts an optional `permission` field: weapon, knife and glove skins (the `skins` arrays), knife and glove types, agents, music kits, stickers and charms. The shipped files do not include it, so everything is open by default. Add it to the entries you want to restrict:
 
 ```json
 {
@@ -270,7 +307,7 @@ Every entry in the data files accepts an optional `permission` field: weapon, kn
 
 Any CounterStrikeSharp flag (`@css/vip`) or group (`#css/vip`) works, and `@css/root` passes everything. The flag is per entry, so different entries can require different flags, and a flag on a knife or glove type covers all of its skins. Players without the flag do not see the entry in the menu or in the `!ws` search and cannot select it. The same check runs when cosmetics are applied, so a saved selection whose flag expired stops applying at the next spawn (music kits within a tick) and comes back as soon as the flag does. Flags are read live, nothing is cached per player.
 
-`Customization.Permission` in `config.json` is separate: it gates the `!seed`, `!wear`, `!nametag` and `!stattrak` commands. The plugin does not grant flags itself; use `configs/admins.json` or any VIP/rank plugin that assigns flags.
+`Customization.Permission` in `config.json` is separate: it gates the `!seed`, `!wear`, `!nametag` and `!stattrak` commands. `Stickers.Permission` and `Keychains.Permission` gate the sticker and charm features the same way, menu and apply side alike. The plugin does not grant flags itself; use `configs/admins.json` or any VIP/rank plugin that assigns flags.
 
 The generator rewrites the data files, so re-apply your permissions after regenerating.
 

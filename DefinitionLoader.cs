@@ -26,6 +26,8 @@ public sealed class DefinitionLoader
         var glovesPath = Resolve(baseDirectory, config.Definitions.Gloves);
         var agentsPath = Resolve(baseDirectory, config.Definitions.Agents);
         var musicKitsPath = Resolve(baseDirectory, config.Definitions.MusicKits);
+        var stickersPath = Resolve(baseDirectory, config.Definitions.Stickers);
+        var keychainsPath = Resolve(baseDirectory, config.Definitions.Keychains);
         var categoriesPath = string.IsNullOrWhiteSpace(config.Definitions.Categories)
             ? null
             : Resolve(baseDirectory, config.Definitions.Categories!);
@@ -44,8 +46,16 @@ public sealed class DefinitionLoader
             ? LoadRequired<List<MusicKitDefinition>>(musicKitsPath, "music kits")
             : new List<MusicKitDefinition>();
 
+        // Same for stickers and charms: no file, no menu entry.
+        var stickers = File.Exists(stickersPath)
+            ? LoadRequired<List<StickerDefinition>>(stickersPath, "stickers")
+            : new List<StickerDefinition>();
+        var keychains = File.Exists(keychainsPath)
+            ? LoadRequired<List<KeychainDefinition>>(keychainsPath, "keychains")
+            : new List<KeychainDefinition>();
+
         var validation = new DefinitionValidation(_logger);
-        return validation.ValidateAndBuild(weapons, knives, gloves, agents, categories, musicKits);
+        return validation.ValidateAndBuild(weapons, knives, gloves, agents, categories, musicKits, stickers, keychains);
     }
 
     private T LoadRequired<T>(string path, string label)
@@ -99,12 +109,46 @@ public sealed class DefinitionCatalog
     public IReadOnlyList<AgentDefinition> Agents { get; init; } = Array.Empty<AgentDefinition>();
     public IReadOnlyList<CategoryDefinition> Categories { get; init; } = Array.Empty<CategoryDefinition>();
     public IReadOnlyList<MusicKitDefinition> MusicKits { get; init; } = Array.Empty<MusicKitDefinition>();
+    // Stickers and keychains keep the file order: the generator sorts them by
+    // event, newest first, and the menu shows them that way.
+    public IReadOnlyList<StickerDefinition> Stickers { get; init; } = Array.Empty<StickerDefinition>();
+    public IReadOnlyList<KeychainDefinition> Keychains { get; init; } = Array.Empty<KeychainDefinition>();
+    public IReadOnlyList<StickerGroup> StickerGroups { get; init; } = Array.Empty<StickerGroup>();
+    public IReadOnlyList<KeychainGroup> KeychainGroups { get; init; } = Array.Empty<KeychainGroup>();
     public IReadOnlyDictionary<string, WeaponDefinition> WeaponsByEntity { get; init; } = new Dictionary<string, WeaponDefinition>();
     public IReadOnlyDictionary<string, CosmeticEntry> WeaponSkinsById { get; init; } = new Dictionary<string, CosmeticEntry>();
     public IReadOnlyDictionary<string, CosmeticEntry> KnifeSkinsById { get; init; } = new Dictionary<string, CosmeticEntry>();
     public IReadOnlyDictionary<string, CosmeticEntry> GloveSkinsById { get; init; } = new Dictionary<string, CosmeticEntry>();
     public IReadOnlyDictionary<string, AgentDefinition> AgentsById { get; init; } = new Dictionary<string, AgentDefinition>();
     public IReadOnlyDictionary<string, MusicKitDefinition> MusicKitsById { get; init; } = new Dictionary<string, MusicKitDefinition>();
+    public IReadOnlyDictionary<string, StickerDefinition> StickersById { get; init; } = new Dictionary<string, StickerDefinition>();
+    public IReadOnlyDictionary<string, KeychainDefinition> KeychainsById { get; init; } = new Dictionary<string, KeychainDefinition>();
+}
+
+// Menu structure for stickers: a group is a tournament, capsule or
+// collection; tournament groups split further into the capsules of that
+// event. A null name is the "Other" bucket for entries without a group.
+public sealed class StickerGroup
+{
+    public string? Name { get; init; }
+    public string? NameZh { get; init; }
+    public IReadOnlyList<StickerCapsule> Capsules { get; init; } = Array.Empty<StickerCapsule>();
+    // Stickers of the group that belong to no capsule.
+    public IReadOnlyList<StickerDefinition> Stickers { get; init; } = Array.Empty<StickerDefinition>();
+}
+
+public sealed class StickerCapsule
+{
+    public string Name { get; init; } = string.Empty;
+    public string? NameZh { get; init; }
+    public IReadOnlyList<StickerDefinition> Stickers { get; init; } = Array.Empty<StickerDefinition>();
+}
+
+public sealed class KeychainGroup
+{
+    public string? Name { get; init; }
+    public string? NameZh { get; init; }
+    public IReadOnlyList<KeychainDefinition> Keychains { get; init; } = Array.Empty<KeychainDefinition>();
 }
 
 internal sealed class DefinitionValidation
@@ -132,7 +176,9 @@ internal sealed class DefinitionValidation
         List<GloveDefinition> gloves,
         List<AgentDefinition> agents,
         List<CategoryDefinition> categories,
-        List<MusicKitDefinition> musicKits)
+        List<MusicKitDefinition> musicKits,
+        List<StickerDefinition>? stickers = null,
+        List<KeychainDefinition>? keychains = null)
     {
         // Validate first so a category dropped here is also unknown to weapons.
         ValidateCategories(categories);
@@ -148,6 +194,10 @@ internal sealed class DefinitionValidation
         var gloveSkinsById = new Dictionary<string, CosmeticEntry>(StringComparer.OrdinalIgnoreCase);
         var agentsById = new Dictionary<string, AgentDefinition>(StringComparer.OrdinalIgnoreCase);
         var musicKitsById = new Dictionary<string, MusicKitDefinition>(StringComparer.OrdinalIgnoreCase);
+        var validStickers = new List<StickerDefinition>();
+        var validKeychains = new List<KeychainDefinition>();
+        var stickersById = new Dictionary<string, StickerDefinition>(StringComparer.OrdinalIgnoreCase);
+        var keychainsById = new Dictionary<string, KeychainDefinition>(StringComparer.OrdinalIgnoreCase);
         var knifeIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var gloveIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
@@ -264,6 +314,50 @@ internal sealed class DefinitionValidation
             validMusicKits.Add(kit);
         }
 
+        foreach (var sticker in stickers ?? new List<StickerDefinition>())
+        {
+            if (sticker is null || !sticker.Enabled)
+            {
+                continue;
+            }
+
+            if (string.IsNullOrWhiteSpace(sticker.Id) || string.IsNullOrWhiteSpace(sticker.DisplayName) || sticker.StickerId <= 0)
+            {
+                _logger.LogWarning("Skipping invalid sticker definition with Id={Id}. Id, DisplayName, and a positive StickerId value are required.", sticker.Id);
+                continue;
+            }
+
+            if (!stickersById.TryAdd(sticker.Id, sticker))
+            {
+                _logger.LogWarning("Skipping duplicate sticker definition Id={Id}.", sticker.Id);
+                continue;
+            }
+
+            validStickers.Add(sticker);
+        }
+
+        foreach (var keychain in keychains ?? new List<KeychainDefinition>())
+        {
+            if (keychain is null || !keychain.Enabled)
+            {
+                continue;
+            }
+
+            if (string.IsNullOrWhiteSpace(keychain.Id) || string.IsNullOrWhiteSpace(keychain.DisplayName) || keychain.KeychainId <= 0)
+            {
+                _logger.LogWarning("Skipping invalid keychain definition with Id={Id}. Id, DisplayName, and a positive KeychainId value are required.", keychain.Id);
+                continue;
+            }
+
+            if (!keychainsById.TryAdd(keychain.Id, keychain))
+            {
+                _logger.LogWarning("Skipping duplicate keychain definition Id={Id}.", keychain.Id);
+                continue;
+            }
+
+            validKeychains.Add(keychain);
+        }
+
         if (validWeapons.Count == 0 && validKnives.Count == 0 && validGloves.Count == 0 && validAgents.Count == 0)
         {
             throw new InvalidOperationException("No valid cosmetic definitions were loaded. Check data JSON files.");
@@ -282,8 +376,71 @@ internal sealed class DefinitionValidation
             KnifeSkinsById = knifeSkinsById,
             GloveSkinsById = gloveSkinsById,
             AgentsById = agentsById,
-            MusicKitsById = musicKitsById
+            MusicKitsById = musicKitsById,
+            Stickers = validStickers,
+            Keychains = validKeychains,
+            StickerGroups = BuildStickerGroups(validStickers),
+            KeychainGroups = BuildKeychainGroups(validKeychains),
+            StickersById = stickersById,
+            KeychainsById = keychainsById
         };
+    }
+
+    // Groups and capsules come out in file order (first appearance), which is
+    // the order the generator chose; entries without a group go last.
+    private static List<StickerGroup> BuildStickerGroups(List<StickerDefinition> stickers)
+    {
+        var groups = new List<StickerGroup>();
+        foreach (var byGroup in GroupInOrder(stickers, s => s.Group))
+        {
+            var capsules = new List<StickerCapsule>();
+            var loose = new List<StickerDefinition>();
+            foreach (var byCapsule in GroupInOrder(byGroup, s => s.Capsule))
+            {
+                if (byCapsule.Key is null)
+                {
+                    loose.AddRange(byCapsule);
+                    continue;
+                }
+
+                capsules.Add(new StickerCapsule
+                {
+                    Name = byCapsule.Key,
+                    NameZh = byCapsule.FirstOrDefault(s => !string.IsNullOrWhiteSpace(s.CapsuleZh))?.CapsuleZh,
+                    Stickers = byCapsule.ToList()
+                });
+            }
+
+            groups.Add(new StickerGroup
+            {
+                Name = byGroup.Key,
+                NameZh = byGroup.FirstOrDefault(s => !string.IsNullOrWhiteSpace(s.GroupZh))?.GroupZh,
+                Capsules = capsules,
+                Stickers = loose
+            });
+        }
+
+        return groups.OrderBy(g => g.Name is null ? 1 : 0).ToList();
+    }
+
+    private static List<KeychainGroup> BuildKeychainGroups(List<KeychainDefinition> keychains)
+    {
+        return GroupInOrder(keychains, k => k.Group)
+            .Select(byGroup => new KeychainGroup
+            {
+                Name = byGroup.Key,
+                NameZh = byGroup.FirstOrDefault(k => !string.IsNullOrWhiteSpace(k.GroupZh))?.GroupZh,
+                Keychains = byGroup.ToList()
+            })
+            .OrderBy(g => g.Name is null ? 1 : 0)
+            .ToList();
+    }
+
+    private static IEnumerable<IGrouping<string?, T>> GroupInOrder<T>(IEnumerable<T> items, Func<T, string?> key)
+    {
+        // GroupBy keeps the groups in order of first appearance; the key is
+        // normalized so an empty string and null land in the same bucket.
+        return items.GroupBy(item => string.IsNullOrWhiteSpace(key(item)) ? null : key(item), StringComparer.OrdinalIgnoreCase);
     }
 
     private void ValidateCategories(List<CategoryDefinition> categories)

@@ -73,6 +73,10 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         AddCommand("css_knife", "Open knife skins menu.", CommandOpenKnives);
         AddCommand("css_gloves", "Open glove skins menu.", CommandOpenGloves);
         AddCommand("css_agents", "Open agents menu.", CommandOpenAgents);
+        AddCommand("css_stickers", "Open the sticker menu for the held weapon.", CommandOpenStickers);
+        AddCommand("css_charms", "Open the charm menu for the held weapon.", CommandOpenCharms);
+        AddCommand("css_keychains", "Open the charm menu for the held weapon.", CommandOpenCharms);
+        AddCommand("css_keychain", "Open the charm menu for the held weapon.", CommandOpenCharms);
         AddCommand("css_wsrefresh", "Reapply selected skins.", CommandRefresh);
         AddCommand("css_wsreset", "Reset all selected skins.", CommandReset);
         AddCommand("css_wsreload", "Reload Astra Skins definitions.", CommandReload);
@@ -149,17 +153,21 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             (delay, action) => AddTimer(delay, () => action(), TimerFlags.STOP_ON_MAPCHANGE),
             config.EnableStatTrakByDefault,
             // No precache pass seen yet (plugin loaded mid-map): nothing to check against.
-            model => _precachedModels.Count == 0 || _precachedModels.Contains(model));
+            model => _precachedModels.Count == 0 || _precachedModels.Contains(model),
+            config.Stickers,
+            config.Keychains);
         _menuManager = new MenuManager(_skinManager, config, Localizer, Logger);
         _ready = true;
 
         Logger.LogInformation(
-            "Astra Skins loaded: {Weapons} weapons, {KnifeSkins} knife skins, {GloveSkins} glove skins, {Agents} agents, {MusicKits} music kits, DB={DatabaseMode}, StatTrakByDefault={StatTrakByDefault}, MusicKitMvpCounter={MusicKitMvpCounter}",
+            "Astra Skins loaded: {Weapons} weapons, {KnifeSkins} knife skins, {GloveSkins} glove skins, {Agents} agents, {MusicKits} music kits, {Stickers} stickers, {Keychains} keychains, DB={DatabaseMode}, StatTrakByDefault={StatTrakByDefault}, MusicKitMvpCounter={MusicKitMvpCounter}",
             catalog.Weapons.Count,
             catalog.KnifeSkinsById.Count,
             catalog.GloveSkinsById.Count,
             catalog.Agents.Count,
             catalog.MusicKits.Count,
+            catalog.Stickers.Count,
+            catalog.Keychains.Count,
             config.DatabaseMode,
             config.EnableStatTrakByDefault,
             config.EnableMusicKitMvpCounter);
@@ -256,6 +264,100 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             : $"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.stattrak_on", next.Value)}");
     }
 
+    // !stickers opens the held gun's slots (or the weapon picker when nothing
+    // usable is in hand); !stickers <text> searches the catalog for that gun.
+    private void CommandOpenStickers(CCSPlayerController? player, CommandInfo command)
+    {
+        if (!RequireReadyPlayer(player, command) || !RequireMenuAllowed(player!, command) || !RequireStickers(player!, command))
+        {
+            return;
+        }
+
+        var target = _skinManager!.GetHeldAttachmentTarget(player!);
+        var query = command.ArgCount > 1 ? command.ArgString.Trim() : string.Empty;
+        if (query.Length == 0)
+        {
+            _menuManager!.OpenStickers(player!, target);
+            return;
+        }
+
+        if (target is null)
+        {
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.attach_no_weapon")}");
+            return;
+        }
+
+        _menuManager!.OpenStickerSearch(player!, target, query);
+        if (!_menuManager.HasSearchResults(player!))
+        {
+            _menuManager.Close(player!, clearScreen: true);
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.search_no_results", query)}");
+        }
+    }
+
+    private void CommandOpenCharms(CCSPlayerController? player, CommandInfo command)
+    {
+        if (!RequireReadyPlayer(player, command) || !RequireMenuAllowed(player!, command) || !RequireKeychains(player!, command))
+        {
+            return;
+        }
+
+        var target = _skinManager!.GetHeldAttachmentTarget(player!);
+        var query = command.ArgCount > 1 ? command.ArgString.Trim() : string.Empty;
+        if (query.Length == 0)
+        {
+            _menuManager!.OpenKeychains(player!, target);
+            return;
+        }
+
+        if (target is null)
+        {
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.attach_no_weapon")}");
+            return;
+        }
+
+        _menuManager!.OpenKeychainSearch(player!, target, query);
+        if (!_menuManager.HasSearchResults(player!))
+        {
+            _menuManager.Close(player!, clearScreen: true);
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.search_no_results", query)}");
+        }
+    }
+
+    private bool RequireStickers(CCSPlayerController player, CommandInfo command)
+    {
+        if (!_skinManager!.StickersAvailable)
+        {
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.stickers_disabled")}");
+            return false;
+        }
+
+        if (!_skinManager.CanUseStickers(player))
+        {
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.stickers_no_permission")}");
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool RequireKeychains(CCSPlayerController player, CommandInfo command)
+    {
+        if (!_skinManager!.KeychainsAvailable)
+        {
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.charms_disabled")}");
+            return false;
+        }
+
+        if (!_skinManager.CanUseKeychains(player))
+        {
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.charms_no_permission")}");
+            return false;
+        }
+
+        return true;
+    }
+
     private void CommandOpenKnives(CCSPlayerController? player, CommandInfo command)
     {
         if (!RequireReadyPlayer(player, command) || !RequireMenuAllowed(player!, command))
@@ -326,6 +428,8 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             "glove" or "gloves" => "astra.reset_gloves",
             "agent" or "agents" => "astra.reset_agents",
             "music" or "musickit" or "musickits" => "astra.reset_music",
+            "sticker" or "stickers" => "astra.reset_stickers",
+            "keychain" or "keychains" or "charm" or "charms" => "astra.reset_charms",
             _ => "astra.reset_all"
         };
         command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, messageKey)}");
@@ -478,7 +582,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         var gloveSkinCount = catalog.Gloves.Sum(g => g.Skins.Count);
         var agentVoiceCount = catalog.Agents.Count(a => !string.IsNullOrWhiteSpace(a.VoicePrefix));
         command.ReplyToCommand($"{FormatPrefix()} Debug: ready={_ready}, db={_config.DatabaseMode}, inputCooldown={_config.Menu.CooldownMilliseconds}ms, selectionCooldown={_config.Menu.SelectionCooldownMilliseconds}ms");
-        command.ReplyToCommand($"{FormatPrefix()} Data: weapons={catalog.Weapons.Count}/{weaponSkinCount}, knives={catalog.Knives.Count}/{knifeSkinCount}, gloves={catalog.Gloves.Count}/{gloveSkinCount}, agents={catalog.Agents.Count} voices={agentVoiceCount}, musicKits={catalog.MusicKits.Count}");
+        command.ReplyToCommand($"{FormatPrefix()} Data: weapons={catalog.Weapons.Count}/{weaponSkinCount}, knives={catalog.Knives.Count}/{knifeSkinCount}, gloves={catalog.Gloves.Count}/{gloveSkinCount}, agents={catalog.Agents.Count} voices={agentVoiceCount}, musicKits={catalog.MusicKits.Count}, stickers={catalog.Stickers.Count}, keychains={catalog.Keychains.Count}");
 
         if (player is null || !IsLiveHuman(player))
         {
@@ -493,7 +597,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
                         profile.MusicKitMvpCounts.TryGetValue(selectedKitId, out var mvps)
             ? mvps
             : 0;
-        command.ReplyToCommand($"{FormatPrefix()} Selections: weapons={profile.WeaponSkins.Count}, knifeType={profile.KnifeId ?? "none"}, knifeSkin={profile.KnifeSkinId ?? "none"}, glove={profile.GloveSkinId ?? "none"}, agentT={agentT}, agentCT={agentCt}, musicKit={profile.MusicKitId ?? "none"} mvps={musicMvps}");
+        command.ReplyToCommand($"{FormatPrefix()} Selections: weapons={profile.WeaponSkins.Count}, knifeType={profile.KnifeId ?? "none"}, knifeSkin={profile.KnifeSkinId ?? "none"}, glove={profile.GloveSkinId ?? "none"}, agentT={agentT}, agentCT={agentCt}, musicKit={profile.MusicKitId ?? "none"} mvps={musicMvps}, stickers={profile.Stickers.Sum(s => s.Value.Count)}, keychains={profile.Keychains.Count}");
     }
 
     private void CommandSeed(CCSPlayerController? player, CommandInfo command)

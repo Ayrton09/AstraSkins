@@ -34,6 +34,16 @@ public sealed class ConfigManager
             throw new InvalidOperationException("Customization config section is required.");
         }
 
+        if (config.Stickers is null)
+        {
+            throw new InvalidOperationException("Stickers config section is required.");
+        }
+
+        if (config.Keychains is null)
+        {
+            throw new InvalidOperationException("Keychains config section is required.");
+        }
+
         if (config.Definitions is null)
         {
             throw new InvalidOperationException("Definitions config section is required.");

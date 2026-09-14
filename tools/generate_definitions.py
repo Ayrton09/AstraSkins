@@ -14,6 +14,10 @@ SKINS_ZH_API_URL = "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/publ
 AGENTS_ZH_API_URL = "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/zh-CN/agents.json"
 MUSIC_KITS_API_URL = "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/en/music_kits.json"
 MUSIC_KITS_ZH_API_URL = "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/zh-CN/music_kits.json"
+STICKERS_API_URL = "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/en/stickers.json"
+STICKERS_ZH_API_URL = "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/zh-CN/stickers.json"
+KEYCHAINS_API_URL = "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/en/keychains.json"
+KEYCHAINS_ZH_API_URL = "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/zh-CN/keychains.json"
 
 WEAPON_DISPLAY = {
     "weapon_ak47": ("rifles", "AK-47"),
@@ -609,6 +613,138 @@ def build_music_kits(api_music_kits, api_music_kits_zh):
     return kits
 
 
+def split_item_name(name):
+    """"Sticker | ropz (Gold) | Cologne 2026" -> ("ropz (Gold)", "Cologne 2026");
+    "Charm | Lil' Ava" -> ("Lil' Ava", None). The first segment is the item
+    type, which the menu already shows as the category."""
+    # The zh-CN names put no space before the pipe after a full-width
+    # parenthesis ("Natus Vincere（全息）| 2026年科隆锦标赛"), so split on the
+    # pipe itself.
+    parts = [part.strip() for part in re.split(r"\s*\|\s*", name or "")]
+    if len(parts) >= 3:
+        return parts[1], parts[2]
+    if len(parts) == 2:
+        return parts[1], None
+    return parts[0], None
+
+
+def first_name(entries):
+    if entries and isinstance(entries[0], dict):
+        return entries[0].get("name") or None
+    return None
+
+
+def sticker_group(entry):
+    """(group, capsule): tournament stickers group by event and then by the
+    capsule they came from; the rest group by capsule or collection; anything
+    left over has no group and lands in the menu's "Other" entry."""
+    tournament = entry.get("tournament") or {}
+    crate = first_name(entry.get("crates"))
+    collection = first_name(entry.get("collections"))
+    if isinstance(tournament, dict) and tournament.get("name"):
+        return tournament["name"], crate
+    if crate:
+        return crate, None
+    if collection:
+        return collection, None
+    return None, None
+
+
+def add_zh_field(item, key, english, chinese):
+    if chinese and chinese != english:
+        item[key] = chinese
+
+
+def build_stickers(api_stickers, api_stickers_zh):
+    zh_by_id = {entry.get("id"): entry for entry in api_stickers_zh or []}
+    stickers = []
+    tournament_groups = set()
+    for entry in api_stickers or []:
+        def_index = str(entry.get("def_index", ""))
+        if not def_index.isdigit():
+            continue
+        name, _ = split_item_name(entry.get("name"))
+        if not name:
+            continue
+        group, capsule = sticker_group(entry)
+        if group and isinstance(entry.get("tournament"), dict) and entry["tournament"].get("name"):
+            tournament_groups.add(group)
+        zh = zh_by_id.get(entry.get("id")) or {}
+        zh_name, _ = split_item_name(zh.get("name"))
+        zh_group, zh_capsule = sticker_group(zh) if zh else (None, None)
+        rarity = entry.get("rarity") or {}
+        item = {"id": f"sticker-{def_index}", "stickerId": int(def_index), "displayName": name}
+        add_zh_field(item, "displayNameZh", name, zh_name)
+        if group:
+            item["group"] = group
+            add_zh_field(item, "groupZh", group, zh_group)
+        if capsule:
+            item["capsule"] = capsule
+            add_zh_field(item, "capsuleZh", capsule, zh_capsule)
+        if isinstance(rarity, dict) and rarity.get("id"):
+            item["rarity"] = rarity["id"]
+        stickers.append(item)
+
+    stickers = unique_by_id(stickers)
+    # Tournaments first, newest event first (the highest sticker id in the
+    # group), then the capsules and collections the same way, ungrouped
+    # stickers last; inside a group the capsules keep their release order and
+    # the stickers are alphabetical.
+    group_rank = {}
+    capsule_rank = {}
+    for item in stickers:
+        group = item.get("group")
+        group_rank[group] = max(group_rank.get(group, -1), item["stickerId"])
+        key = (group, item.get("capsule"))
+        capsule_rank[key] = min(capsule_rank.get(key, 1 << 30), item["stickerId"])
+    stickers.sort(key=lambda item: (
+        item.get("group") is None,
+        item.get("group") not in tournament_groups,
+        -group_rank[item.get("group")],
+        item.get("capsule") is None,
+        capsule_rank[(item.get("group"), item.get("capsule"))],
+        item["displayName"].lower(),
+        item["stickerId"],
+    ))
+    return stickers
+
+
+def build_keychains(api_keychains, api_keychains_zh):
+    zh_by_id = {entry.get("id"): entry for entry in api_keychains_zh or []}
+    keychains = []
+    for entry in api_keychains or []:
+        def_index = str(entry.get("def_index", ""))
+        if not def_index.isdigit():
+            continue
+        name, _ = split_item_name(entry.get("name"))
+        if not name:
+            continue
+        group = first_name(entry.get("collections"))
+        zh = zh_by_id.get(entry.get("id")) or {}
+        zh_name, _ = split_item_name(zh.get("name"))
+        rarity = entry.get("rarity") or {}
+        item = {"id": f"keychain-{def_index}", "keychainId": int(def_index), "displayName": name}
+        add_zh_field(item, "displayNameZh", name, zh_name)
+        if group:
+            item["group"] = group
+            add_zh_field(item, "groupZh", group, first_name(zh.get("collections")))
+        if isinstance(rarity, dict) and rarity.get("id"):
+            item["rarity"] = rarity["id"]
+        keychains.append(item)
+
+    keychains = unique_by_id(keychains)
+    group_order = {}
+    for item in keychains:
+        group_order.setdefault(item.get("group"), len(group_order))
+    keychains.sort(key=lambda item: (
+        item.get("group") is None,
+        group_order[item.get("group")],
+        item["displayName"].lower(),
+        item["keychainId"],
+    ))
+    return keychains
+
+
 def with_zh(entry, zh_name):
     """Return a copy with displayNameZh right after displayName, or the entry itself when there is no translation."""
     if not zh_name or zh_name == entry.get("displayName"):
@@ -688,6 +824,10 @@ def main():
     parser.add_argument("--agents-zh-api", default=AGENTS_ZH_API_URL)
     parser.add_argument("--music-kits-api", default=MUSIC_KITS_API_URL)
     parser.add_argument("--music-kits-zh-api", default=MUSIC_KITS_ZH_API_URL)
+    parser.add_argument("--stickers-api", default=STICKERS_API_URL)
+    parser.add_argument("--stickers-zh-api", default=STICKERS_ZH_API_URL)
+    parser.add_argument("--keychains-api", default=KEYCHAINS_API_URL)
+    parser.add_argument("--keychains-zh-api", default=KEYCHAINS_ZH_API_URL)
     parser.add_argument("--output", default="data")
     args = parser.parse_args()
 
@@ -699,6 +839,10 @@ def main():
     api_agents_zh = json.loads(load_text(args.agents_zh_api)) if args.agents_zh_api else None
     api_music_kits = json.loads(load_text(args.music_kits_api)) if args.music_kits_api else None
     api_music_kits_zh = json.loads(load_text(args.music_kits_zh_api)) if args.music_kits_zh_api else None
+    api_stickers = json.loads(load_text(args.stickers_api)) if args.stickers_api else None
+    api_stickers_zh = json.loads(load_text(args.stickers_zh_api)) if args.stickers_zh_api else None
+    api_keychains = json.loads(load_text(args.keychains_api)) if args.keychains_api else None
+    api_keychains_zh = json.loads(load_text(args.keychains_zh_api)) if args.keychains_zh_api else None
     output = Path(args.output)
 
     weapons = build_weapons(root, translations, api_skins)
@@ -706,6 +850,8 @@ def main():
     gloves = build_gloves(root, translations, api_skins)
     agents = build_agents(api_agents, root)
     music_kits = build_music_kits(api_music_kits, api_music_kits_zh)
+    stickers = build_stickers(api_stickers, api_stickers_zh)
+    keychains = build_keychains(api_keychains, api_keychains_zh)
     attach_zh_names(weapons, knives, gloves, agents, api_skins_zh, api_agents_zh)
 
     if not any(w["skins"] for w in weapons):
@@ -717,8 +863,10 @@ def main():
     write_json(output / "gloves.json", gloves)
     write_json(output / "agents.json", agents)
     write_json(output / "music_kits.json", music_kits)
+    write_json(output / "stickers.json", stickers)
+    write_json(output / "keychains.json", keychains)
     write_json(output / "categories.json", CATEGORIES)
-    print(f"Generated {sum(len(w['skins']) for w in weapons)} weapon skins, {sum(len(k['skins']) for k in knives)} knife skins, {sum(len(g['skins']) for g in gloves)} glove skins, and {len(agents)} agents and {len(music_kits)} music kits into {output}")
+    print(f"Generated {sum(len(w['skins']) for w in weapons)} weapon skins, {sum(len(k['skins']) for k in knives)} knife skins, {sum(len(g['skins']) for g in gloves)} glove skins, {len(agents)} agents, {len(music_kits)} music kits, {len(stickers)} stickers and {len(keychains)} keychains into {output}")
     return 0
 
 

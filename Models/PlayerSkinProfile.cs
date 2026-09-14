@@ -11,6 +11,11 @@ public sealed class PlayerSkinProfile
     public Dictionary<int, int> MusicKitMvpCounts { get; set; } = new();
     public Dictionary<string, string> AgentIdsByTeam { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 
+    // Stickers per weapon entity keyed by slot (0 to 4), and one charm per
+    // weapon entity. Values are ids from the sticker and keychain catalogs.
+    public Dictionary<string, Dictionary<int, string>> Stickers { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+    public Dictionary<string, string> Keychains { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+
     // Per-player overrides on top of the selected skin, keyed by weapon entity
     // name, "knife", or "glove". A null field means "use the skin's value".
     public Dictionary<string, WeaponCustomization> Customizations { get; set; } = new(StringComparer.OrdinalIgnoreCase);

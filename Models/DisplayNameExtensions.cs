@@ -12,6 +12,8 @@ public static class DisplayNameExtensions
     public static string Localized(this AgentDefinition entry, bool zh) => Pick(zh, entry.DisplayNameZh, entry.DisplayName);
     public static string Localized(this CategoryDefinition entry, bool zh) => Pick(zh, entry.DisplayNameZh, entry.DisplayName);
     public static string Localized(this MusicKitDefinition entry, bool zh) => Pick(zh, entry.DisplayNameZh, entry.DisplayName);
+    public static string Localized(this StickerDefinition entry, bool zh) => Pick(zh, entry.DisplayNameZh, entry.DisplayName);
+    public static string Localized(this KeychainDefinition entry, bool zh) => Pick(zh, entry.DisplayNameZh, entry.DisplayName);
 
     private static string Pick(bool zh, string? chinese, string english)
     {

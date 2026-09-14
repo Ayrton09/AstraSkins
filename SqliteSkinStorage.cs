@@ -151,11 +151,13 @@ public sealed class SqliteSkinStorage : ISkinStorage
         using var command = connection.CreateCommand();
         command.CommandText = category switch
         {
-            "weapons" => "DELETE FROM astra_player_skin_selections WHERE steam_id = $steam_id AND (selection_type = 'weapon' OR (selection_type IN ('seed', 'wear', 'nametag', 'stattrak') AND target NOT IN ('knife', 'glove')))",
+            "weapons" => "DELETE FROM astra_player_skin_selections WHERE steam_id = $steam_id AND (selection_type IN ('weapon', 'sticker', 'keychain') OR (selection_type IN ('seed', 'wear', 'nametag', 'stattrak') AND target NOT IN ('knife', 'glove')))",
             "knife" => "DELETE FROM astra_player_skin_selections WHERE steam_id = $steam_id AND (selection_type IN ('knife', 'knife_type') OR (selection_type IN ('seed', 'wear', 'nametag', 'stattrak') AND target = 'knife'))",
             "gloves" => "DELETE FROM astra_player_skin_selections WHERE steam_id = $steam_id AND (selection_type = 'glove' OR (selection_type IN ('seed', 'wear', 'nametag', 'stattrak') AND target = 'glove'))",
             "agents" => "DELETE FROM astra_player_skin_selections WHERE steam_id = $steam_id AND selection_type = 'agent'",
             "music" => "DELETE FROM astra_player_skin_selections WHERE steam_id = $steam_id AND selection_type IN ('music_kit', 'music_kit_mvp')",
+            "stickers" => "DELETE FROM astra_player_skin_selections WHERE steam_id = $steam_id AND selection_type = 'sticker'",
+            "keychains" => "DELETE FROM astra_player_skin_selections WHERE steam_id = $steam_id AND selection_type = 'keychain'",
             _ => throw new ArgumentOutOfRangeException(nameof(category), category, "Invalid reset category.")
         };
         command.Parameters.AddWithValue("$steam_id", unchecked((long)steamId64));
@@ -229,6 +231,29 @@ public sealed class SqliteSkinStorage : ISkinStorage
                  int.TryParse(cosmeticId, NumberStyles.Integer, CultureInfo.InvariantCulture, out var mvpCount))
         {
             profile.MusicKitMvpCounts[musicKitId] = Math.Max(0, mvpCount);
+        }
+        else if (type.Equals("sticker", StringComparison.OrdinalIgnoreCase))
+        {
+            // target is "<weapon entity>:<slot>"; the slot range is enforced
+            // when the profile is applied, not here.
+            var separator = target.LastIndexOf(':');
+            if (separator > 0 &&
+                int.TryParse(target[(separator + 1)..], NumberStyles.Integer, CultureInfo.InvariantCulture, out var slot) &&
+                slot >= 0)
+            {
+                var weaponEntity = target[..separator];
+                if (!profile.Stickers.TryGetValue(weaponEntity, out var slots))
+                {
+                    slots = new Dictionary<int, string>();
+                    profile.Stickers[weaponEntity] = slots;
+                }
+
+                slots[slot] = cosmeticId;
+            }
+        }
+        else if (type.Equals("keychain", StringComparison.OrdinalIgnoreCase))
+        {
+            profile.Keychains[target] = cosmeticId;
         }
         else if (type.Equals("seed", StringComparison.OrdinalIgnoreCase) &&
                  int.TryParse(cosmeticId, NumberStyles.Integer, CultureInfo.InvariantCulture, out var seed))

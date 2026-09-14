@@ -23,6 +23,8 @@ public sealed class MenuManager
     private const int MaxItemLabelLength = 34;
     private const int MaxSearchResults = 64;
     private const string MusicKitColor = "#f08ac8";
+    private const string StickerColor = "#f5c542";
+    private const string KeychainColor = "#7fd8c9";
 
     public MenuManager(SkinManager skinManager, PluginConfig config, IStringLocalizer localizer, ILogger logger)
     {
@@ -41,8 +43,71 @@ public sealed class MenuManager
         state.Weapon = null;
         state.Knife = null;
         state.Glove = null;
+        ResetAttachmentState(state, MenuPurpose.Skins);
         ResetInputState(player, state);
         ChangeView(player, state, MenuView.Main);
+    }
+
+    // Straight to the held gun's sticker slots; with nothing usable in hand,
+    // to the weapon picker.
+    public void OpenStickers(CCSPlayerController player, string? weaponEntity)
+    {
+        var state = GetState(player);
+        state.BackStack.Clear();
+        state.CategoryId = null;
+        ResetAttachmentState(state, MenuPurpose.Stickers);
+        ResetInputState(player, state);
+        state.Weapon = FindWeapon(weaponEntity);
+        ChangeView(player, state, state.Weapon is null ? MenuView.AttachmentWeapons : MenuView.StickerSlots);
+    }
+
+    public void OpenKeychains(CCSPlayerController player, string? weaponEntity)
+    {
+        var state = GetState(player);
+        state.BackStack.Clear();
+        state.CategoryId = null;
+        ResetAttachmentState(state, MenuPurpose.Keychain);
+        ResetInputState(player, state);
+        state.Weapon = FindWeapon(weaponEntity);
+        ChangeView(player, state, state.Weapon is null ? MenuView.AttachmentWeapons : MenuView.KeychainGroups);
+    }
+
+    public void OpenStickerSearch(CCSPlayerController player, string weaponEntity, string query)
+    {
+        var state = GetState(player);
+        state.BackStack.Clear();
+        ResetAttachmentState(state, MenuPurpose.Stickers);
+        ResetInputState(player, state);
+        state.Weapon = FindWeapon(weaponEntity);
+        state.SearchQuery = query;
+        ChangeView(player, state, MenuView.StickerSearch);
+    }
+
+    public void OpenKeychainSearch(CCSPlayerController player, string weaponEntity, string query)
+    {
+        var state = GetState(player);
+        state.BackStack.Clear();
+        ResetAttachmentState(state, MenuPurpose.Keychain);
+        ResetInputState(player, state);
+        state.Weapon = FindWeapon(weaponEntity);
+        state.SearchQuery = query;
+        ChangeView(player, state, MenuView.KeychainSearch);
+    }
+
+    private WeaponDefinition? FindWeapon(string? weaponEntity)
+    {
+        return weaponEntity is not null && _skinManager.Catalog.WeaponsByEntity.TryGetValue(weaponEntity, out var weapon) ? weapon : null;
+    }
+
+    private static void ResetAttachmentState(PlayerMenuState state, MenuPurpose purpose)
+    {
+        state.Purpose = purpose;
+        state.StickerSlot = 0;
+        state.StickerGroup = null;
+        state.StickerCapsule = null;
+        state.KeychainGroup = null;
+        state.PendingStickerId = null;
+        state.PendingStickerName = null;
     }
 
     public void OpenKnives(CCSPlayerController player)
@@ -82,7 +147,7 @@ public sealed class MenuManager
     public bool HasSearchResults(CCSPlayerController player)
     {
         return _states.TryGetValue(player.Slot, out var state) &&
-               state.View == MenuView.Search &&
+               state.View is MenuView.Search or MenuView.StickerSearch or MenuView.KeychainSearch &&
                GetOptions(state).Count > 0;
     }
 
@@ -205,15 +270,27 @@ public sealed class MenuManager
         }
     }
 
-    private void ChangeView(CCSPlayerController player, PlayerMenuState state, MenuView view, bool push = false)
+    // purpose: set after the snapshot is taken, so going back restores the
+    // view the player left with the purpose it had then.
+    private void ChangeView(CCSPlayerController player, PlayerMenuState state, MenuView view, bool push = false, MenuPurpose? purpose = null)
     {
         if (push)
         {
-            state.BackStack.Push(new MenuSnapshot(state.View, state.Cursor, state.CategoryId, state.AgentTeam, state.Weapon, state.Knife, state.Glove));
+            state.BackStack.Push(new MenuSnapshot(
+                state.View, state.Cursor, state.CategoryId, state.AgentTeam, state.Weapon, state.Knife, state.Glove,
+                state.Purpose, state.StickerSlot, state.StickerGroup, state.StickerCapsule, state.KeychainGroup));
+        }
+
+        if (purpose is not null)
+        {
+            ResetAttachmentState(state, purpose.Value);
         }
 
         state.View = view;
         state.Cursor = 0;
+        // A new view is a new context: the repeat throttle must not carry
+        // over to a row that happens to share a label.
+        state.LastSelectionKey = null;
         state.LastInteractionUtc = DateTime.UtcNow;
         InvalidateOptions(state);
         Freeze(player);
@@ -243,6 +320,20 @@ public sealed class MenuManager
             state.Weapon = snapshot.Weapon;
             state.Knife = snapshot.Knife;
             state.Glove = snapshot.Glove;
+            state.Purpose = snapshot.Purpose;
+            state.StickerSlot = snapshot.StickerSlot;
+            state.StickerGroup = snapshot.StickerGroup;
+            state.StickerCapsule = snapshot.StickerCapsule;
+            state.KeychainGroup = snapshot.KeychainGroup;
+            // Backing out of the slot choice drops the sticker picked from
+            // the search results.
+            if (snapshot.View != MenuView.StickerSlots)
+            {
+                state.PendingStickerId = null;
+                state.PendingStickerName = null;
+            }
+
+            state.LastSelectionKey = null;
             InvalidateOptions(state);
             return;
         }
@@ -264,7 +355,7 @@ public sealed class MenuManager
         {
             // Throttle repeats of the same option; picking a different option
             // is allowed immediately.
-            var selectionKey = $"{state.View}:{option.Label}";
+            var selectionKey = $"{state.View}:{option.SelectionKey ?? option.Label}";
             var now = DateTime.UtcNow;
             if (selectionKey.Equals(state.LastSelectionKey, StringComparison.Ordinal) &&
                 (now - state.LastSelectionUtc).TotalMilliseconds < _config.Menu.SelectionCooldownMilliseconds)
@@ -281,13 +372,13 @@ public sealed class MenuManager
     }
 
     // Options are cached per state and rebuilt only when the view or the
-    // selection changes; the main view also refreshes on a short TTL because
-    // it lists the weapons the player currently owns.
+    // selection changes; the views that list the weapons the player currently
+    // owns also refresh on a short TTL.
     private IReadOnlyList<MenuOption> GetOptions(PlayerMenuState state)
     {
         var now = DateTime.UtcNow;
         if (state.CachedOptions is not null &&
-            (state.View != MenuView.Main || (now - state.CachedOptionsAtUtc).TotalSeconds < 1))
+            (state.View is not (MenuView.Main or MenuView.AttachmentWeapons) || (now - state.CachedOptionsAtUtc).TotalSeconds < 1))
         {
             return state.CachedOptions;
         }
@@ -326,6 +417,15 @@ public sealed class MenuManager
             MenuView.Agents => BuildAgentOptions(state),
             MenuView.MusicKits => BuildMusicKitOptions(state),
             MenuView.Search => BuildSearchOptions(state),
+            MenuView.AttachmentWeapons => BuildAttachmentWeaponOptions(state),
+            MenuView.StickerSlots => BuildStickerSlotOptions(state),
+            MenuView.StickerGroups => BuildStickerGroupOptions(state),
+            MenuView.StickerCapsules => BuildStickerCapsuleOptions(state),
+            MenuView.Stickers => BuildStickerOptions(state),
+            MenuView.StickerSearch => BuildStickerSearchOptions(state),
+            MenuView.KeychainGroups => BuildKeychainGroupOptions(state),
+            MenuView.Keychains => BuildKeychainOptions(state),
+            MenuView.KeychainSearch => BuildKeychainSearchOptions(state),
             _ => Array.Empty<MenuOption>()
         };
     }
@@ -409,6 +509,26 @@ public sealed class MenuManager
             if (current is not null) ChangeView(current, state, MenuView.MusicKits, push: true);
         }, LabelColor: MusicKitColor));
 
+        if (_skinManager.CanUseStickers(player))
+        {
+            options.Add(new MenuOption($"{visualIndex++}. {_localizer.ForPlayer(player, "menu.stickers")}", () =>
+            {
+                var current = Utilities.GetPlayerFromSlot(state.Slot);
+                if (current is null) return;
+                ChangeView(current, state, MenuView.AttachmentWeapons, push: true, purpose: MenuPurpose.Stickers);
+            }, LabelColor: StickerColor));
+        }
+
+        if (_skinManager.CanUseKeychains(player))
+        {
+            options.Add(new MenuOption($"{visualIndex++}. {_localizer.ForPlayer(player, "menu.charms")}", () =>
+            {
+                var current = Utilities.GetPlayerFromSlot(state.Slot);
+                if (current is null) return;
+                ChangeView(current, state, MenuView.AttachmentWeapons, push: true, purpose: MenuPurpose.Keychain);
+            }, LabelColor: KeychainColor));
+        }
+
         return options;
     }
 
@@ -481,6 +601,12 @@ public sealed class MenuManager
                 state.CategoryId = category.Id;
                 ChangeView(player, state, MenuView.Weapons, push: true);
             }));
+        }
+
+        // Picking a weapon for stickers or a charm: only the gun categories.
+        if (state.Purpose != MenuPurpose.Skins)
+        {
+            return options;
         }
 
         options.Add(new MenuOption(_localizer.ForPlayer(menuPlayer, "menu.knives"), () =>
@@ -572,9 +698,507 @@ public sealed class MenuManager
                 var player = Utilities.GetPlayerFromSlot(state.Slot);
                 if (player is null) return;
                 state.Weapon = w;
-                ChangeView(player, state, MenuView.WeaponSkins, push: true);
+                ChangeView(player, state, WeaponTargetView(state.Purpose), push: true);
             }))
             .ToList();
+    }
+
+    private static MenuView WeaponTargetView(MenuPurpose purpose)
+    {
+        return purpose switch
+        {
+            MenuPurpose.Stickers => MenuView.StickerSlots,
+            MenuPurpose.Keychain => MenuView.KeychainGroups,
+            _ => MenuView.WeaponSkins
+        };
+    }
+
+    // Weapon picker for stickers and charms: the guns in hand first, marked
+    // when they already carry something, then the full catalog by category.
+    private IReadOnlyList<MenuOption> BuildAttachmentWeaponOptions(PlayerMenuState state)
+    {
+        var player = Utilities.GetPlayerFromSlot(state.Slot);
+        if (player is null || !player.IsValid)
+        {
+            return Array.Empty<MenuOption>();
+        }
+
+        var profile = _skinManager.GetProfile(player);
+        var options = new List<MenuOption>();
+        foreach (var weapon in _skinManager.GetOwnedWeaponDefinitions(player))
+        {
+            var hasAttachment = state.Purpose == MenuPurpose.Stickers
+                ? profile.Stickers.TryGetValue(weapon.EntityName, out var slots) && slots.Count > 0
+                : profile.Keychains.ContainsKey(weapon.EntityName);
+            options.Add(new MenuOption(weapon.Localized(state.PreferZh), () =>
+            {
+                var current = Utilities.GetPlayerFromSlot(state.Slot);
+                if (current is null) return;
+                state.Weapon = weapon;
+                ChangeView(current, state, WeaponTargetView(state.Purpose), push: true);
+            }, hasAttachment));
+        }
+
+        options.Add(new MenuOption(_localizer.ForPlayer(player, "menu.configure_all"), () =>
+        {
+            var current = Utilities.GetPlayerFromSlot(state.Slot);
+            if (current is null) return;
+            state.CategoryId = null;
+            ChangeView(current, state, MenuView.Categories, push: true);
+        }, LabelColor: "#f0b65a"));
+
+        return options;
+    }
+
+    // One row per slot showing what is on it. A sticker picked from the
+    // search lands on the chosen slot; otherwise the slot opens the catalog.
+    private IReadOnlyList<MenuOption> BuildStickerSlotOptions(PlayerMenuState state)
+    {
+        var player = Utilities.GetPlayerFromSlot(state.Slot);
+        if (player is null || state.Weapon is null)
+        {
+            return Array.Empty<MenuOption>();
+        }
+
+        var weapon = state.Weapon;
+        var profile = _skinManager.GetProfile(player);
+        profile.Stickers.TryGetValue(weapon.EntityName, out var slots);
+        var options = new List<MenuOption>();
+        for (var slot = 0; slot < SkinManager.StickerSlots; slot++)
+        {
+            StickerDefinition? equipped = null;
+            if (slots is not null && slots.TryGetValue(slot, out var equippedId))
+            {
+                _skinManager.Catalog.StickersById.TryGetValue(equippedId, out equipped);
+            }
+
+            var name = equipped?.Localized(state.PreferZh) ?? _localizer.ForPlayer(player, "menu.sticker.empty");
+            var label = _localizer.ForPlayer(player, "menu.sticker.slot", slot + 1, name);
+            var slotIndex = slot;
+            options.Add(new MenuOption(label, () =>
+            {
+                var current = Utilities.GetPlayerFromSlot(state.Slot);
+                if (current is null) return;
+                state.StickerSlot = slotIndex;
+                if (state.PendingStickerId is null)
+                {
+                    state.StickerGroup = null;
+                    state.StickerCapsule = null;
+                    ChangeView(current, state, MenuView.StickerGroups, push: true);
+                    return;
+                }
+
+                var pendingId = state.PendingStickerId;
+                var pendingName = state.PendingStickerName ?? pendingId;
+                state.PendingStickerId = null;
+                state.PendingStickerName = null;
+                var saved = _skinManager.SetSticker(current, weapon.EntityName, slotIndex, pendingId);
+                current.PrintToChat(saved
+                    ? $"{AstraSkinsPlugin.FormatPrefix()} {_localizer.ForPlayer(current, "menu.sticker.applied", pendingName, slotIndex + 1)}"
+                    : $"{AstraSkinsPlugin.FormatPrefix()} {_localizer.ForPlayer(current, "menu.save_failed")}");
+                state.LastInteractionUtc = DateTime.UtcNow;
+                InvalidateOptions(state);
+                Render(current, state);
+            }, equipped is not null, ThrottleSelection: state.PendingStickerId is not null, LabelColor: RarityColor(equipped?.Rarity)));
+        }
+
+        return options;
+    }
+
+    private IReadOnlyList<MenuOption> BuildStickerGroupOptions(PlayerMenuState state)
+    {
+        var player = Utilities.GetPlayerFromSlot(state.Slot);
+        if (player is null || state.Weapon is null)
+        {
+            return Array.Empty<MenuOption>();
+        }
+
+        var weapon = state.Weapon;
+        var slot = state.StickerSlot;
+        var options = new List<MenuOption>();
+        var profile = _skinManager.GetProfile(player);
+        if (profile.Stickers.TryGetValue(weapon.EntityName, out var slots) && slots.ContainsKey(slot))
+        {
+            options.Add(new MenuOption(_localizer.ForPlayer(player, "menu.sticker.remove"), () =>
+            {
+                var current = Utilities.GetPlayerFromSlot(state.Slot);
+                if (current is null) return;
+                if (_skinManager.ClearSticker(current, weapon.EntityName, slot))
+                {
+                    current.PrintToChat($"{AstraSkinsPlugin.FormatPrefix()} {_localizer.ForPlayer(current, "menu.sticker.removed", slot + 1)}");
+                }
+
+                state.LastInteractionUtc = DateTime.UtcNow;
+                InvalidateOptions(state);
+                Render(current, state);
+            }, ThrottleSelection: true, LabelColor: "#ffb3b3"));
+        }
+
+        foreach (var group in _skinManager.Catalog.StickerGroups)
+        {
+            options.Add(new MenuOption(GroupLabel(player, state.PreferZh, group.Name, group.NameZh), () =>
+            {
+                var current = Utilities.GetPlayerFromSlot(state.Slot);
+                if (current is null) return;
+                state.StickerGroup = group;
+                state.StickerCapsule = null;
+                ChangeView(current, state, group.Capsules.Count > 0 ? MenuView.StickerCapsules : MenuView.Stickers, push: true);
+            }));
+        }
+
+        return options;
+    }
+
+    private IReadOnlyList<MenuOption> BuildStickerCapsuleOptions(PlayerMenuState state)
+    {
+        var player = Utilities.GetPlayerFromSlot(state.Slot);
+        var group = state.StickerGroup;
+        if (player is null || group is null)
+        {
+            return Array.Empty<MenuOption>();
+        }
+
+        var labels = DisambiguateLabels(group.Capsules.Select(capsule => CapsuleLabel(group, capsule, state.PreferZh)).ToList());
+        var options = new List<MenuOption>();
+        for (var index = 0; index < group.Capsules.Count; index++)
+        {
+            var capsule = group.Capsules[index];
+            options.Add(new MenuOption(labels[index], () =>
+            {
+                var current = Utilities.GetPlayerFromSlot(state.Slot);
+                if (current is null) return;
+                state.StickerCapsule = capsule;
+                ChangeView(current, state, MenuView.Stickers, push: true);
+            }, SelectionKey: capsule.Name));
+        }
+
+        if (group.Stickers.Count > 0)
+        {
+            options.Add(new MenuOption(_localizer.ForPlayer(player, "menu.other"), () =>
+            {
+                var current = Utilities.GetPlayerFromSlot(state.Slot);
+                if (current is null) return;
+                state.StickerCapsule = null;
+                ChangeView(current, state, MenuView.Stickers, push: true);
+            }));
+        }
+
+        return options;
+    }
+
+    private IReadOnlyList<MenuOption> BuildStickerOptions(PlayerMenuState state)
+    {
+        var player = Utilities.GetPlayerFromSlot(state.Slot);
+        var weapon = state.Weapon;
+        var stickers = state.StickerCapsule?.Stickers ?? state.StickerGroup?.Stickers;
+        if (player is null || weapon is null || stickers is null)
+        {
+            return Array.Empty<MenuOption>();
+        }
+
+        var slot = state.StickerSlot;
+        var profile = _skinManager.GetProfile(player);
+        string? equippedId = null;
+        if (profile.Stickers.TryGetValue(weapon.EntityName, out var slots))
+        {
+            slots.TryGetValue(slot, out equippedId);
+        }
+
+        return stickers
+            .Where(sticker => _skinManager.CanUse(player, sticker))
+            .Select(sticker => new MenuOption(sticker.Localized(state.PreferZh), () =>
+            {
+                var current = Utilities.GetPlayerFromSlot(state.Slot);
+                if (current is null) return;
+                ApplySticker(current, state, weapon, slot, sticker);
+            }, sticker.Id.Equals(equippedId, StringComparison.OrdinalIgnoreCase), ThrottleSelection: true, LabelColor: RarityColor(sticker.Rarity), SelectionKey: sticker.Id))
+            .ToList();
+    }
+
+    private void ApplySticker(CCSPlayerController player, PlayerMenuState state, WeaponDefinition weapon, int slot, StickerDefinition sticker)
+    {
+        var profile = _skinManager.GetProfile(player);
+        if (profile.Stickers.TryGetValue(weapon.EntityName, out var slots) &&
+            slots.TryGetValue(slot, out var equippedId) &&
+            equippedId.Equals(sticker.Id, StringComparison.OrdinalIgnoreCase))
+        {
+            state.LastInteractionUtc = DateTime.UtcNow;
+            Render(player, state);
+            return;
+        }
+
+        var saved = _skinManager.SetSticker(player, weapon.EntityName, slot, sticker.Id);
+        player.PrintToChat(saved
+            ? $"{AstraSkinsPlugin.FormatPrefix()} {_localizer.ForPlayer(player, "menu.sticker.applied", sticker.Localized(state.PreferZh), slot + 1)}"
+            : $"{AstraSkinsPlugin.FormatPrefix()} {_localizer.ForPlayer(player, "menu.save_failed")}");
+        state.LastInteractionUtc = DateTime.UtcNow;
+        InvalidateOptions(state);
+        Render(player, state);
+    }
+
+    // Flat search over every sticker; picking one asks for the slot next.
+    private IReadOnlyList<MenuOption> BuildStickerSearchOptions(PlayerMenuState state)
+    {
+        var player = Utilities.GetPlayerFromSlot(state.Slot);
+        if (player is null || !player.IsValid || state.Weapon is null || string.IsNullOrWhiteSpace(state.SearchQuery))
+        {
+            return Array.Empty<MenuOption>();
+        }
+
+        var terms = state.SearchQuery.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (terms.Length == 0)
+        {
+            return Array.Empty<MenuOption>();
+        }
+
+        var zh = state.PreferZh;
+        var options = new List<MenuOption>();
+        foreach (var sticker in _skinManager.Catalog.Stickers)
+        {
+            if (options.Count >= MaxSearchResults)
+            {
+                break;
+            }
+
+            var label = StickerSearchLabel(player, zh, sticker);
+            var english = StickerSearchLabel(player, false, sticker);
+            if (!MatchesEither(label, english, terms) || !_skinManager.CanUse(player, sticker))
+            {
+                continue;
+            }
+
+            options.Add(new MenuOption(label, () =>
+            {
+                var current = Utilities.GetPlayerFromSlot(state.Slot);
+                if (current is null) return;
+                state.PendingStickerId = sticker.Id;
+                state.PendingStickerName = sticker.Localized(zh);
+                ChangeView(current, state, MenuView.StickerSlots, push: true);
+            }, LabelColor: RarityColor(sticker.Rarity)));
+        }
+
+        return options;
+    }
+
+    // Name first: rows are trimmed to MaxItemLabelLength, and the variant
+    // ("Holo", "Gold, Ranked") is what tells the results apart.
+    private string StickerSearchLabel(CCSPlayerController player, bool zh, StickerDefinition sticker)
+    {
+        var group = GroupLabel(player, zh, sticker.Group, sticker.GroupZh);
+        return $"{sticker.Localized(zh)} | {group}";
+    }
+
+    private IReadOnlyList<MenuOption> BuildKeychainGroupOptions(PlayerMenuState state)
+    {
+        var player = Utilities.GetPlayerFromSlot(state.Slot);
+        if (player is null || state.Weapon is null)
+        {
+            return Array.Empty<MenuOption>();
+        }
+
+        var weapon = state.Weapon;
+        var options = new List<MenuOption>();
+        if (_skinManager.GetProfile(player).Keychains.ContainsKey(weapon.EntityName))
+        {
+            options.Add(new MenuOption(_localizer.ForPlayer(player, "menu.charm.remove"), () =>
+            {
+                var current = Utilities.GetPlayerFromSlot(state.Slot);
+                if (current is null) return;
+                if (_skinManager.ClearKeychain(current, weapon.EntityName))
+                {
+                    current.PrintToChat($"{AstraSkinsPlugin.FormatPrefix()} {_localizer.ForPlayer(current, "menu.charm.removed")}");
+                }
+
+                state.LastInteractionUtc = DateTime.UtcNow;
+                InvalidateOptions(state);
+                Render(current, state);
+            }, ThrottleSelection: true, LabelColor: "#ffb3b3"));
+        }
+
+        foreach (var group in _skinManager.Catalog.KeychainGroups)
+        {
+            options.Add(new MenuOption(GroupLabel(player, state.PreferZh, group.Name, group.NameZh), () =>
+            {
+                var current = Utilities.GetPlayerFromSlot(state.Slot);
+                if (current is null) return;
+                state.KeychainGroup = group;
+                ChangeView(current, state, MenuView.Keychains, push: true);
+            }));
+        }
+
+        return options;
+    }
+
+    private IReadOnlyList<MenuOption> BuildKeychainOptions(PlayerMenuState state)
+    {
+        var player = Utilities.GetPlayerFromSlot(state.Slot);
+        var weapon = state.Weapon;
+        var group = state.KeychainGroup;
+        if (player is null || weapon is null || group is null)
+        {
+            return Array.Empty<MenuOption>();
+        }
+
+        _skinManager.GetProfile(player).Keychains.TryGetValue(weapon.EntityName, out var equippedId);
+        return group.Keychains
+            .Where(keychain => _skinManager.CanUse(player, keychain))
+            .Select(keychain => new MenuOption(keychain.Localized(state.PreferZh), () =>
+            {
+                var current = Utilities.GetPlayerFromSlot(state.Slot);
+                if (current is null) return;
+                ApplyKeychain(current, state, weapon, keychain);
+            }, keychain.Id.Equals(equippedId, StringComparison.OrdinalIgnoreCase), ThrottleSelection: true, LabelColor: RarityColor(keychain.Rarity), SelectionKey: keychain.Id))
+            .ToList();
+    }
+
+    private void ApplyKeychain(CCSPlayerController player, PlayerMenuState state, WeaponDefinition weapon, KeychainDefinition keychain)
+    {
+        if (_skinManager.GetProfile(player).Keychains.TryGetValue(weapon.EntityName, out var equippedId) &&
+            equippedId.Equals(keychain.Id, StringComparison.OrdinalIgnoreCase))
+        {
+            state.LastInteractionUtc = DateTime.UtcNow;
+            Render(player, state);
+            return;
+        }
+
+        var saved = _skinManager.SetKeychain(player, weapon.EntityName, keychain.Id);
+        player.PrintToChat(saved
+            ? $"{AstraSkinsPlugin.FormatPrefix()} {_localizer.ForPlayer(player, "menu.equipped", keychain.Localized(state.PreferZh))}"
+            : $"{AstraSkinsPlugin.FormatPrefix()} {_localizer.ForPlayer(player, "menu.save_failed")}");
+        state.LastInteractionUtc = DateTime.UtcNow;
+        InvalidateOptions(state);
+        Render(player, state);
+    }
+
+    private IReadOnlyList<MenuOption> BuildKeychainSearchOptions(PlayerMenuState state)
+    {
+        var player = Utilities.GetPlayerFromSlot(state.Slot);
+        var weapon = state.Weapon;
+        if (player is null || !player.IsValid || weapon is null || string.IsNullOrWhiteSpace(state.SearchQuery))
+        {
+            return Array.Empty<MenuOption>();
+        }
+
+        var terms = state.SearchQuery.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (terms.Length == 0)
+        {
+            return Array.Empty<MenuOption>();
+        }
+
+        var zh = state.PreferZh;
+        _skinManager.GetProfile(player).Keychains.TryGetValue(weapon.EntityName, out var equippedId);
+        var options = new List<MenuOption>();
+        foreach (var keychain in _skinManager.Catalog.Keychains)
+        {
+            if (options.Count >= MaxSearchResults)
+            {
+                break;
+            }
+
+            var label = $"{keychain.Localized(zh)} | {GroupLabel(player, zh, keychain.Group, keychain.GroupZh)}";
+            var english = $"{keychain.DisplayName} | {GroupLabel(player, false, keychain.Group, keychain.GroupZh)}";
+            if (!MatchesEither(label, english, terms) || !_skinManager.CanUse(player, keychain))
+            {
+                continue;
+            }
+
+            options.Add(new MenuOption(label, () =>
+            {
+                var current = Utilities.GetPlayerFromSlot(state.Slot);
+                if (current is null) return;
+                ApplyKeychain(current, state, weapon, keychain);
+            }, keychain.Id.Equals(equippedId, StringComparison.OrdinalIgnoreCase), ThrottleSelection: true, LabelColor: RarityColor(keychain.Rarity), SelectionKey: keychain.Id));
+        }
+
+        return options;
+    }
+
+    // Capsule names repeat the event ("Cologne 2026 Team Sticker Capsule"
+    // under "IEM Cologne 2026"); the title already says it, so the leading
+    // words the group name contains are dropped. Chinese names have no word
+    // boundaries and are left alone.
+    private static string CapsuleLabel(StickerGroup group, StickerCapsule capsule, bool zh)
+    {
+        var name = zh && !string.IsNullOrWhiteSpace(capsule.NameZh) ? capsule.NameZh! : capsule.Name;
+        if (zh || string.IsNullOrWhiteSpace(group.Name))
+        {
+            return name;
+        }
+
+        var groupWords = new HashSet<string>(group.Name.Split(' ', StringSplitOptions.RemoveEmptyEntries), StringComparer.OrdinalIgnoreCase);
+        var words = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        var skip = 0;
+        while (skip < words.Length - 1 && groupWords.Contains(words[skip]))
+        {
+            skip++;
+        }
+
+        return skip == 0 ? name : string.Join(' ', words.Skip(skip));
+    }
+
+    // Rows that would render the same once trimmed drop as few of their
+    // shared leading words as the trim needs, keeping the rest for context:
+    // "...with Flash Gaming (Holo/Foil)" next to "...with Flash Gaming
+    // Autograph Capsule".
+    private static List<string> DisambiguateLabels(List<string> labels)
+    {
+        var result = new List<string>(labels);
+        var clashes = labels
+            .Select((label, index) => (Label: label, Index: index))
+            .GroupBy(entry => TrimForOverlay(entry.Label, MaxItemLabelLength), StringComparer.Ordinal)
+            .Where(g => g.Count() > 1 && g.Key.EndsWith("...", StringComparison.Ordinal));
+        foreach (var clash in clashes)
+        {
+            var members = clash.ToList();
+            var prefix = CommonPrefixLength(members.Select(m => m.Label).ToList());
+            var first = members[0].Label;
+            for (var cut = first.IndexOf(' ', 0); cut > 0 && cut < prefix; cut = first.IndexOf(' ', cut + 1))
+            {
+                var start = cut + 1;
+                var candidates = members.Select(m => "..." + m.Label[start..]).ToList();
+                if (candidates.Select(c => TrimForOverlay(c, MaxItemLabelLength)).Distinct(StringComparer.Ordinal).Count() != members.Count)
+                {
+                    continue;
+                }
+
+                for (var i = 0; i < members.Count; i++)
+                {
+                    result[members[i].Index] = candidates[i];
+                }
+
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    private static int CommonPrefixLength(List<string> labels)
+    {
+        var first = labels[0];
+        var length = first.Length;
+        foreach (var other in labels.Skip(1))
+        {
+            var i = 0;
+            while (i < length && i < other.Length && first[i] == other[i])
+            {
+                i++;
+            }
+
+            length = i;
+        }
+
+        return length;
+    }
+
+    private string GroupLabel(CCSPlayerController player, bool zh, string? name, string? nameZh)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return _localizer.ForPlayer(player, "menu.other");
+        }
+
+        return zh && !string.IsNullOrWhiteSpace(nameZh) ? nameZh! : name;
     }
 
     private IReadOnlyList<MenuOption> BuildWeaponSkinOptions(PlayerMenuState state)
@@ -1051,6 +1675,19 @@ public sealed class MenuManager
             MenuView.Agents => state.AgentTeam == "ct"
                 ? _localizer.ForPlayer(player, "menu.title.agents_ct")
                 : _localizer.ForPlayer(player, "menu.title.agents_t"),
+            MenuView.AttachmentWeapons => _localizer.ForPlayer(player, "menu.title.weapons"),
+            MenuView.StickerSlots => state.PendingStickerName is not null
+                ? _localizer.ForPlayer(player, "menu.title.sticker_pick_slot", state.PendingStickerName)
+                : _localizer.ForPlayer(player, "menu.title.stickers", state.Weapon?.Localized(state.PreferZh) ?? string.Empty),
+            MenuView.StickerGroups => _localizer.ForPlayer(player, "menu.title.sticker_groups"),
+            MenuView.StickerCapsules => GroupLabel(player, state.PreferZh, state.StickerGroup?.Name, state.StickerGroup?.NameZh),
+            MenuView.Stickers => state.StickerCapsule is not null
+                ? (state.PreferZh && !string.IsNullOrWhiteSpace(state.StickerCapsule.NameZh) ? state.StickerCapsule.NameZh! : state.StickerCapsule.Name)
+                : GroupLabel(player, state.PreferZh, state.StickerGroup?.Name, state.StickerGroup?.NameZh),
+            MenuView.StickerSearch => _localizer.ForPlayer(player, "menu.title.search", state.SearchQuery ?? string.Empty),
+            MenuView.KeychainGroups => _localizer.ForPlayer(player, "menu.title.charms", state.Weapon?.Localized(state.PreferZh) ?? string.Empty),
+            MenuView.Keychains => GroupLabel(player, state.PreferZh, state.KeychainGroup?.Name, state.KeychainGroup?.NameZh),
+            MenuView.KeychainSearch => _localizer.ForPlayer(player, "menu.title.search", state.SearchQuery ?? string.Empty),
             _ => "Astra Skins"
         };
     }

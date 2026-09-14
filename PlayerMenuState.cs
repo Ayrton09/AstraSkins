@@ -17,7 +17,24 @@ public enum MenuView
     AgentTeams,
     Agents,
     MusicKits,
-    Search
+    Search,
+    AttachmentWeapons,
+    StickerSlots,
+    StickerGroups,
+    StickerCapsules,
+    Stickers,
+    StickerSearch,
+    KeychainGroups,
+    Keychains,
+    KeychainSearch
+}
+
+// What a weapon pick leads to: its skins, its sticker slots, or its charm.
+public enum MenuPurpose
+{
+    Skins,
+    Stickers,
+    Keychain
 }
 
 public sealed class PlayerMenuState
@@ -42,6 +59,14 @@ public sealed class PlayerMenuState
     public WeaponDefinition? Weapon { get; set; }
     public KnifeDefinition? Knife { get; set; }
     public GloveDefinition? Glove { get; set; }
+    public MenuPurpose Purpose { get; set; }
+    public int StickerSlot { get; set; }
+    public StickerGroup? StickerGroup { get; set; }
+    public StickerCapsule? StickerCapsule { get; set; }
+    public KeychainGroup? KeychainGroup { get; set; }
+    // A sticker picked from a search result, waiting for the slot choice.
+    public string? PendingStickerId { get; set; }
+    public string? PendingStickerName { get; set; }
     public bool IsOpen => View != MenuView.Closed;
 }
 
@@ -52,6 +77,13 @@ public sealed record MenuSnapshot(
     string? AgentTeam,
     WeaponDefinition? Weapon,
     KnifeDefinition? Knife,
-    GloveDefinition? Glove);
+    GloveDefinition? Glove,
+    MenuPurpose Purpose = MenuPurpose.Skins,
+    int StickerSlot = 0,
+    StickerGroup? StickerGroup = null,
+    StickerCapsule? StickerCapsule = null,
+    KeychainGroup? KeychainGroup = null);
 
-public sealed record MenuOption(string Label, Action Action, bool IsSelected = false, bool ThrottleSelection = false, string? LabelColor = null);
+// SelectionKey tells two rows with the same label apart for the repeat
+// throttle (two stickers can share a name); it defaults to the label.
+public sealed record MenuOption(string Label, Action Action, bool IsSelected = false, bool ThrottleSelection = false, string? LabelColor = null, string? SelectionKey = null);
