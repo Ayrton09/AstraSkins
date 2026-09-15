@@ -501,6 +501,7 @@ public sealed class SkinManager : IDisposable
         slots[slot] = stickerId;
         var target = StickerTarget(weaponEntity, slot);
         QueueStorageWrite($"sticker {stickerId} ({target}) for {steamId}", () => _storage.SaveCustomization(steamId, "sticker", target, stickerId));
+        BumpStickerWear(steamId, profile, weaponEntity);
         ReapplyTarget(player, profile, weaponEntity);
         return true;
     }
@@ -522,6 +523,7 @@ public sealed class SkinManager : IDisposable
         var steamId = GetSteamId64(player);
         var target = StickerTarget(weaponEntity, slot);
         QueueStorageWrite($"sticker reset ({target}) for {steamId}", () => _storage.ClearCustomization(steamId, "sticker", target));
+        BumpStickerWear(steamId, profile, weaponEntity);
         ReapplyTarget(player, profile, weaponEntity, clearWhenBare: true);
         return true;
     }
@@ -749,6 +751,13 @@ public sealed class SkinManager : IDisposable
         BumpProfileEpoch(steamId);
         QueueStorageWrite($"profile reset for {steamId}", () => _storage.ResetProfile(steamId));
         var attachmentWeapons = _profiles.TryGetValue(steamId, out var profile) ? AttachmentWeapons(player, profile) : null;
+        if (profile is not null)
+        {
+            // Queued after the row wipe, so the steps come back bumped and
+            // the next skin on these guns is not built from a stale finish.
+            BumpStickerWearForRenderedStickers(player, steamId, profile);
+        }
+
         _profiles.Remove(steamId);
         _loadedProfiles.Remove(steamId);
         _applyAfterLoadRequests.Remove(steamId);
@@ -824,6 +833,7 @@ public sealed class SkinManager : IDisposable
         {
             case "weapons":
                 var attachmentWeapons = AttachmentWeapons(player, profile);
+                BumpStickerWearForRenderedStickers(player, steamId, profile);
                 profile.WeaponSkins.Clear();
                 profile.Stickers.Clear();
                 profile.Keychains.Clear();
@@ -840,6 +850,7 @@ public sealed class SkinManager : IDisposable
                 var stickerWeapons = profile.Stickers.Keys
                     .Where(weaponEntity => ResolveUsableStickers(player, profile, weaponEntity) is not null)
                     .ToArray();
+                BumpStickerWearForRenderedStickers(player, steamId, profile);
                 profile.Stickers.Clear();
                 ReapplyWeapons(player, profile, stickerWeapons);
                 break;
@@ -1220,6 +1231,64 @@ public sealed class SkinManager : IDisposable
     {
         return ResolveUsableWeaponSkin(player, profile, weaponEntity)
                ?? (HasUsableAttachments(player, profile, weaponEntity) ? VanillaEntry(weaponEntity) : null);
+    }
+
+    // The client keeps one composited first-person finish per paint kit, seed
+    // and wear (wear rounded to coarse steps) for the whole game session, and
+    // that finish ignores later sticker changes: a gun whose finish was built
+    // without a sticker keeps showing none in hand until the wear moves to a
+    // value the client has not built yet (the dropped gun is built fresh and
+    // does show them). So every sticker change on a gun steps its wear by
+    // 0.006, cycling through ten steps (0.06 at most, invisible on the
+    // finish). The step count lives in the profile so it survives reconnects
+    // and restarts; a gun that never had stickers keeps its exact wear.
+    private const float StickerWearStep = 0.006f;
+    private const int StickerWearStepCount = 10;
+    private const string StickerWearField = "sticker_wear";
+
+    private void BumpStickerWear(ulong steamId, PlayerSkinProfile profile, string weaponEntity)
+    {
+        var steps = profile.StickerWearSteps.TryGetValue(weaponEntity, out var current)
+            ? current % StickerWearStepCount + 1
+            : 1;
+        profile.StickerWearSteps[weaponEntity] = steps;
+        var stored = steps.ToString(CultureInfo.InvariantCulture);
+        QueueStorageWrite($"sticker wear step {stored} ({weaponEntity}) for {steamId}", () => _storage.SaveCustomization(steamId, StickerWearField, weaponEntity, stored));
+    }
+
+    private void BumpStickerWearForRenderedStickers(CCSPlayerController player, ulong steamId, PlayerSkinProfile profile)
+    {
+        foreach (var weaponEntity in profile.Stickers.Keys.ToArray())
+        {
+            if (ResolveUsableStickers(player, profile, weaponEntity) is not null)
+            {
+                BumpStickerWear(steamId, profile, weaponEntity);
+            }
+        }
+    }
+
+    private float AdjustWearForStickers(CCSPlayerController player, PlayerSkinProfile profile, string weaponEntity, float wear, bool hasStickers)
+    {
+        if (!profile.StickerWearSteps.TryGetValue(weaponEntity, out var steps))
+        {
+            if (!hasStickers)
+            {
+                return wear;
+            }
+
+            // Stickers saved before the step existed: start it now so the
+            // finish is built with them.
+            if (!TryGetSteamId64(player, out var steamId))
+            {
+                return wear;
+            }
+
+            BumpStickerWear(steamId, profile, weaponEntity);
+            steps = profile.StickerWearSteps[weaponEntity];
+        }
+
+        var offset = steps * StickerWearStep;
+        return wear + offset <= 1f ? wear + offset : Math.Max(0f, wear - offset);
     }
 
     private CosmeticEntry VanillaEntry(string weaponEntity)
@@ -2034,6 +2103,11 @@ public sealed class SkinManager : IDisposable
             target.Keychains.TryAdd(weaponEntity, keychainId);
         }
 
+        foreach (var (weaponEntity, steps) in loaded.StickerWearSteps)
+        {
+            target.StickerWearSteps.TryAdd(weaponEntity, steps);
+        }
+
         foreach (var (customizationTarget, loadedCustomization) in loaded.Customizations)
         {
             if (target.Customizations.TryGetValue(customizationTarget, out var existing))
@@ -2346,6 +2420,10 @@ public sealed class SkinManager : IDisposable
             var statTrak = ResolveStatTrak(profile, resolvedTarget, customization);
             var stickers = isKnife ? null : ResolveUsableStickers(player, profile, resolvedTarget);
             var keychainId = isKnife ? null : ResolveUsableKeychain(player, profile, resolvedTarget);
+            if (!isKnife)
+            {
+                wear = AdjustWearForStickers(player, profile, resolvedTarget, wear, stickers is { Count: > 0 });
+            }
 
             weapon.FallbackPaintKit = cosmetic.PaintKit;
             weapon.FallbackSeed = seed;
@@ -2882,17 +2960,24 @@ public sealed class SkinManager : IDisposable
 
         foreach (var (weaponEntity, slots) in profile.Stickers.ToArray())
         {
+            var pruned = false;
             foreach (var slot in slots.Keys.ToArray())
             {
                 if (!Catalog.StickersById.ContainsKey(slots[slot]))
                 {
                     slots.Remove(slot);
+                    pruned = true;
                 }
             }
 
             if (slots.Count == 0)
             {
                 profile.Stickers.Remove(weaponEntity);
+            }
+
+            if (pruned && profile.SteamId64 != 0)
+            {
+                BumpStickerWear(profile.SteamId64, profile, weaponEntity);
             }
         }
 
@@ -3222,6 +3307,10 @@ public sealed class SkinManager : IDisposable
             var statTrak = ResolveStatTrak(profile, customizationTarget, customization);
             var stickers = isKnife ? null : ResolveUsableStickers(player, profile, customizationTarget);
             var keychainId = isKnife ? null : ResolveUsableKeychain(player, profile, customizationTarget);
+            if (!isKnife)
+            {
+                wear = AdjustWearForStickers(player, profile, customizationTarget, wear, stickers is { Count: > 0 });
+            }
 
             var attributesApplied = PaintEconItem(player, item, cosmetic, isKnife, seed, wear, statTrak, customization?.NameTag, context, stickers, keychainId);
             if (!attributesApplied && logFailures)

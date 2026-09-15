@@ -161,7 +161,7 @@ With 11,000 stickers the search is the fast way in: `!stickers <text>` lists the
 
 Both features have their own `Enabled` switch and `Permission` flag in the config (the `Stickers` and `Keychains` sections), separate from the customization commands, and every entry in `data/stickers.json` and `data/keychains.json` accepts the usual `permission` field. Selections persist like everything else and are cleared with `!wsreset stickers`, `!wsreset charms`, or `!wsreset weapons`. If a data file is missing, its menu entry stays hidden.
 
-Stickers use the game's stock placement, size and wear for each slot; there is no scraping or moving.
+Stickers use the game's stock placement, size and wear for each slot; there is no scraping or moving. The game only rebuilds a gun's first-person finish when its wear changes, so a gun that has had stickers gets its wear shifted by a small amount (0.006 per change, 0.06 at most), invisible on the finish; guns that never had stickers keep their exact wear.
 
 ## Configuration
 

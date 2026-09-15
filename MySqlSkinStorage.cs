@@ -273,6 +273,11 @@ public sealed class MySqlSkinStorage : ISkinStorage
         {
             profile.Keychains[target] = cosmeticId;
         }
+        else if (type.Equals("sticker_wear", StringComparison.OrdinalIgnoreCase) &&
+                 int.TryParse(cosmeticId, NumberStyles.Integer, CultureInfo.InvariantCulture, out var stickerWearSteps))
+        {
+            profile.StickerWearSteps[target] = Math.Max(0, stickerWearSteps);
+        }
         else if (type.Equals("seed", StringComparison.OrdinalIgnoreCase) &&
                  int.TryParse(cosmeticId, NumberStyles.Integer, CultureInfo.InvariantCulture, out var seed))
         {

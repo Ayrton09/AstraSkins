@@ -15,6 +15,10 @@ public sealed class PlayerSkinProfile
     // weapon entity. Values are ids from the sticker and keychain catalogs.
     public Dictionary<string, Dictionary<int, string>> Stickers { get; set; } = new(StringComparer.OrdinalIgnoreCase);
     public Dictionary<string, string> Keychains { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+    // Per weapon entity: how many times the sticker set changed, cycling
+    // through a small range. Drives the wear step that makes the client
+    // rebuild the first-person finish (see SkinManager.BumpStickerWear).
+    public Dictionary<string, int> StickerWearSteps { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 
     // Per-player overrides on top of the selected skin, keyed by weapon entity
     // name, "knife", or "glove". A null field means "use the skin's value".
