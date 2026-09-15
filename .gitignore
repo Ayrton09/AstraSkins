@@ -33,3 +33,6 @@ weapons-1.7.8/
 # Release packaging output
 package/
 *.zip
+
+# Linux SQLite library built by scripts/build_sqlite_linux.sh
+native/linux-x64/

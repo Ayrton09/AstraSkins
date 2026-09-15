@@ -33,6 +33,9 @@ jobs:
             exit 1
           fi
 
+      - name: Build SQLite for Linux
+        run: bash scripts/build_sqlite_linux.sh
+
       - name: Package
         id: package
         run: |

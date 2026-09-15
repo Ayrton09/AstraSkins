@@ -25,6 +25,15 @@ for rid in win-x64 linux-x64; do
   cp -r "$OUT/runtimes/$rid/." "$PLUG/runtimes/$rid/"
 done
 
+# The Linux library from NuGet needs glibc 2.34; ship the one built by
+# scripts/build_sqlite_linux.sh against glibc 2.28 instead.
+NATIVE_SQLITE="native/linux-x64/libe_sqlite3.so"
+if [ ! -f "$NATIVE_SQLITE" ]; then
+  echo "missing $NATIVE_SQLITE: run scripts/build_sqlite_linux.sh first" >&2
+  exit 1
+fi
+cp "$NATIVE_SQLITE" "$PLUG/runtimes/linux-x64/native/libe_sqlite3.so"
+
 cp gamedata/astra_skins.json "$PKG/gamedata/"
 cp config.json "$PKG/configs/plugins/AstraSkins/AstraSkins.json"
 

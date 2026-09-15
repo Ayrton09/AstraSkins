@@ -325,6 +325,8 @@ dotnet build -c Release
 
 Requires the .NET 10 SDK. Deployable output lands in `bin/Release/net10.0/`.
 
+The release zip does not ship the Linux SQLite library from the NuGet package, which needs glibc 2.34 and fails to load on older host images (Debian 11, Ubuntu 20.04). `scripts/build_sqlite_linux.sh` builds the same SQLite, with the same options, against glibc 2.28 using zig, and `scripts/package.sh` puts that build in the zip; CI runs both.
+
 ## Troubleshooting
 
 | Symptom | Fix |
@@ -334,6 +336,7 @@ Requires the .NET 10 SDK. Deployable output lands in `bin/Release/net10.0/`.
 | Skins stopped working after a CS2 update | The gamedata signature broke — see [Gamedata](#gamedata) |
 | `!wsreload` / `!wsdebug` say no permission | Add your SteamID to `configs/admins.json` with the `@css/config` flag |
 | `!seed` looks like it does nothing | The held skin's pattern doesn't vary by seed — try Case Hardened or Crimson Web |
+| `GLIBC_2.3x not found` when loading in sqlite mode | Releases before 1.1.2 shipped a SQLite library that needs glibc 2.34; update, the current one loads on any host that can run CS2 |
 
 ## Disclaimer
 
