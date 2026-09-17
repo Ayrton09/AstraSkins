@@ -53,7 +53,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
     public PluginConfig Config { get; set; } = new();
 
     public override string ModuleName => "Astra Skins";
-    public override string ModuleVersion => "1.2.0";
+    public override string ModuleVersion => "1.2.1";
     public override string ModuleAuthor => "Ayrton09";
     public override string ModuleDescription => string.Empty;
 
@@ -92,8 +92,8 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         RegisterListener<Listeners.OnMapStart>(OnMapStart);
         RegisterListener<Listeners.OnMapEnd>(OnMapEnd);
         RegisterListener<Listeners.OnTick>(OnTick);
+        RegisterListener<Listeners.OnServerPreEntityThink>(OnPreEntityThink);
         RegisterListener<Listeners.CheckTransmit>(OnCheckTransmit);
-        RegisterListener<Listeners.OnPlayerButtonsChanged>(OnPlayerButtonsChanged);
         RegisterListener<Listeners.OnServerPrecacheResources>(OnServerPrecacheResources);
         RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawnPre, HookMode.Pre);
         RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawnPost, HookMode.Post);
@@ -904,11 +904,10 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
     private HookResult OnBotTakeover(EventBotTakeover @event, GameEventInfo info)
     {
         var player = @event.Userid;
-        // Button input keeps coming from the player's own pawn during the
-        // possession, so an open menu would sit there unresponsive.
-        if (player is { IsValid: true })
+        var bot = @event.Botid;
+        if (player is { IsValid: true } && bot is { IsValid: true })
         {
-            _menuManager?.Close(player);
+            _menuManager?.OnBotTakeover(player, bot);
         }
 
         if (!_ready || _config is null || !_config.ApplyPlayerCosmeticsOnBotTakeover || !IsLiveHuman(player))
@@ -1239,6 +1238,16 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         _skinManager?.ReconcileTeamPreview();
     }
 
+    private void OnPreEntityThink()
+    {
+        if (!_ready)
+        {
+            return;
+        }
+
+        _menuManager?.OnPreEntityThink();
+    }
+
     // Music kits are reconciled right before the server builds each tick's
     // snapshot, after all game logic and client packet processing of the
     // tick. Valve rewrites the kit on its own schedule (once the client is
@@ -1269,14 +1278,6 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         catch (Exception ex)
         {
             Logger.LogDebug(ex, "Astra Skins failed to reconcile music kits.");
-        }
-    }
-
-    private void OnPlayerButtonsChanged(CCSPlayerController player, PlayerButtons pressed, PlayerButtons released)
-    {
-        if (_ready && player.IsValid)
-        {
-            _menuManager?.OnButtonsChanged(player, pressed);
         }
     }
 
@@ -1404,19 +1405,6 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
 
     private bool RequireMenuAllowed(CCSPlayerController player, CommandInfo command)
     {
-        // While possessing a bot, button input still comes from the player's
-        // own (dead) pawn, so the menu would open but never respond to keys.
-        // Spectating also detaches Pawn from PlayerPawn (observer pawn), but
-        // there the player is dead; possession is the only alive-and-detached
-        // state.
-        var possessed = player.Pawn.Value;
-        var ownPawn = player.PlayerPawn.Value;
-        if (player.PawnIsAlive && possessed is not null && ownPawn is not null && possessed.Handle != ownPawn.Handle)
-        {
-            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.menu_while_bot")}");
-            return false;
-        }
-
         if (_config!.Menu.AllowWhileDead || player.PawnIsAlive)
         {
             return true;

@@ -95,5 +95,9 @@
   "menu.sticker.applied": "{0}: наклеена в слот {1}.",
   "menu.sticker.removed": "Наклейка убрана из слота {0}.",
   "menu.charm.remove": "Убрать брелок",
-  "menu.charm.removed": "Брелок убран."
+  "menu.charm.removed": "Брелок убран.",
+  "menu.control.move": "Движение",
+  "menu.control.select": "Выбор",
+  "menu.control.back": "Назад",
+  "menu.control.exit": "Выход"
 }

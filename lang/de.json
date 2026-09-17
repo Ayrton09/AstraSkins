@@ -95,5 +95,9 @@
   "menu.sticker.applied": "{0} auf Platz {1} angebracht.",
   "menu.sticker.removed": "Sticker von Platz {0} entfernt.",
   "menu.charm.remove": "Anhänger entfernen",
-  "menu.charm.removed": "Anhänger entfernt."
+  "menu.charm.removed": "Anhänger entfernt.",
+  "menu.control.move": "Bewegen",
+  "menu.control.select": "Bestätigen",
+  "menu.control.back": "Zurück",
+  "menu.control.exit": "Beenden"
 }

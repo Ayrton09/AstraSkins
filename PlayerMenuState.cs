@@ -1,5 +1,4 @@
 ﻿using AstraSkins.Models;
-using CounterStrikeSharp.API;
 
 namespace AstraSkins;
 
@@ -49,8 +48,7 @@ public sealed class PlayerMenuState
     public DateTime LastSelectionUtc { get; set; } = DateTime.MinValue;
     public DateTime OpenedAtUtc { get; set; } = DateTime.UtcNow;
     public string? LastSelectionKey { get; set; }
-    public PlayerButtons PreviousButtons { get; set; }
-    public bool DeadPollingActive { get; set; }
+    public string PreviousButtonsSnapshot { get; set; } = string.Empty;
     public IReadOnlyList<MenuOption>? CachedOptions { get; set; }
     public DateTime CachedOptionsAtUtc { get; set; }
     public string? SearchQuery { get; set; }

@@ -53,7 +53,7 @@ public sealed class MySqlConfig
 
 public sealed class MenuConfig
 {
-    public int ItemsPerPage { get; set; } = 6;
+    public int ItemsPerPage { get; set; } = 5;
     public int TimeoutSeconds { get; set; } = 25;
     public int CooldownMilliseconds { get; set; } = 180;
     public int SelectionCooldownMilliseconds { get; set; } = 900;

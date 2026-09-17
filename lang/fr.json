@@ -95,5 +95,9 @@
   "menu.sticker.applied": "{0} appliqué à l'emplacement {1}.",
   "menu.sticker.removed": "Sticker retiré de l'emplacement {0}.",
   "menu.charm.remove": "Retirer la breloque",
-  "menu.charm.removed": "Breloque retirée."
+  "menu.charm.removed": "Breloque retirée.",
+  "menu.control.move": "Déplacer",
+  "menu.control.select": "Confirmer",
+  "menu.control.back": "Retour",
+  "menu.control.exit": "Quitter"
 }

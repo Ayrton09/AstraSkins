@@ -16,9 +16,13 @@ public sealed class MenuManager
     private readonly IStringLocalizer _localizer;
     private readonly ILogger _logger;
     private readonly Dictionary<int, PlayerMenuState> _states = new();
-    private readonly Dictionary<int, float> _savedVelocity = new();
+    // Keyed by the menu opener's controller slot. Takeover can switch
+    // which pawn that controller occupies, so we snapshot per pawn Index.
+    private readonly Dictionary<int, Dictionary<uint, FrozenPawnState>> _savedMenuFreeze = new();
+    private readonly Dictionary<int, int> _possessedBotSlot = new();
 
-    private const int InitialInputDelayMilliseconds = 200;
+    private const int MenuOpenGraceMilliseconds = 400;
+    private static readonly TimeSpan MenuInputDebounce = TimeSpan.FromMilliseconds(120);
     private const int MaxTitleLength = 46;
     private const int MaxItemLabelLength = 34;
     private const int MaxSearchResults = 64;
@@ -168,7 +172,12 @@ public sealed class MenuManager
     public void CloseSlot(int slot)
     {
         _states.Remove(slot);
-        _savedVelocity.Remove(slot);
+        _savedMenuFreeze.Remove(slot);
+        _possessedBotSlot.Remove(slot);
+        foreach (var pair in _possessedBotSlot.Where(p => p.Value == slot).Select(p => p.Key).ToList())
+        {
+            _possessedBotSlot.Remove(pair);
+        }
     }
 
     public void OnTick()
@@ -192,52 +201,65 @@ public sealed class MenuManager
                 continue;
             }
 
-            Freeze(player);
-
-            // The button-change listener reads the player's own pawn, which
-            // receives no input while dead; poll the observer path instead.
-            if (!player.PawnIsAlive)
+            // Buttons is Pawn.Value.MovementServices.Buttons. After kicking
+            // a possessed bot that pawn can already be gone.
+            if (player.Pawn?.Value?.MovementServices is null)
             {
-                PollDeadPlayerButtons(player, state);
-                if (!_states.ContainsKey(player.Slot) || !state.IsOpen)
-                {
-                    continue;
-                }
+                Close(player);
+                continue;
             }
-            else
+
+            PlayerButtons buttons;
+            try
             {
-                state.DeadPollingActive = false;
+                buttons = player.Buttons;
+            }
+            catch
+            {
+                Close(player);
+                continue;
+            }
+
+            ProcessMenuInput(player, state, buttons);
+            if (!_states.TryGetValue(player.Slot, out var stillOpen) || !stillOpen.IsOpen)
+            {
+                continue;
             }
 
             Render(player, state);
+            if (_states.TryGetValue(player.Slot, out var open) && open.IsOpen)
+            {
+                SetFrozen(player, true, stripWish: true);
+            }
         }
     }
 
-    private void PollDeadPlayerButtons(CCSPlayerController player, PlayerMenuState state)
+    public void OnPreEntityThink()
     {
-        PlayerButtons current;
-        try
-        {
-            current = player.Buttons;
-        }
-        catch
+        if (_states.Count == 0)
         {
             return;
         }
 
-        if (!state.DeadPollingActive)
+        foreach (var player in Utilities.GetPlayers().Where(p => p is { IsValid: true }))
         {
-            state.DeadPollingActive = true;
-            state.PreviousButtons = current;
+            if (!_states.TryGetValue(player.Slot, out var state) || !state.IsOpen)
+            {
+                continue;
+            }
+
+            SetFrozen(player, true, stripWish: false);
+        }
+    }
+
+    public void OnBotTakeover(CCSPlayerController human, CCSPlayerController bot)
+    {
+        if (!human.IsValid || !bot.IsValid)
+        {
             return;
         }
 
-        var pressed = current & ~state.PreviousButtons;
-        state.PreviousButtons = current;
-        if (pressed != 0)
-        {
-            OnButtonsChanged(player, pressed);
-        }
+        _possessedBotSlot[human.Slot] = bot.Slot;
     }
 
     private PlayerMenuState GetState(CCSPlayerController player)
@@ -259,14 +281,13 @@ public sealed class MenuManager
         state.LastSelectionUtc = DateTime.MinValue;
         state.LastSelectionKey = null;
         state.LastInteractionUtc = now;
-        state.DeadPollingActive = false;
         try
         {
-            state.PreviousButtons = player.Buttons;
+            state.PreviousButtonsSnapshot = player.Buttons.ToString();
         }
         catch
         {
-            state.PreviousButtons = 0;
+            state.PreviousButtonsSnapshot = string.Empty;
         }
     }
 
@@ -291,9 +312,12 @@ public sealed class MenuManager
         // A new view is a new context: the repeat throttle must not carry
         // over to a row that happens to share a label.
         state.LastSelectionKey = null;
-        state.LastInteractionUtc = DateTime.UtcNow;
+        var now = DateTime.UtcNow;
+        state.LastInteractionUtc = now;
+        state.OpenedAtUtc = now;
+        state.LastInputUtc = now;
         InvalidateOptions(state);
-        Freeze(player);
+        SetFrozen(player, true);
         Render(player, state);
     }
 
@@ -335,6 +359,10 @@ public sealed class MenuManager
 
             state.LastSelectionKey = null;
             InvalidateOptions(state);
+            var now = DateTime.UtcNow;
+            state.OpenedAtUtc = now;
+            state.LastInputUtc = now;
+            state.LastInteractionUtc = now;
             return;
         }
 
@@ -549,43 +577,43 @@ public sealed class MenuManager
         return options;
     }
 
-    // Driven by the OnPlayerButtonsChanged listener: `pressed` only contains
-    // buttons that went down this frame, so no previous-state tracking needed.
-    public void OnButtonsChanged(CCSPlayerController player, PlayerButtons pressed)
+    private void ProcessMenuInput(CCSPlayerController player, PlayerMenuState state, PlayerButtons buttons)
     {
-        if (!_states.TryGetValue(player.Slot, out var state) || !state.IsOpen)
+        var snapshot = buttons.ToString();
+        if (snapshot == state.PreviousButtonsSnapshot)
         {
             return;
         }
 
-        var now = DateTime.UtcNow;
-        if ((now - state.OpenedAtUtc).TotalMilliseconds < InitialInputDelayMilliseconds ||
-            (now - state.LastInputUtc).TotalMilliseconds < _config.Menu.CooldownMilliseconds)
-        {
-            return;
-        }
-
-        if ((pressed & PlayerButtons.Reload) != 0)
+        state.PreviousButtonsSnapshot = snapshot;
+        if (buttons.HasFlag(PlayerButtons.Reload))
         {
             Close(player);
             return;
         }
 
-        if ((pressed & PlayerButtons.Forward) != 0)
+        var now = DateTime.UtcNow;
+        if (now - state.OpenedAtUtc < TimeSpan.FromMilliseconds(MenuOpenGraceMilliseconds) ||
+            now - state.LastInputUtc < MenuInputDebounce)
+        {
+            return;
+        }
+
+        if (buttons.HasFlag(PlayerButtons.Forward))
         {
             MoveCursor(state, -1);
         }
-        else if ((pressed & PlayerButtons.Back) != 0)
+        else if (buttons.HasFlag(PlayerButtons.Back))
         {
             MoveCursor(state, 1);
         }
-        else if ((pressed & PlayerButtons.Use) != 0)
-        {
-            Select(player, state);
-        }
-        else if ((pressed & PlayerButtons.Speed) != 0)
+        else if (buttons.HasFlag(PlayerButtons.Moveleft))
         {
             GoBack(player, state);
+        }
+        else if (buttons.HasFlag(PlayerButtons.Use))
+        {
+            Select(player, state);
         }
         else
         {
@@ -1699,7 +1727,9 @@ public sealed class MenuManager
 
         var options = GetOptions(state);
         state.Cursor = Math.Clamp(state.Cursor, 0, Math.Max(0, options.Count - 1));
-        var visibleItems = Math.Clamp(_config.Menu.ItemsPerPage, 3, 6);
+        // Center HTML clips the last line if more than 5 rows are painted.
+        // Config may still say 6; the overlay cap is 5.
+        var visibleItems = Math.Clamp(_config.Menu.ItemsPerPage, 3, 5);
         var start = Math.Max(0, state.Cursor - visibleItems / 2);
         if (start + visibleItems > options.Count)
         {
@@ -1713,8 +1743,8 @@ public sealed class MenuManager
         var lines = new List<string>
         {
             state.View == MenuView.Main
-                ? $"<font class='fontSize-m' color='#eb4b4b'><b>{encodedTitle}</b></font>"
-                : $"<font class='fontSize-m' color='#8bdcff'><b>{encodedTitle}</b></font> <font color='#8a8f98'>{state.Cursor + 1}/{Math.Max(1, options.Count)}</font>",
+                ? $"<font class='fontSize-m' color='#eb4b4b'><b>{encodedTitle}</b></font> <font color='yellow' class='fontSize-sm'>{state.Cursor + 1}</font>/<font color='orange' class='fontSize-sm'>{Math.Max(1, options.Count)}</font>"
+                : $"<font class='fontSize-m' color='#8bdcff'><b>{encodedTitle}</b></font> <font color='yellow' class='fontSize-sm'>{state.Cursor + 1}</font>/<font color='orange' class='fontSize-sm'>{Math.Max(1, options.Count)}</font>",
         };
 
         if (options.Count == 0)
@@ -1729,18 +1759,23 @@ public sealed class MenuManager
                 var isCursor = index == state.Cursor;
                 var label = WebUtility.HtmlEncode(TrimForOverlay(option.Label, MaxItemLabelLength));
                 var labelColor = option.LabelColor ?? (isCursor ? "#f7d774" : "#e8e8e8");
-                var prefix = isCursor ? "<font color='#f0b65a'>► </font>" : "<font color='#f0b65a'>   </font>";
-                var body = isCursor
-                    ? $"<font color='{labelColor}'><b>{label}</b></font>"
-                    : $"<font color='{labelColor}'>{label}</font>";
                 var selected = option.IsSelected ? " <font color='#7dff8a'>✔</font>" : string.Empty;
-                lines.Add($"{prefix}{body}{selected}");
+                if (isCursor)
+                {
+                    lines.Add($"<b><font color='yellow'>►[</font> <font color='{labelColor}' class='fontSize-m'>{label}</font> <font color='yellow'>]◄</font></b>{selected}");
+                }
+                else
+                {
+                    lines.Add($"<font color='{labelColor}' class='fontSize-m'>{label}</font>{selected}");
+                }
             }
         }
 
-        lines.Add(state.View == MenuView.Main
-            ? "<small><small><font color='#8a8f98'>W/S · E · R</font></small></small>"
-            : "<small><small><font color='#8a8f98'>W/S · E · Shift · R</font></small></small>");
+        var move = _localizer.ForPlayer(player, "menu.control.move");
+        var select = _localizer.ForPlayer(player, "menu.control.select");
+        var back = _localizer.ForPlayer(player, "menu.control.back");
+        var exit = _localizer.ForPlayer(player, "menu.control.exit");
+        lines.Add($"<font color='#ff3333' class='fontSize-sm'>{move}: <font color='#f5a142'>[W/S]</font> | {select}: <font color='#f5a142'>[E]</font> | {back}: <font color='#f5a142'>[A]</font> | {exit}: <font color='#f5a142'>[R]</font></font>");
         SafePrint(player, string.Join("<br>", lines));
     }
 
@@ -1791,59 +1826,247 @@ public sealed class MenuManager
         }
     }
 
-    private void Freeze(CCSPlayerController player)
-    {
-        var pawn = player.PlayerPawn?.Value;
-        if (pawn == null)
-        {
-            return;
-        }
-
-        if (!_savedVelocity.ContainsKey(player.Slot))
-        {
-            _savedVelocity[player.Slot] = pawn.VelocityModifier;
-        }
-
-        if (pawn.VelocityModifier != 0f)
-        {
-            pawn.VelocityModifier = 0f;
-            MarkVelocityModifierChanged(pawn);
-        }
-    }
-
     private void Unfreeze(CCSPlayerController player)
     {
-        var pawn = player.PlayerPawn?.Value;
-        if (!_savedVelocity.TryGetValue(player.Slot, out var velocity) || pawn == null)
-        {
-            _savedVelocity.Remove(player.Slot);
-            return;
-        }
-
-        // Only hand the value back if it is still the one we forced; if another
-        // plugin changed it while the menu was open, theirs wins.
-        if (pawn.VelocityModifier == 0f)
-        {
-            pawn.VelocityModifier = velocity;
-            MarkVelocityModifierChanged(pawn);
-        }
-
-        _savedVelocity.Remove(player.Slot);
+        SetFrozen(player, false);
     }
 
-    // Without marking the field dirty the client keeps animating with the old
-    // modifier (frozen legs after closing the menu) until something else
-    // forces a resync.
-    private void MarkVelocityModifierChanged(CCSPlayerPawn pawn)
+    private void SetFrozen(CCSPlayerController player, bool frozen, bool stripWish = false)
     {
+        // Takeover applies the occupant's usercmd to Pawn before OnTick, so
+        // writing VelocityModifier there never sees the walk. PreEntityThink
+        // sets MOVETYPE_NONE and pins origin. Do not clear buttons in
+        // PreEntityThink: the menu still needs W/S.
         try
         {
-            Utilities.SetStateChanged(pawn, "CCSPlayerPawn", "m_flVelocityModifier");
+            var pawns = OccupiedPawns(player);
+            if (frozen)
+            {
+                if (!_savedMenuFreeze.TryGetValue(player.Slot, out var saved))
+                {
+                    saved = new Dictionary<uint, FrozenPawnState>();
+                    _savedMenuFreeze[player.Slot] = saved;
+                }
+
+                foreach (var pawn in pawns)
+                {
+                    if (!saved.TryGetValue(pawn.Index, out var state))
+                    {
+                        state = SnapshotPawn(pawn);
+                        saved[pawn.Index] = state;
+                    }
+
+                    ImmobilizePawn(pawn, state);
+                    if (stripWish)
+                    {
+                        StripWish(pawn);
+                    }
+                }
+
+                return;
+            }
+
+            if (_savedMenuFreeze.TryGetValue(player.Slot, out var restore))
+            {
+                foreach (var pawn in pawns)
+                {
+                    if (restore.TryGetValue(pawn.Index, out var state))
+                    {
+                        RestorePawn(pawn, state);
+                    }
+                }
+
+                _savedMenuFreeze.Remove(player.Slot);
+            }
         }
         catch (Exception ex)
         {
-            _logger.LogDebug(ex, "Failed to mark m_flVelocityModifier as changed.");
+            _logger.LogDebug(ex, "Occupied pawn vanished while freezing slot {Slot}.", player.Slot);
         }
+    }
+
+    private List<CBasePlayerPawn> OccupiedPawns(CCSPlayerController player)
+    {
+        var pawns = new List<CBasePlayerPawn>(4);
+        AddPawn(pawns, player.Pawn?.Value);
+        AddPawn(pawns, player.PlayerPawn?.Value);
+        try
+        {
+            AddPawn(pawns, player.ObserverPawn?.Value);
+        }
+        catch
+        {
+            // Observer pawn is optional.
+        }
+
+        try
+        {
+            var original = player.OriginalControllerOfCurrentPawn.Value;
+            if (original != null && original.IsValid && original.Slot != player.Slot)
+            {
+                AddPawn(pawns, original.Pawn?.Value);
+                AddPawn(pawns, original.PlayerPawn?.Value);
+            }
+        }
+        catch
+        {
+            // Occupancy handle can be unreadable during inverted takeover.
+        }
+
+        if (_possessedBotSlot.TryGetValue(player.Slot, out var botSlot))
+        {
+            var bot = Utilities.GetPlayerFromSlot(botSlot);
+            if (bot != null && bot.IsValid)
+            {
+                AddPawn(pawns, bot.Pawn?.Value);
+                AddPawn(pawns, bot.PlayerPawn?.Value);
+            }
+        }
+
+        foreach (var other in Utilities.GetPlayers())
+        {
+            if (other == null || !other.IsValid || other.Slot == player.Slot)
+            {
+                continue;
+            }
+
+            try
+            {
+                var body = other.PlayerPawn?.Value;
+                if (body == null || !body.IsValid)
+                {
+                    continue;
+                }
+
+                if (body.Controller?.Value is CCSPlayerController occupier
+                    && occupier.IsValid
+                    && occupier.Slot == player.Slot)
+                {
+                    AddPawn(pawns, body);
+                }
+            }
+            catch
+            {
+                // Skip this candidate; other sources still apply.
+            }
+        }
+
+        return pawns;
+    }
+
+    private static void AddPawn(List<CBasePlayerPawn> pawns, CBasePlayerPawn? pawn)
+    {
+        if (pawn == null || !pawn.IsValid)
+        {
+            return;
+        }
+
+        foreach (var existing in pawns)
+        {
+            if (existing.Index == pawn.Index)
+            {
+                return;
+            }
+        }
+
+        pawns.Add(pawn);
+    }
+
+    private static FrozenPawnState SnapshotPawn(CBasePlayerPawn pawn)
+    {
+        var origin = pawn.AbsOrigin;
+        return new FrozenPawnState
+        {
+            MoveType = pawn.MoveType,
+            ActualMoveType = pawn.ActualMoveType,
+            OriginX = origin?.X ?? 0f,
+            OriginY = origin?.Y ?? 0f,
+            OriginZ = origin?.Z ?? 0f,
+        };
+    }
+
+    private static void ImmobilizePawn(CBasePlayerPawn pawn, FrozenPawnState state)
+    {
+        pawn.MoveType = MoveType_t.MOVETYPE_NONE;
+        pawn.ActualMoveType = MoveType_t.MOVETYPE_NONE;
+        try
+        {
+            Utilities.SetStateChanged(pawn, "CBaseEntity", "m_MoveType");
+            Utilities.SetStateChanged(pawn, "CBaseEntity", "m_nActualMoveType");
+        }
+        catch
+        {
+            // Schema mark is best-effort; MOVETYPE_NONE still applies server-side.
+        }
+
+        try
+        {
+            // Null angles: rewriting AbsRotation every think overwrites mouse look.
+            pawn.Teleport(
+                new System.Numerics.Vector3(state.OriginX, state.OriginY, state.OriginZ),
+                null,
+                new System.Numerics.Vector3(0f, 0f, 0f));
+        }
+        catch
+        {
+            // Pawn can be mid-swap during takeover.
+        }
+    }
+
+    private static void StripWish(CBasePlayerPawn pawn)
+    {
+        try
+        {
+            if (pawn.MovementServices is not CPlayer_MovementServices movement)
+            {
+                return;
+            }
+
+            var states = movement.Buttons.ButtonStates;
+            if (states.Length > 0)
+            {
+                states[0] &= ~MovementButtonMask;
+            }
+
+            movement.ForwardMove = 0f;
+            movement.LeftMove = 0f;
+            movement.UpMove = 0f;
+            movement.CmdForwardMove = 0f;
+            movement.CmdLeftMove = 0f;
+            movement.CmdUpMove = 0f;
+        }
+        catch
+        {
+            // Menu already consumed this tick's buttons.
+        }
+    }
+
+    private static void RestorePawn(CBasePlayerPawn pawn, FrozenPawnState state)
+    {
+        pawn.MoveType = state.MoveType;
+        pawn.ActualMoveType = state.ActualMoveType;
+        try
+        {
+            Utilities.SetStateChanged(pawn, "CBaseEntity", "m_MoveType");
+            Utilities.SetStateChanged(pawn, "CBaseEntity", "m_nActualMoveType");
+        }
+        catch
+        {
+            // Restore write still happened even if the mark failed.
+        }
+    }
+
+    private static readonly ulong MovementButtonMask =
+        (ulong)(PlayerButtons.Forward | PlayerButtons.Back | PlayerButtons.Moveleft
+            | PlayerButtons.Moveright | PlayerButtons.Jump | PlayerButtons.Duck | PlayerButtons.Speed);
+
+    private readonly struct FrozenPawnState
+    {
+        public MoveType_t MoveType { get; init; }
+        public MoveType_t ActualMoveType { get; init; }
+        public float OriginX { get; init; }
+        public float OriginY { get; init; }
+        public float OriginZ { get; init; }
     }
 
     // Official rarity tint per grade, so skins read like the real inventory.

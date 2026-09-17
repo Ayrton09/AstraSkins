@@ -95,5 +95,9 @@
   "menu.sticker.applied": "已将 {0} 贴到位置 {1}。",
   "menu.sticker.removed": "已移除位置 {0} 的印花。",
   "menu.charm.remove": "移除挂件",
-  "menu.charm.removed": "已移除挂件。"
+  "menu.charm.removed": "已移除挂件。",
+  "menu.control.move": "移动",
+  "menu.control.select": "确认",
+  "menu.control.back": "返回",
+  "menu.control.exit": "退出"
 }

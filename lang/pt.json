@@ -95,5 +95,9 @@
   "menu.sticker.applied": "{0} aplicado no espaço {1}.",
   "menu.sticker.removed": "Adesivo removido do espaço {0}.",
   "menu.charm.remove": "Remover chaveiro",
-  "menu.charm.removed": "Chaveiro removido."
+  "menu.charm.removed": "Chaveiro removido.",
+  "menu.control.move": "Mover",
+  "menu.control.select": "Confirmar",
+  "menu.control.back": "Voltar",
+  "menu.control.exit": "Sair"
 }

@@ -95,5 +95,9 @@
   "menu.sticker.applied": "{0} aplicado en la ranura {1}.",
   "menu.sticker.removed": "Sticker quitado de la ranura {0}.",
   "menu.charm.remove": "Quitar llavero",
-  "menu.charm.removed": "Llavero quitado."
+  "menu.charm.removed": "Llavero quitado.",
+  "menu.control.move": "Mover",
+  "menu.control.select": "Confirmar",
+  "menu.control.back": "Volver",
+  "menu.control.exit": "Salir"
 }
