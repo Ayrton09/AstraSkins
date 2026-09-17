@@ -169,6 +169,17 @@ public sealed class MenuManager
         }
     }
 
+    public void CloseAll()
+    {
+        foreach (var player in Utilities.GetPlayers())
+        {
+            if (player is { IsValid: true })
+            {
+                Close(player);
+            }
+        }
+    }
+
     public void CloseSlot(int slot)
     {
         _states.Remove(slot);

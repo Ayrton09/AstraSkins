@@ -53,7 +53,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
     public PluginConfig Config { get; set; } = new();
 
     public override string ModuleName => "Astra Skins";
-    public override string ModuleVersion => "1.2.1";
+    public override string ModuleVersion => "1.2.2";
     public override string ModuleAuthor => "Ayrton09";
     public override string ModuleDescription => string.Empty;
 
@@ -872,6 +872,11 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
     private HookResult OnPlayerSpawnPre(EventPlayerSpawn @event, GameEventInfo info)
     {
         var player = @event.Userid;
+        if (player is { IsValid: true })
+        {
+            _menuManager?.Close(player);
+        }
+
         if (_ready && IsLiveHuman(player))
         {
             _skinManager?.ApplyAgentToPlayer(player!, logFailures: false, loadIfMissing: false);
@@ -935,6 +940,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
     private HookResult OnRoundPrestart(EventRoundPrestart @event, GameEventInfo info)
     {
         _pendingMvpCue = null;
+        _menuManager?.CloseAll();
         // Valve fills team_intro Xuid on this event; write after the assignment lands.
         ScheduleTeamPreviewApply();
         return HookResult.Continue;

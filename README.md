@@ -18,7 +18,7 @@
 ## Features
 
 - 🎨 **1,400+ weapon skins, 20 knives with 576 finishes, 8 glove types, 63 agents, 99 music kits, 11,000+ stickers, 78 charms** — all data-driven from JSON, no datasets baked into the code.
-- 🕹️ **Built-in WASD menu** — navigate with `W`/`S`, select with `E`, go back with `A`, close with `R`. The player is held in place while the menu is open; a possessed bot is held the same way. No external menu plugin required.
+- 🕹️ **Built-in WASD menu** — navigate with `W`/`S`, select with `E`, go back with `A`, close with `R`. The player is held in place while the menu is open; a possessed bot is held the same way. The menu closes on round restart and on respawn. No external menu plugin required.
 - 🔧 **Per-player customization** — custom paint seed, wear/float, name tags, and StatTrak counters via `!seed`, `!wear`, `!nametag`, and `!stattrak`; name tags and StatTrak work on the default skin too.
 - 🔎 **Search** — `!ws <text>` finds any skin, knife, glove, agent, or music kit without scrolling through pages.
 - 🏷️ **Stickers and charms** — up to five stickers and a charm on every gun, with or without a skin, browsed by tournament and capsule or found with `!stickers <text>` and `!charms <text>`.
@@ -124,7 +124,7 @@ Both can be disabled entirely in the config.
 | `A` | Back |
 | `R` | Close |
 
-The menu items are numbered as a visual guide for orientation; navigation is by keys, not numbers. While the menu is open the player is held in place. Heads up: `E` still performs its normal in-world action (open doors, pick up weapons, defuse), so avoid confirming a selection while standing on the bomb.
+The menu items are numbered as a visual guide for orientation; navigation is by keys, not numbers. While the menu is open the player is held in place. The menu closes on round restart and on respawn. Heads up: `E` still performs its normal in-world action (open doors, pick up weapons, defuse), so avoid confirming a selection while standing on the bomb.
 
 Every skin, knife, glove, agent and music kit list starts with a **Default** row that removes the selection and is marked when nothing is selected: the stock finish of a gun or knife (stickers, charms, name tags and counters saved for it stay on), the default knife, the default gloves, the default agent (back on the next spawn) and the default music kit.
 
