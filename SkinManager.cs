@@ -29,8 +29,7 @@ public sealed class SkinManager : IDisposable
     private readonly ILogger _logger;
     private readonly EconAttributeApplicator _econAttributes;
     private readonly bool _statTrakByDefault;
-    private readonly StickersConfig _stickersConfig;
-    private readonly KeychainsConfig _keychainsConfig;
+    private readonly ModuleSwitches _modules;
     // Kit 0 entries handed to guns that carry stickers or a charm without a
     // skin: the client renders the stock finish with the attachments on.
     private readonly Dictionary<string, CosmeticEntry> _vanillaEntries = new(StringComparer.OrdinalIgnoreCase);
@@ -131,8 +130,7 @@ public sealed class SkinManager : IDisposable
         Action<float, Action>? scheduleDelayed = null,
         bool statTrakByDefault = false,
         Func<string, bool>? isModelPrecached = null,
-        StickersConfig? stickers = null,
-        KeychainsConfig? keychains = null)
+        ModuleSwitches? modules = null)
     {
         _storage = storage;
         Catalog = catalog;
@@ -140,8 +138,7 @@ public sealed class SkinManager : IDisposable
         _scheduleDelayed = scheduleDelayed;
         _statTrakByDefault = statTrakByDefault;
         _isModelPrecached = isModelPrecached;
-        _stickersConfig = stickers ?? new StickersConfig();
-        _keychainsConfig = keychains ?? new KeychainsConfig();
+        _modules = modules ?? new ModuleSwitches();
         _econAttributes = new EconAttributeApplicator(logger);
     }
 
@@ -375,7 +372,7 @@ public sealed class SkinManager : IDisposable
 
     public bool SetWeaponSkin(CCSPlayerController player, string weaponEntity, string cosmeticId)
     {
-        if (!Catalog.WeaponSkinsById.TryGetValue(cosmeticId, out var skin) || !CanUse(player, skin))
+        if (!CanUseWeapons(player) || !Catalog.WeaponSkinsById.TryGetValue(cosmeticId, out var skin) || !CanUse(player, skin))
         {
             return false;
         }
@@ -390,7 +387,7 @@ public sealed class SkinManager : IDisposable
 
     public bool SetKnifeSkin(CCSPlayerController player, string cosmeticId)
     {
-        if (!Catalog.KnifeSkinsById.TryGetValue(cosmeticId, out var skin) || !CanUse(player, skin))
+        if (!CanUseKnives(player) || !Catalog.KnifeSkinsById.TryGetValue(cosmeticId, out var skin) || !CanUse(player, skin))
         {
             return false;
         }
@@ -419,7 +416,7 @@ public sealed class SkinManager : IDisposable
     public bool SetKnifeType(CCSPlayerController player, string knifeId)
     {
         var knife = Catalog.Knives.FirstOrDefault(k => k.Id.Equals(knifeId, StringComparison.OrdinalIgnoreCase));
-        if (knife is null || !CanUse(player, knife))
+        if (!CanUseKnives(player) || knife is null || !CanUse(player, knife))
         {
             return false;
         }
@@ -435,7 +432,7 @@ public sealed class SkinManager : IDisposable
 
     public bool SetGloveSkin(CCSPlayerController player, string cosmeticId)
     {
-        if (!Catalog.GloveSkinsById.TryGetValue(cosmeticId, out var glove) || !CanUse(player, glove))
+        if (!CanUseGloves(player) || !Catalog.GloveSkinsById.TryGetValue(cosmeticId, out var glove) || !CanUse(player, glove))
         {
             return false;
         }
@@ -457,7 +454,8 @@ public sealed class SkinManager : IDisposable
     public bool SetAgent(CCSPlayerController player, string team, string agentId)
     {
         var normalizedTeam = NormalizeAgentTeam(team);
-        if (normalizedTeam is not "t" and not "ct" ||
+        if (!CanUseAgents(player) ||
+            normalizedTeam is not "t" and not "ct" ||
             !Catalog.AgentsById.TryGetValue(agentId, out var agent) ||
             !agent.Team.Equals(normalizedTeam, StringComparison.OrdinalIgnoreCase) ||
             !CanUse(player, agent))
@@ -472,6 +470,137 @@ public sealed class SkinManager : IDisposable
         QueueStorageWrite($"agent {agentIdToSave} ({normalizedTeam}) for {steamId}", () => _storage.SaveAgent(steamId, normalizedTeam, agentIdToSave));
         ApplyAgentSelection(player, agent, logFailures: true);
         return true;
+    }
+
+    // The "Default" rows of the menu. Each drops the saved selection and puts
+    // the stock item back right away; stickers, charms, name tags and counters
+    // saved for the item stay and are painted on the stock finish. Clearing
+    // never needs the module flag: a player who lost it can still clean up.
+    // Before the profile has loaded there is nothing to clear yet, and a
+    // merge landing afterwards would bring the stored value back, so the rows
+    // do nothing until then.
+    public bool ClearWeaponSkin(CCSPlayerController player, string weaponEntity)
+    {
+        var steamId = GetSteamId64(player);
+        var profile = GetProfile(player);
+        if (!_loadedProfiles.Contains(steamId))
+        {
+            return false;
+        }
+
+        // The stored row goes even when memory already had nothing: a
+        // selection pruned because its entry left the catalog would otherwise
+        // come back with the entry.
+        QueueStorageWrite($"weapon skin reset ({weaponEntity}) for {steamId}", () => _storage.ClearSelection(steamId, "weapon", weaponEntity));
+        if (!profile.WeaponSkins.Remove(weaponEntity))
+        {
+            return false;
+        }
+
+        ReapplyTarget(player, profile, weaponEntity, clearWhenBare: true);
+        return true;
+    }
+
+    // Both the knife type and its skin: back to the knife the game hands out.
+    public bool ClearKnife(CCSPlayerController player)
+    {
+        var steamId = GetSteamId64(player);
+        var profile = GetProfile(player);
+        if (!_loadedProfiles.Contains(steamId))
+        {
+            return false;
+        }
+
+        QueueStorageWrite($"knife reset for {steamId}", () =>
+        {
+            _storage.ClearSelection(steamId, "knife_type", KnifeTarget);
+            _storage.ClearSelection(steamId, "knife", KnifeTarget);
+        });
+        if (profile.KnifeId is null && profile.KnifeSkinId is null)
+        {
+            return false;
+        }
+
+        profile.KnifeId = null;
+        profile.KnifeSkinId = null;
+        ReapplyTarget(player, profile, KnifeTarget, clearWhenBare: true);
+        return true;
+    }
+
+    // Only the finish: the selected knife type stays, on its stock look.
+    public bool ClearKnifeSkin(CCSPlayerController player)
+    {
+        var steamId = GetSteamId64(player);
+        var profile = GetProfile(player);
+        if (!_loadedProfiles.Contains(steamId))
+        {
+            return false;
+        }
+
+        QueueStorageWrite($"knife skin reset for {steamId}", () => _storage.ClearSelection(steamId, "knife", KnifeTarget));
+        if (profile.KnifeSkinId is null)
+        {
+            return false;
+        }
+
+        // Rows from before the type was stored alongside the skin only carry
+        // the skin; keep the knife it implies, as the menu showed it.
+        if (profile.KnifeId is null &&
+            Catalog.KnifeSkinsById.TryGetValue(profile.KnifeSkinId, out var oldSkin) &&
+            Catalog.Knives.FirstOrDefault(k => k.ItemDefinitionIndex == oldSkin.ItemDefinitionIndex) is { } impliedKnife)
+        {
+            profile.KnifeId = impliedKnife.Id;
+            var knifeId = impliedKnife.Id;
+            QueueStorageWrite($"knife type {knifeId} for {steamId}", () => _storage.SaveKnifeType(steamId, knifeId));
+        }
+
+        profile.KnifeSkinId = null;
+        ReapplyTarget(player, profile, KnifeTarget, clearWhenBare: true);
+        return true;
+    }
+
+    public bool ClearGloveSkin(CCSPlayerController player)
+    {
+        var steamId = GetSteamId64(player);
+        var profile = GetProfile(player);
+        if (!_loadedProfiles.Contains(steamId))
+        {
+            return false;
+        }
+
+        QueueStorageWrite($"glove skin reset for {steamId}", () => _storage.ClearSelection(steamId, "glove", GloveTarget));
+        if (profile.GloveSkinId is null)
+        {
+            return false;
+        }
+
+        profile.GloveSkinId = null;
+        if (TryGetPawn(player, out var pawn, logFailures: true))
+        {
+            ClearGloveCosmetic(player, pawn!);
+        }
+
+        return true;
+    }
+
+    // The default agent model comes back on the next spawn, like a reset.
+    public bool ClearAgent(CCSPlayerController player, string team)
+    {
+        var normalizedTeam = NormalizeAgentTeam(team);
+        if (normalizedTeam is not "t" and not "ct")
+        {
+            return false;
+        }
+
+        var steamId = GetSteamId64(player);
+        var profile = GetProfile(player);
+        if (!_loadedProfiles.Contains(steamId))
+        {
+            return false;
+        }
+
+        QueueStorageWrite($"agent reset ({normalizedTeam}) for {steamId}", () => _storage.ClearSelection(steamId, "agent", normalizedTeam));
+        return profile.AgentIdsByTeam.Remove(normalizedTeam);
     }
 
     public static string StickerTarget(string weaponEntity, int slot)
@@ -562,7 +691,7 @@ public sealed class SkinManager : IDisposable
 
     public bool SetMusicKit(CCSPlayerController player, string cosmeticId)
     {
-        if (!Catalog.MusicKitsById.TryGetValue(cosmeticId, out var kit) || !CanUse(player, kit))
+        if (!CanUseMusicKits(player) || !Catalog.MusicKitsById.TryGetValue(cosmeticId, out var kit) || !CanUse(player, kit))
         {
             return false;
         }
@@ -611,7 +740,7 @@ public sealed class SkinManager : IDisposable
     private (int KitId, int MvpCount) ResolveMusicKitState(CCSPlayerController player, PlayerSkinProfile profile)
     {
         var kitId = 0;
-        if (!string.IsNullOrWhiteSpace(profile.MusicKitId))
+        if (CanUseMusicKits(player) && !string.IsNullOrWhiteSpace(profile.MusicKitId))
         {
             if (Catalog.MusicKitsById.TryGetValue(profile.MusicKitId!, out var kit))
             {
@@ -750,7 +879,7 @@ public sealed class SkinManager : IDisposable
         var steamId = GetSteamId64(player);
         BumpProfileEpoch(steamId);
         QueueStorageWrite($"profile reset for {steamId}", () => _storage.ResetProfile(steamId));
-        var attachmentWeapons = _profiles.TryGetValue(steamId, out var profile) ? AttachmentWeapons(player, profile) : null;
+        var stockPaintedWeapons = _profiles.TryGetValue(steamId, out var profile) ? StockPaintedWeapons(player, profile) : null;
         if (profile is not null)
         {
             // Queued after the row wipe, so the steps come back bumped and
@@ -761,15 +890,15 @@ public sealed class SkinManager : IDisposable
         _profiles.Remove(steamId);
         _loadedProfiles.Remove(steamId);
         _applyAfterLoadRequests.Remove(steamId);
-        ClearPlayerCosmetics(player, logFailures: true, attachmentWeapons);
+        ClearPlayerCosmetics(player, logFailures: true, stockPaintedWeapons);
         ApplyMusicKitState(player, 0, 0, logFailures: true);
     }
 
-    // Guns whose stickers or charm actually reached the weapon (feature on,
-    // flags held, ids known): with no skin their paint kit is 0, so a reset
-    // has to be told to re-create them too. A stored attachment that never
-    // applied leaves the gun alone.
-    private HashSet<string> AttachmentWeapons(CCSPlayerController player, PlayerSkinProfile profile)
+    // Guns painted on the stock finish: stickers or a charm that actually
+    // reached the weapon (feature on, flags held, ids known), a name tag or a
+    // counter. Their paint kit is 0, so a reset has to be told to re-create
+    // them too. A stored attachment that never applied leaves the gun alone.
+    private HashSet<string> StockPaintedWeapons(CCSPlayerController player, PlayerSkinProfile profile)
     {
         var weapons = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var weaponEntity in profile.Stickers.Keys.Concat(profile.Keychains.Keys))
@@ -777,6 +906,14 @@ public sealed class SkinManager : IDisposable
             if (HasUsableAttachments(player, profile, weaponEntity))
             {
                 weapons.Add(weaponEntity);
+            }
+        }
+
+        foreach (var target in profile.Customizations.Keys)
+        {
+            if (target is not KnifeTarget and not GloveTarget && HasVisibleCustomization(profile, target))
+            {
+                weapons.Add(target);
             }
         }
 
@@ -832,7 +969,7 @@ public sealed class SkinManager : IDisposable
         switch (normalized)
         {
             case "weapons":
-                var attachmentWeapons = AttachmentWeapons(player, profile);
+                var stockPaintedWeapons = StockPaintedWeapons(player, profile);
                 BumpStickerWearForRenderedStickers(player, steamId, profile);
                 profile.WeaponSkins.Clear();
                 profile.Stickers.Clear();
@@ -844,7 +981,7 @@ public sealed class SkinManager : IDisposable
                         profile.Customizations.Remove(customizationTarget);
                     }
                 }
-                ClearWeaponCosmetics(player, includeKnives: false, logFailures: true, alsoReplace: attachmentWeapons);
+                ClearWeaponCosmetics(player, includeKnives: false, logFailures: true, alsoReplace: stockPaintedWeapons);
                 break;
             case "stickers":
                 var stickerWeapons = profile.Stickers.Keys
@@ -1091,7 +1228,8 @@ public sealed class SkinManager : IDisposable
     // soon as the flag does. A flag on a knife or glove type covers its skins.
     private CosmeticEntry? ResolveUsableWeaponSkin(CCSPlayerController player, PlayerSkinProfile profile, string weaponEntity)
     {
-        if (!profile.WeaponSkins.TryGetValue(weaponEntity, out var cosmeticId) ||
+        if (!CanUseWeapons(player) ||
+            !profile.WeaponSkins.TryGetValue(weaponEntity, out var cosmeticId) ||
             !Catalog.WeaponSkinsById.TryGetValue(cosmeticId, out var skin))
         {
             return null;
@@ -1102,7 +1240,8 @@ public sealed class SkinManager : IDisposable
 
     private CosmeticEntry? ResolveUsableKnifeSkin(CCSPlayerController player, PlayerSkinProfile profile)
     {
-        if (profile.KnifeSkinId is null ||
+        if (!CanUseKnives(player) ||
+            profile.KnifeSkinId is null ||
             !Catalog.KnifeSkinsById.TryGetValue(profile.KnifeSkinId, out var skin) ||
             !KnifeSkinMatchesSelectedKnife(profile, skin) ||
             !CanUse(player, skin))
@@ -1116,7 +1255,7 @@ public sealed class SkinManager : IDisposable
 
     private KnifeDefinition? ResolveUsableKnifeType(CCSPlayerController player, PlayerSkinProfile profile)
     {
-        if (profile.KnifeId is null)
+        if (!CanUseKnives(player) || profile.KnifeId is null)
         {
             return null;
         }
@@ -1127,7 +1266,7 @@ public sealed class SkinManager : IDisposable
 
     private CosmeticEntry? ResolveUsableGloveSkin(CCSPlayerController player, PlayerSkinProfile profile, bool logFailures)
     {
-        if (profile.GloveSkinId is null)
+        if (!CanUseGloves(player) || profile.GloveSkinId is null)
         {
             return null;
         }
@@ -1153,7 +1292,7 @@ public sealed class SkinManager : IDisposable
 
     private AgentDefinition? ResolveUsableAgent(CCSPlayerController player, PlayerSkinProfile profile, string? team, bool logFailures)
     {
-        if (string.IsNullOrWhiteSpace(team) || !profile.AgentIdsByTeam.TryGetValue(team, out var agentId))
+        if (!CanUseAgents(player) || string.IsNullOrWhiteSpace(team) || !profile.AgentIdsByTeam.TryGetValue(team, out var agentId))
         {
             return null;
         }
@@ -1225,12 +1364,15 @@ public sealed class SkinManager : IDisposable
                ResolveUsableKeychain(player, profile, weaponEntity) is not null;
     }
 
-    // What to paint on a gun: the selected skin, or the stock finish when
-    // only stickers or a charm are attached. Null leaves the gun alone.
+    // What to paint on a gun: the selected skin, or the stock finish when only
+    // stickers, a charm, a name tag or a counter are on it. Null leaves the gun
+    // alone.
     private CosmeticEntry? ResolveWeaponPaint(CCSPlayerController player, PlayerSkinProfile profile, string weaponEntity)
     {
         return ResolveUsableWeaponSkin(player, profile, weaponEntity)
-               ?? (HasUsableAttachments(player, profile, weaponEntity) ? VanillaEntry(weaponEntity) : null);
+               ?? (HasUsableAttachments(player, profile, weaponEntity) || HasVisibleCustomization(profile, weaponEntity)
+                   ? VanillaEntry(weaponEntity)
+                   : null);
     }
 
     // The client keeps one composited first-person finish per paint kit, seed
@@ -1346,20 +1488,61 @@ public sealed class SkinManager : IDisposable
 
     // Feature switches: the section must be on and have data, and the section
     // flag (if any) is checked live like every other permission.
-    public bool StickersAvailable => _stickersConfig.Enabled && Catalog.Stickers.Count > 0;
+    // A module is available when its switch is on and its data file loaded
+    // something; a player can use it when they also hold its flag (empty flag:
+    // everyone). Menu, search, commands and the apply side all ask here.
+    public bool WeaponsAvailable => _modules.Weapons.Enabled && Catalog.Weapons.Count > 0;
 
-    public bool KeychainsAvailable => _keychainsConfig.Enabled && Catalog.Keychains.Count > 0;
+    public bool KnivesAvailable => _modules.Knives.Enabled && Catalog.Knives.Count > 0;
 
-    public bool CanUseStickers(CCSPlayerController player)
+    public bool GlovesAvailable => _modules.Gloves.Enabled && Catalog.Gloves.Count > 0;
+
+    public bool AgentsAvailable => _modules.Agents.Enabled && Catalog.Agents.Count > 0;
+
+    public bool MusicKitsAvailable => _modules.MusicKits.Enabled && Catalog.MusicKits.Count > 0;
+
+    public bool StickersAvailable => _modules.Stickers.Enabled && Catalog.Stickers.Count > 0;
+
+    public bool KeychainsAvailable => _modules.Keychains.Enabled && Catalog.Keychains.Count > 0;
+
+    public bool CanUseWeapons(CCSPlayerController player) => WeaponsAvailable && HoldsModuleFlag(player, _modules.Weapons);
+
+    public bool CanUseKnives(CCSPlayerController player) => KnivesAvailable && HoldsModuleFlag(player, _modules.Knives);
+
+    public bool CanUseGloves(CCSPlayerController player) => GlovesAvailable && HoldsModuleFlag(player, _modules.Gloves);
+
+    public bool CanUseAgents(CCSPlayerController player) => AgentsAvailable && HoldsModuleFlag(player, _modules.Agents);
+
+    public bool CanUseMusicKits(CCSPlayerController player) => MusicKitsAvailable && HoldsModuleFlag(player, _modules.MusicKits);
+
+    public bool CanUseStickers(CCSPlayerController player) => StickersAvailable && HoldsModuleFlag(player, _modules.Stickers);
+
+    public bool CanUseKeychains(CCSPlayerController player) => KeychainsAvailable && HoldsModuleFlag(player, _modules.Keychains);
+
+    // Whether the menu has anything at all to show this player.
+    public bool CanUseAnyModule(CCSPlayerController player)
     {
-        return StickersAvailable &&
-               (string.IsNullOrWhiteSpace(_stickersConfig.Permission) || AdminManager.PlayerHasPermissions(player, _stickersConfig.Permission));
+        return CanUseWeapons(player) || CanUseKnives(player) || CanUseGloves(player) || CanUseAgents(player) ||
+               CanUseMusicKits(player) || CanUseStickers(player) || CanUseKeychains(player);
     }
 
-    public bool CanUseKeychains(CCSPlayerController player)
+    private static bool HoldsModuleFlag(CCSPlayerController player, ModuleConfig module)
     {
-        return KeychainsAvailable &&
-               (string.IsNullOrWhiteSpace(_keychainsConfig.Permission) || AdminManager.PlayerHasPermissions(player, _keychainsConfig.Permission));
+        return string.IsNullOrWhiteSpace(module.Permission) || AdminManager.PlayerHasPermissions(player, module.Permission);
+    }
+
+    // Names of the modules switched off in the config, for the load log.
+    public IReadOnlyList<string> DisabledModules()
+    {
+        var names = new List<string>();
+        if (!_modules.Weapons.Enabled) names.Add("weapons");
+        if (!_modules.Knives.Enabled) names.Add("knives");
+        if (!_modules.Gloves.Enabled) names.Add("gloves");
+        if (!_modules.Agents.Enabled) names.Add("agents");
+        if (!_modules.MusicKits.Enabled) names.Add("music kits");
+        if (!_modules.Stickers.Enabled) names.Add("stickers");
+        if (!_modules.Keychains.Enabled) names.Add("charms");
+        return names;
     }
 
     public IReadOnlyList<WeaponDefinition> GetOwnedWeaponDefinitions(CCSPlayerController player)
@@ -1482,6 +1665,61 @@ public sealed class SkinManager : IDisposable
         return ResolveStatTrakCount(_statTrakByDefault, profile, target, customization);
     }
 
+    // The StatTrak default belongs to a selection that is being applied. On
+    // the stock finish (no skin, or a saved skin the player cannot use right
+    // now) only an explicit counter counts, or a switched-off module would
+    // still hand out StatTrak guns.
+    private int? ResolveStatTrakForPaint(PlayerSkinProfile profile, string target, WeaponCustomization? customization, CosmeticEntry cosmetic)
+    {
+        return IsVanillaEntry(target, cosmetic) ? StockFinishCounter(profile, target, customization) : ResolveStatTrak(profile, target, customization);
+    }
+
+    // The counter that shows on the stock finish. With the default on, a
+    // counter on an item that has a saved selection was started by that
+    // default while the selection applied (the first kill stores it as a
+    // plain count), so it stays with the selection and is hidden with it.
+    // Without the default every stored counter is the player's own choice.
+    private int? StockFinishCounter(PlayerSkinProfile profile, string target, WeaponCustomization? customization)
+    {
+        if (customization?.StatTrak is not int count)
+        {
+            return null;
+        }
+
+        return _statTrakByDefault && HasSavedSelection(profile, target) ? null : count;
+    }
+
+    private static bool HasSavedSelection(PlayerSkinProfile profile, string target)
+    {
+        return target switch
+        {
+            KnifeTarget => profile.KnifeSkinId is not null || profile.KnifeId is not null,
+            GloveTarget => profile.GloveSkinId is not null,
+            _ => profile.WeaponSkins.ContainsKey(target)
+        };
+    }
+
+    // Same rule for a kill: the default counter only exists on an item whose
+    // selection is applied right now; on the stock finish an explicit counter
+    // is the only one that counts up.
+    private int? ResolveStatTrakForHeldItem(CCSPlayerController player, PlayerSkinProfile profile, string target, WeaponCustomization? customization)
+    {
+        if (target == KnifeTarget)
+        {
+            return ResolveUsableKnifeSkin(player, profile) is not null || ResolveUsableKnifeType(player, profile) is not null
+                ? ResolveStatTrak(profile, target, customization)
+                : StockFinishCounter(profile, target, customization);
+        }
+
+        var paint = ResolveWeaponPaint(player, profile, target);
+        return paint is null ? null : ResolveStatTrakForPaint(profile, target, customization, paint);
+    }
+
+    private bool IsVanillaEntry(string target, CosmeticEntry cosmetic)
+    {
+        return _vanillaEntries.TryGetValue(target, out var vanilla) && ReferenceEquals(vanilla, cosmetic);
+    }
+
     // Bumps the counter in place: no weapon refresh, since re-creating the
     // weapon on every kill would be disastrous.
     public void IncrementStatTrak(CCSPlayerController player, CBasePlayerWeapon weapon, string? killWeapon = null)
@@ -1516,7 +1754,7 @@ public sealed class SkinManager : IDisposable
 
         var target = IsKnife(weaponName) ? KnifeTarget : weaponName;
         profile.Customizations.TryGetValue(target, out var customization);
-        if (ResolveStatTrak(profile, target, customization) is not int current)
+        if (ResolveStatTrakForHeldItem(player, profile, target, customization) is not int current)
         {
             return;
         }
@@ -1603,27 +1841,58 @@ public sealed class SkinManager : IDisposable
             QueueStorageWrite($"{field} {storedValue} ({target}) for {steamId}", () => _storage.SaveCustomization(steamId, field, target, storedValue));
         }
 
-        ReapplyTarget(player, profile, target);
+        // Seed and wear only show on the skin: with the saved skin unusable
+        // right now (module off, flag missing) the value is kept for when it
+        // applies again, and the item in hand is left alone.
+        if (requiresPaintKit && !HasUsableSkin(player, profile, target))
+        {
+            return true;
+        }
+
+        // A name tag or counter lives on the entity itself; removing the last
+        // one from an item painted on the stock finish has to re-create it,
+        // since a name cleared in place stays visible until then. With a
+        // usable skin the normal reapply handles it and the flag is moot.
+        ReapplyTarget(player, profile, target, clearWhenBare: !requiresPaintKit);
         return true;
     }
 
+    private bool HasUsableSkin(CCSPlayerController player, PlayerSkinProfile profile, string target)
+    {
+        return target switch
+        {
+            KnifeTarget => ResolveUsableKnifeSkin(player, profile) is not null,
+            GloveTarget => ResolveUsableGloveSkin(player, profile, logFailures: false) is not null,
+            _ => ResolveUsableWeaponSkin(player, profile, target) is not null
+        };
+    }
+
     // Seed and wear only mean something on top of a paint kit, but StatTrak and
-    // name tags work on a plain knife too, the same way vanilla StatTrak knives
-    // exist in the game.
+    // name tags work on the stock finish too, the same way vanilla StatTrak
+    // knives exist in the game: any catalog gun or the knife will do.
     private bool HasCustomizableItem(CCSPlayerController player, string target, bool requiresPaintKit)
     {
         var profile = GetProfile(player);
         return target switch
         {
-            KnifeTarget => profile.KnifeSkinId is not null || (!requiresPaintKit && profile.KnifeId is not null),
+            KnifeTarget => !requiresPaintKit || profile.KnifeSkinId is not null,
             GloveTarget => profile.GloveSkinId is not null,
-            _ => profile.WeaponSkins.ContainsKey(target)
+            _ => requiresPaintKit ? profile.WeaponSkins.ContainsKey(target) : Catalog.WeaponsByEntity.ContainsKey(target)
         };
     }
 
-    // clearWhenBare: the caller just removed a sticker or charm, so a gun left
-    // with nothing to paint gets the stock entity back. Customization commands
-    // never set it: a gun whose saved skin is unusable must stay as it is.
+    // A name tag or a StatTrak counter renders on the stock finish, so a gun or
+    // knife carrying either gets painted even without a skin.
+    private bool HasVisibleCustomization(PlayerSkinProfile profile, string target)
+    {
+        profile.Customizations.TryGetValue(target, out var customization);
+        return !string.IsNullOrWhiteSpace(customization?.NameTag) || StockFinishCounter(profile, target, customization) is not null;
+    }
+
+    // clearWhenBare: the caller just removed a sticker, a charm, a name tag or
+    // a counter, or the skin itself, so an item left with nothing to paint
+    // gets the stock entity back. Seed and wear never set it: they need a
+    // paint kit, and a gun whose saved skin is unusable must stay as it is.
     private void ReapplyTarget(CCSPlayerController player, PlayerSkinProfile profile, string target, bool logFailures = true, bool clearWhenBare = false)
     {
         switch (target)
@@ -1644,6 +1913,16 @@ public sealed class SkinManager : IDisposable
                 if (selectedKnife is not null)
                 {
                     ApplyKnifeTypeSelection(player, selectedKnife, logFailures);
+                }
+                else if (HasVisibleCustomization(profile, KnifeTarget))
+                {
+                    RefreshStockKnife(player, logFailures);
+                }
+                else if (clearWhenBare)
+                {
+                    // Nothing left to show on the knife: a fresh stock one so
+                    // a removed name tag or counter goes away now.
+                    ClearWeaponCosmetics(player, includeKnives: true, onlyKnives: true, logFailures: logFailures);
                 }
                 break;
             case GloveTarget:
@@ -1812,11 +2091,11 @@ public sealed class SkinManager : IDisposable
             }
         }
 
-        if (profile.KnifeSkinId is not null && !appliedKnife)
+        if (!appliedKnife && ResolveUsableKnifeSkin(player, profile) is not null)
         {
             _logger.LogWarning("Astra Skins knife weapon not found for player {SteamId}. Selection remains saved.", player.SteamID);
         }
-        else if (profile.KnifeId is not null && !appliedKnife)
+        else if (!appliedKnife && ResolveUsableKnifeType(player, profile) is not null)
         {
             _logger.LogWarning("Astra Skins knife weapon not found for player {SteamId}. Knife type selection remains saved.", player.SteamID);
         }
@@ -1844,7 +2123,12 @@ public sealed class SkinManager : IDisposable
             }
 
             var knife = ResolveUsableKnifeType(player, profile);
-            return knife is not null && ApplyKnifeTypeToWeapon(player, weapon, knife, logFailures);
+            if (knife is not null)
+            {
+                return ApplyKnifeTypeToWeapon(player, weapon, knife, logFailures);
+            }
+
+            return HasVisibleCustomization(profile, KnifeTarget) && ApplyStockKnifeCustomization(player, weapon, logFailures);
         }
 
         var skin = ResolveWeaponPaint(player, profile, weaponName);
@@ -2215,6 +2499,111 @@ public sealed class SkinManager : IDisposable
         return false;
     }
 
+    // The default CT and T knives, weapon_knife and weapon_knife_t.
+    private static bool IsStockKnifeDefinition(ushort itemDefinitionIndex)
+    {
+        return itemDefinitionIndex is 42 or 59;
+    }
+
+    // A name tag or counter on the default knife: re-create the knife the game
+    // handed out so the client picks the new name up, then write it again.
+    private bool RefreshStockKnife(CCSPlayerController player, bool logFailures)
+    {
+        if (!TryGetPawn(player, out var pawn, logFailures) || pawn!.WeaponServices is null)
+        {
+            return false;
+        }
+
+        foreach (var weaponHandle in pawn.WeaponServices.MyWeapons)
+        {
+            var weapon = weaponHandle.Value;
+            if (weapon is null || !weapon.IsValid || !IsKnife(ResolveWeaponEntityName(weapon)))
+            {
+                continue;
+            }
+
+            return RefreshOwnedKnifeWithSelection(player, weapon, knife: null, skin: null, logFailures);
+        }
+
+        return false;
+    }
+
+    // Writes only what a stock knife can carry: the owner identity, the name
+    // tag and the StatTrak counter. The knife itself, its subclass and its
+    // finish stay as the engine made them.
+    private bool ApplyStockKnifeCustomization(CCSPlayerController player, CBasePlayerWeapon weapon, bool logFailures)
+    {
+        try
+        {
+            if (weapon.AttributeManager.Handle == IntPtr.Zero)
+            {
+                if (logFailures)
+                {
+                    _logger.LogWarning("Astra Skins econ attribute manager invalid while customizing the stock knife on weapon entity {EntityIndex}.", weapon.Index);
+                }
+
+                return false;
+            }
+
+            var item = weapon.AttributeManager.Item;
+            if (item.Handle == IntPtr.Zero)
+            {
+                if (logFailures)
+                {
+                    _logger.LogWarning("Astra Skins econ item invalid while customizing the stock knife on weapon entity {EntityIndex}.", weapon.Index);
+                }
+
+                return false;
+            }
+
+            // Only the knife the game hands out. A catalog knife in hand with
+            // no selection here belongs to another plugin; leave it alone.
+            if (!IsStockKnifeDefinition(item.ItemDefinitionIndex))
+            {
+                return false;
+            }
+
+            var customization = GetCustomization(player, KnifeTarget);
+            var statTrak = StockFinishCounter(GetProfile(player), KnifeTarget, customization);
+
+            weapon.FallbackPaintKit = 0;
+            weapon.FallbackSeed = 0;
+            weapon.FallbackWear = 0f;
+            weapon.FallbackStatTrak = statTrak ?? -1;
+            weapon.OriginalOwnerXuidLow = (uint)(player.SteamID & 0xFFFFFFFF);
+            weapon.OriginalOwnerXuidHigh = (uint)(player.SteamID >> 32);
+            // Quality 9 is what puts "StatTrak" on the item; only touch it to
+            // set that or to undo it, the stock quality is otherwise kept.
+            if (statTrak.HasValue)
+            {
+                item.EntityQuality = 9;
+            }
+            else if (item.EntityQuality == 9)
+            {
+                item.EntityQuality = 0;
+            }
+
+            UpdateEconItemIdentity(item, player);
+            var nameTag = customization?.NameTag;
+            if (!string.IsNullOrWhiteSpace(nameTag))
+            {
+                item.CustomName = nameTag;
+                item.CustomNameOverride = nameTag;
+            }
+
+            _econAttributes.ClearPaintAttributes(item, $"{ResolveWeaponEntityName(weapon)} entity {weapon.Index}", statTrak);
+            ApplyStatTrakBodyGroup(weapon, statTrak.HasValue);
+            MarkWeaponStateChanged(weapon);
+            RefreshActiveWeapon(player, weapon);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to customize the stock knife on weapon entity {EntityIndex}.", weapon.Index);
+            return false;
+        }
+    }
+
     private bool ApplyGloveSelection(CCSPlayerController player, CosmeticEntry glove, bool logFailures)
     {
         if (!TryGetPawn(player, out var pawn, logFailures))
@@ -2417,7 +2806,7 @@ public sealed class SkinManager : IDisposable
             var wear = customization?.Wear ?? cosmetic.Wear;
 
             var profile = GetProfile(player);
-            var statTrak = ResolveStatTrak(profile, resolvedTarget, customization);
+            var statTrak = ResolveStatTrakForPaint(profile, resolvedTarget, customization, cosmetic);
             var stickers = isKnife ? null : ResolveUsableStickers(player, profile, resolvedTarget);
             var keychainId = isKnife ? null : ResolveUsableKeychain(player, profile, resolvedTarget);
             if (!isKnife)
@@ -2453,9 +2842,9 @@ public sealed class SkinManager : IDisposable
         }
     }
 
-    private void ClearPlayerCosmetics(CCSPlayerController player, bool logFailures, ISet<string>? attachmentWeapons = null)
+    private void ClearPlayerCosmetics(CCSPlayerController player, bool logFailures, ISet<string>? stockPaintedWeapons = null)
     {
-        ClearWeaponCosmetics(player, includeKnives: true, logFailures: logFailures, alsoReplace: attachmentWeapons);
+        ClearWeaponCosmetics(player, includeKnives: true, logFailures: logFailures, alsoReplace: stockPaintedWeapons);
         if (!TryGetPawn(player, out var pawn, logFailures))
         {
             return;
@@ -2734,7 +3123,9 @@ public sealed class SkinManager : IDisposable
         }
     }
 
-    private bool RefreshOwnedKnifeWithSelection(CCSPlayerController player, CBasePlayerWeapon oldKnife, KnifeDefinition knife, CosmeticEntry? skin, bool logFailures)
+    // knife null and skin null: the stock knife, re-created for its name tag or
+    // counter (see ApplyStockKnifeCustomization).
+    private bool RefreshOwnedKnifeWithSelection(CCSPlayerController player, CBasePlayerWeapon oldKnife, KnifeDefinition? knife, CosmeticEntry? skin, bool logFailures)
     {
         try
         {
@@ -2748,29 +3139,44 @@ public sealed class SkinManager : IDisposable
                 return false;
             }
 
-            if (!WeaponEntityByDefinitionIndex.TryGetValue(knife.ItemDefinitionIndex, out var knifeEntity) ||
-                !IsKnife(knifeEntity))
+            var knifeEntity = "weapon_knife";
+            if (knife is not null)
             {
-                if (logFailures)
+                if (!WeaponEntityByDefinitionIndex.TryGetValue(knife.ItemDefinitionIndex, out var mappedEntity) ||
+                    !IsKnife(mappedEntity))
                 {
-                    _logger.LogWarning(
-                        "Astra Skins cannot refresh knife {KnifeId} for player {SteamId}: item definition index is unmapped.",
-                        knife.Id,
-                        player.SteamID);
+                    if (logFailures)
+                    {
+                        _logger.LogWarning(
+                            "Astra Skins cannot refresh knife {KnifeId} for player {SteamId}: item definition index is unmapped.",
+                            knife.Id,
+                            player.SteamID);
+                    }
+
+                    return false;
                 }
 
-                return false;
+                knifeEntity = mappedEntity;
+            }
+
+            void Apply(CBasePlayerWeapon target, bool log)
+            {
+                if (skin is not null)
+                {
+                    ApplyCosmeticToWeapon(player, target, skin, isKnife: true, log);
+                }
+                else if (knife is not null)
+                {
+                    ApplyKnifeTypeToWeapon(player, target, knife, log);
+                }
+                else
+                {
+                    ApplyStockKnifeCustomization(player, target, log);
+                }
             }
 
             var knifeWasActive = IsActiveWeapon(player, oldKnife);
-            if (skin is null)
-            {
-                ApplyKnifeTypeToWeapon(player, oldKnife, knife, logFailures);
-            }
-            else
-            {
-                ApplyCosmeticToWeapon(player, oldKnife, skin, isKnife: true, logFailures);
-            }
+            Apply(oldKnife, logFailures);
 
             var newKnife = player.GiveNamedItem<CBasePlayerWeapon>("weapon_knife");
             if (newKnife is null)
@@ -2799,14 +3205,7 @@ public sealed class SkinManager : IDisposable
 
                 try
                 {
-                    if (skin is null)
-                    {
-                        ApplyKnifeTypeToWeapon(player, newKnife, knife, logFailures);
-                    }
-                    else
-                    {
-                        ApplyCosmeticToWeapon(player, newKnife, skin, isKnife: true, logFailures);
-                    }
+                    Apply(newKnife, logFailures);
 
                     // Same settle window as weapons: the StatTrak counter is a
                     // netprop the engine clears while it finishes the entity.
@@ -2817,14 +3216,7 @@ public sealed class SkinManager : IDisposable
                             return;
                         }
 
-                        if (skin is null)
-                        {
-                            ApplyKnifeTypeToWeapon(player, newKnife, knife, logFailures: false);
-                        }
-                        else
-                        {
-                            ApplyCosmeticToWeapon(player, newKnife, skin, isKnife: true, logFailures: false);
-                        }
+                        Apply(newKnife, log: false);
                     });
 
                     if (knifeWasActive)
@@ -2844,7 +3236,7 @@ public sealed class SkinManager : IDisposable
                     "Astra Skins refreshed {KnifeEntity} for player {SteamId} to apply {SelectionId}.",
                     knifeEntity,
                     player.SteamID,
-                    skin?.Id ?? knife.Id);
+                    skin?.Id ?? knife?.Id ?? "stock knife customization");
             }
 
             return true;
@@ -3277,6 +3669,10 @@ public sealed class SkinManager : IDisposable
             {
                 MarkEconItemStateChanged(preview, "CCSGO_TeamPreviewCharacterPosition", "m_weaponItem");
             }
+            else if (knife is null && HasVisibleCustomization(profile, KnifeTarget) && ApplyPreviewStockKnife(player, item))
+            {
+                MarkEconItemStateChanged(preview, "CCSGO_TeamPreviewCharacterPosition", "m_weaponItem");
+            }
 
             return;
         }
@@ -3304,7 +3700,7 @@ public sealed class SkinManager : IDisposable
             var seed = customization?.Seed ?? cosmetic.Seed;
             var wear = customization?.Wear ?? cosmetic.Wear;
             var profile = GetProfile(player);
-            var statTrak = ResolveStatTrak(profile, customizationTarget, customization);
+            var statTrak = ResolveStatTrakForPaint(profile, customizationTarget, customization, cosmetic);
             var stickers = isKnife ? null : ResolveUsableStickers(player, profile, customizationTarget);
             var keychainId = isKnife ? null : ResolveUsableKeychain(player, profile, customizationTarget);
             if (!isKnife)
@@ -3345,6 +3741,33 @@ public sealed class SkinManager : IDisposable
         }
 
         _econAttributes.ClearPaintAttributes(item, $"team preview {knife.EntityName}", statTrak);
+        return true;
+    }
+
+    // The preview twin of ApplyStockKnifeCustomization: the knife the intro
+    // shows keeps its definition, only the name and the counter are written.
+    private bool ApplyPreviewStockKnife(CCSPlayerController player, CEconItemView item)
+    {
+        var customization = GetCustomization(player, KnifeTarget);
+        var statTrak = StockFinishCounter(GetProfile(player), KnifeTarget, customization);
+        if (statTrak.HasValue)
+        {
+            item.EntityQuality = 9;
+        }
+        else if (item.EntityQuality == 9)
+        {
+            item.EntityQuality = 0;
+        }
+
+        UpdateEconItemIdentity(item, player);
+        var nameTag = customization?.NameTag;
+        if (!string.IsNullOrWhiteSpace(nameTag))
+        {
+            item.CustomName = nameTag;
+            item.CustomNameOverride = nameTag;
+        }
+
+        _econAttributes.ClearPaintAttributes(item, "team preview stock knife", statTrak);
         return true;
     }
 

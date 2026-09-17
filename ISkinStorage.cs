@@ -14,6 +14,9 @@ public interface ISkinStorage : IDisposable
     void SaveAgent(ulong steamId64, string team, string agentId);
     void SaveCustomization(ulong steamId64, string field, string target, string value);
     void ClearCustomization(ulong steamId64, string field, string target);
+    // Drops one saved selection row (weapon, knife, knife_type, glove, agent) so
+    // the item goes back to its default; nothing else of the player is touched.
+    void ClearSelection(ulong steamId64, string selectionType, string target);
     void ResetProfile(ulong steamId64);
     void ResetCategory(ulong steamId64, string category);
 }

@@ -441,73 +441,90 @@ public sealed class MenuManager
         var options = new List<MenuOption>();
         var visualIndex = 1;
         var profile = _skinManager.GetProfile(player);
-        options.Add(new MenuOption($"{visualIndex++}. {_localizer.ForPlayer(player, "menu.configure_all")}", () =>
+        // Each module shows up only when it is on and the player holds its
+        // flag; a server that keeps just the charms gets a menu with charms.
+        if (_skinManager.CanUseWeapons(player))
         {
-            var current = Utilities.GetPlayerFromSlot(state.Slot);
-            if (current is null) return;
-            ChangeView(current, state, MenuView.Categories, push: true);
-        }, LabelColor: "#f0b65a"));
-
-        foreach (var weapon in _skinManager.GetOwnedWeaponDefinitions(player))
-        {
-            // Tint each owned weapon with the rarity of its equipped skin so
-            // the main view reads like the real inventory.
-            string? equippedRarity = null;
-            if (profile.WeaponSkins.TryGetValue(weapon.EntityName, out var equippedId) &&
-                _skinManager.Catalog.WeaponSkinsById.TryGetValue(equippedId, out var equippedSkin))
-            {
-                equippedRarity = equippedSkin.Rarity;
-            }
-
-            var label = $"{visualIndex++}. {weapon.Localized(state.PreferZh)}";
-            options.Add(new MenuOption(label, () =>
+            options.Add(new MenuOption($"{visualIndex++}. {_localizer.ForPlayer(player, "menu.configure_all")}", () =>
             {
                 var current = Utilities.GetPlayerFromSlot(state.Slot);
                 if (current is null) return;
-                state.Weapon = weapon;
-                ChangeView(current, state, MenuView.WeaponSkins, push: true);
-            }, LabelColor: RarityColor(equippedRarity)));
-        }
+                ChangeView(current, state, MenuView.Categories, push: true);
+            }, LabelColor: "#f0b65a"));
 
-        var knife = _skinManager.GetCurrentKnifeDefinition(player);
-        var knifeLabel = knife is null ? _localizer.ForPlayer(player, "menu.knife") : $"* {knife.Localized(state.PreferZh)}";
-        string? knifeRarity = null;
-        if (profile.KnifeSkinId is not null &&
-            _skinManager.Catalog.KnifeSkinsById.TryGetValue(profile.KnifeSkinId, out var equippedKnifeSkin))
-        {
-            knifeRarity = equippedKnifeSkin.Rarity;
-        }
-        options.Add(new MenuOption($"{visualIndex++}. {knifeLabel}", () =>
-        {
-            var current = Utilities.GetPlayerFromSlot(state.Slot);
-            if (current is null) return;
-            if (knife is null)
+            foreach (var weapon in _skinManager.GetOwnedWeaponDefinitions(player))
             {
-                OpenKnives(current);
-                return;
+                // Tint each owned weapon with the rarity of its equipped skin so
+                // the main view reads like the real inventory.
+                string? equippedRarity = null;
+                if (profile.WeaponSkins.TryGetValue(weapon.EntityName, out var equippedId) &&
+                    _skinManager.Catalog.WeaponSkinsById.TryGetValue(equippedId, out var equippedSkin))
+                {
+                    equippedRarity = equippedSkin.Rarity;
+                }
+
+                var label = $"{visualIndex++}. {weapon.Localized(state.PreferZh)}";
+                options.Add(new MenuOption(label, () =>
+                {
+                    var current = Utilities.GetPlayerFromSlot(state.Slot);
+                    if (current is null) return;
+                    state.Weapon = weapon;
+                    ChangeView(current, state, MenuView.WeaponSkins, push: true);
+                }, LabelColor: RarityColor(equippedRarity)));
             }
+        }
 
-            state.Knife = knife;
-            ChangeView(current, state, MenuView.KnifeSkins, push: true);
-        }, LabelColor: RarityColor(knifeRarity) ?? "#8bdcff"));
-
-        options.Add(new MenuOption($"{visualIndex++}. {_localizer.ForPlayer(player, "menu.gloves")}", () =>
+        if (_skinManager.CanUseKnives(player))
         {
-            var current = Utilities.GetPlayerFromSlot(state.Slot);
-            if (current is not null) ChangeView(current, state, MenuView.GloveTypes, push: true);
-        }, LabelColor: "#8bdcff"));
+            var knife = _skinManager.GetCurrentKnifeDefinition(player);
+            var knifeLabel = knife is null ? _localizer.ForPlayer(player, "menu.knife") : $"* {knife.Localized(state.PreferZh)}";
+            string? knifeRarity = null;
+            if (profile.KnifeSkinId is not null &&
+                _skinManager.Catalog.KnifeSkinsById.TryGetValue(profile.KnifeSkinId, out var equippedKnifeSkin))
+            {
+                knifeRarity = equippedKnifeSkin.Rarity;
+            }
+            options.Add(new MenuOption($"{visualIndex++}. {knifeLabel}", () =>
+            {
+                var current = Utilities.GetPlayerFromSlot(state.Slot);
+                if (current is null) return;
+                if (knife is null)
+                {
+                    OpenKnives(current);
+                    return;
+                }
 
-        options.Add(new MenuOption($"{visualIndex++}. {_localizer.ForPlayer(player, "menu.agents")}", () =>
-        {
-            var current = Utilities.GetPlayerFromSlot(state.Slot);
-            if (current is not null) ChangeView(current, state, MenuView.AgentTeams, push: true);
-        }, LabelColor: "#b58fff"));
+                state.Knife = knife;
+                ChangeView(current, state, MenuView.KnifeSkins, push: true);
+            }, LabelColor: RarityColor(knifeRarity) ?? "#8bdcff"));
+        }
 
-        options.Add(new MenuOption($"{visualIndex++}. {_localizer.ForPlayer(player, "menu.music")}", () =>
+        if (_skinManager.CanUseGloves(player))
         {
-            var current = Utilities.GetPlayerFromSlot(state.Slot);
-            if (current is not null) ChangeView(current, state, MenuView.MusicKits, push: true);
-        }, LabelColor: MusicKitColor));
+            options.Add(new MenuOption($"{visualIndex++}. {_localizer.ForPlayer(player, "menu.gloves")}", () =>
+            {
+                var current = Utilities.GetPlayerFromSlot(state.Slot);
+                if (current is not null) ChangeView(current, state, MenuView.GloveTypes, push: true);
+            }, LabelColor: "#8bdcff"));
+        }
+
+        if (_skinManager.CanUseAgents(player))
+        {
+            options.Add(new MenuOption($"{visualIndex++}. {_localizer.ForPlayer(player, "menu.agents")}", () =>
+            {
+                var current = Utilities.GetPlayerFromSlot(state.Slot);
+                if (current is not null) ChangeView(current, state, MenuView.AgentTeams, push: true);
+            }, LabelColor: "#b58fff"));
+        }
+
+        if (_skinManager.CanUseMusicKits(player))
+        {
+            options.Add(new MenuOption($"{visualIndex++}. {_localizer.ForPlayer(player, "menu.music")}", () =>
+            {
+                var current = Utilities.GetPlayerFromSlot(state.Slot);
+                if (current is not null) ChangeView(current, state, MenuView.MusicKits, push: true);
+            }, LabelColor: MusicKitColor));
+        }
 
         if (_skinManager.CanUseStickers(player))
         {
@@ -587,7 +604,11 @@ public sealed class MenuManager
             ? _skinManager.Catalog.Categories
             : _skinManager.Catalog.Weapons.Select(w => new CategoryDefinition { Id = w.Category, DisplayName = w.Category }).DistinctBy(c => c.Id).ToList();
 
-        foreach (var category in categories)
+        // For skins, the weapon categories show only with the weapons module
+        // on. Picking a gun for stickers or a charm goes through here too and
+        // does not depend on that module.
+        var weaponsOn = state.Purpose != MenuPurpose.Skins || (menuPlayer is not null && _skinManager.CanUseWeapons(menuPlayer));
+        foreach (var category in weaponsOn ? categories : Array.Empty<CategoryDefinition>())
         {
             if (!_skinManager.Catalog.Weapons.Any(w => w.Category.Equals(category.Id, StringComparison.OrdinalIgnoreCase)))
             {
@@ -609,26 +630,42 @@ public sealed class MenuManager
             return options;
         }
 
-        options.Add(new MenuOption(_localizer.ForPlayer(menuPlayer, "menu.knives"), () =>
+        if (menuPlayer is not null && _skinManager.CanUseKnives(menuPlayer))
         {
-            var player = Utilities.GetPlayerFromSlot(state.Slot);
-            if (player is not null) OpenKnives(player);
-        }));
-        options.Add(new MenuOption(_localizer.ForPlayer(menuPlayer, "menu.gloves"), () =>
+            options.Add(new MenuOption(_localizer.ForPlayer(menuPlayer, "menu.knives"), () =>
+            {
+                var player = Utilities.GetPlayerFromSlot(state.Slot);
+                if (player is not null) OpenKnives(player);
+            }));
+        }
+
+        if (menuPlayer is not null && _skinManager.CanUseGloves(menuPlayer))
         {
-            var player = Utilities.GetPlayerFromSlot(state.Slot);
-            if (player is not null) ChangeView(player, state, MenuView.GloveTypes, push: true);
-        }));
-        options.Add(new MenuOption(_localizer.ForPlayer(menuPlayer, "menu.agents"), () =>
+            options.Add(new MenuOption(_localizer.ForPlayer(menuPlayer, "menu.gloves"), () =>
+            {
+                var player = Utilities.GetPlayerFromSlot(state.Slot);
+                if (player is not null) ChangeView(player, state, MenuView.GloveTypes, push: true);
+            }));
+        }
+
+        if (menuPlayer is not null && _skinManager.CanUseAgents(menuPlayer))
         {
-            var player = Utilities.GetPlayerFromSlot(state.Slot);
-            if (player is not null) ChangeView(player, state, MenuView.AgentTeams, push: true);
-        }));
-        options.Add(new MenuOption(_localizer.ForPlayer(menuPlayer, "menu.music"), () =>
+            options.Add(new MenuOption(_localizer.ForPlayer(menuPlayer, "menu.agents"), () =>
+            {
+                var player = Utilities.GetPlayerFromSlot(state.Slot);
+                if (player is not null) ChangeView(player, state, MenuView.AgentTeams, push: true);
+            }));
+        }
+
+        if (menuPlayer is not null && _skinManager.CanUseMusicKits(menuPlayer))
         {
-            var player = Utilities.GetPlayerFromSlot(state.Slot);
-            if (player is not null) ChangeView(player, state, MenuView.MusicKits, push: true);
-        }));
+            options.Add(new MenuOption(_localizer.ForPlayer(menuPlayer, "menu.music"), () =>
+            {
+                var player = Utilities.GetPlayerFromSlot(state.Slot);
+                if (player is not null) ChangeView(player, state, MenuView.MusicKits, push: true);
+            }));
+        }
+
         return options;
     }
 
@@ -1213,7 +1250,12 @@ public sealed class MenuManager
         string? selectedId = null;
         profile?.WeaponSkins.TryGetValue(state.Weapon.EntityName, out selectedId);
 
-        return state.Weapon.Skins
+        var weaponEntity = state.Weapon.EntityName;
+        var options = new List<MenuOption>
+        {
+            DefaultOption(state, "menu.skin.default", selectedId is null, current => _skinManager.ClearWeaponSkin(current, weaponEntity))
+        };
+        options.AddRange(state.Weapon.Skins
             .Where(s => player is null || _skinManager.CanUse(player, s))
             .Select(s => new MenuOption(s.Localized(state.PreferZh), () =>
             {
@@ -1235,17 +1277,44 @@ public sealed class MenuManager
                     : $"{AstraSkinsPlugin.FormatPrefix()} {_localizer.ForPlayer(current, "menu.save_failed")}");
                 state.LastInteractionUtc = DateTime.UtcNow;
                 Render(current, state);
-            }, s.Id.Equals(selectedId, StringComparison.OrdinalIgnoreCase), ThrottleSelection: true, LabelColor: RarityColor(s.Rarity)))
-            .ToList();
+            }, s.Id.Equals(selectedId, StringComparison.OrdinalIgnoreCase), ThrottleSelection: true, LabelColor: RarityColor(s.Rarity))));
+        return options;
+    }
+
+    // The "Default" row at the top of a list: drops the selection and marks
+    // itself when nothing is selected. A clear that had nothing to drop just
+    // re-renders, like picking the row that is already selected.
+    private MenuOption DefaultOption(PlayerMenuState state, string labelKey, bool selected, Func<CCSPlayerController, bool> clear, string messageKey = "menu.equipped")
+    {
+        var player = Utilities.GetPlayerFromSlot(state.Slot);
+        return new MenuOption(_localizer.ForPlayer(player, labelKey), () =>
+        {
+            var current = Utilities.GetPlayerFromSlot(state.Slot);
+            if (current is null) return;
+            if (clear(current))
+            {
+                current.PrintToChat($"{AstraSkinsPlugin.FormatPrefix()} {_localizer.ForPlayer(current, messageKey, _localizer.ForPlayer(current, labelKey))}");
+            }
+
+            state.LastInteractionUtc = DateTime.UtcNow;
+            Render(current, state);
+        }, selected, ThrottleSelection: true);
     }
 
     private IReadOnlyList<MenuOption> BuildKnifeOptions(PlayerMenuState state)
     {
         var player = Utilities.GetPlayerFromSlot(state.Slot);
+        var profile = player is not null ? _skinManager.GetProfile(player) : null;
         var selectedKnifeId = player is not null
-            ? _skinManager.GetProfile(player).KnifeId ?? _skinManager.GetCurrentKnifeDefinition(player)?.Id
+            ? profile!.KnifeId ?? _skinManager.GetCurrentKnifeDefinition(player)?.Id
             : null;
-        return _skinManager.Catalog.Knives
+        var options = new List<MenuOption>
+        {
+            // Marked only when nothing is saved and the knife in hand is not a
+            // catalog one either (the row below would be marked then).
+            DefaultOption(state, "menu.knife.default", profile is { KnifeSkinId: null } && selectedKnifeId is null, current => _skinManager.ClearKnife(current))
+        };
+        options.AddRange(_skinManager.Catalog.Knives
             .Where(k => player is null || _skinManager.CanUse(player, k))
             .Select(k => new MenuOption(k.Localized(state.PreferZh), () =>
             {
@@ -1265,8 +1334,8 @@ public sealed class MenuManager
                     : $"{AstraSkinsPlugin.FormatPrefix()} {_localizer.ForPlayer(current, "menu.save_failed")}");
                 state.LastInteractionUtc = DateTime.UtcNow;
                 Render(current, state);
-            }, k.Id.Equals(selectedKnifeId, StringComparison.OrdinalIgnoreCase), ThrottleSelection: true))
-            .ToList();
+            }, k.Id.Equals(selectedKnifeId, StringComparison.OrdinalIgnoreCase), ThrottleSelection: true)));
+        return options;
     }
 
     private IReadOnlyList<MenuOption> BuildKnifeSkinOptions(PlayerMenuState state)
@@ -1278,7 +1347,11 @@ public sealed class MenuManager
 
         var player = Utilities.GetPlayerFromSlot(state.Slot);
         var selectedId = player is not null ? _skinManager.GetProfile(player).KnifeSkinId : null;
-        return state.Knife.Skins
+        var options = new List<MenuOption>
+        {
+            DefaultOption(state, "menu.skin.default", selectedId is null, current => _skinManager.ClearKnifeSkin(current))
+        };
+        options.AddRange(state.Knife.Skins
             .Where(s => player is null || _skinManager.CanUse(player, s))
             .Select(s => new MenuOption(s.Localized(state.PreferZh), () =>
             {
@@ -1297,14 +1370,18 @@ public sealed class MenuManager
                     : $"{AstraSkinsPlugin.FormatPrefix()} {_localizer.ForPlayer(current, "menu.save_failed")}");
                 state.LastInteractionUtc = DateTime.UtcNow;
                 Render(current, state);
-            }, s.Id.Equals(selectedId, StringComparison.OrdinalIgnoreCase), ThrottleSelection: true, LabelColor: RarityColor(s.Rarity)))
-            .ToList();
+            }, s.Id.Equals(selectedId, StringComparison.OrdinalIgnoreCase), ThrottleSelection: true, LabelColor: RarityColor(s.Rarity))));
+        return options;
     }
 
     private IReadOnlyList<MenuOption> BuildGloveOptions(PlayerMenuState state)
     {
         var player = Utilities.GetPlayerFromSlot(state.Slot);
-        return _skinManager.Catalog.Gloves
+        var options = new List<MenuOption>
+        {
+            DefaultOption(state, "menu.gloves.default", player is not null && _skinManager.GetProfile(player).GloveSkinId is null, current => _skinManager.ClearGloveSkin(current))
+        };
+        options.AddRange(_skinManager.Catalog.Gloves
             .Where(g => player is null || _skinManager.CanUse(player, g))
             .Select(g => new MenuOption(g.Localized(state.PreferZh), () =>
             {
@@ -1312,8 +1389,8 @@ public sealed class MenuManager
                 if (current is null) return;
                 state.Glove = g;
                 ChangeView(current, state, MenuView.GloveSkins, push: true);
-            }))
-            .ToList();
+            })));
+        return options;
     }
 
     private IReadOnlyList<MenuOption> BuildGloveSkinOptions(PlayerMenuState state)
@@ -1325,7 +1402,11 @@ public sealed class MenuManager
 
         var player = Utilities.GetPlayerFromSlot(state.Slot);
         var selectedId = player is not null ? _skinManager.GetProfile(player).GloveSkinId : null;
-        return state.Glove.Skins
+        var options = new List<MenuOption>
+        {
+            DefaultOption(state, "menu.gloves.default", selectedId is null, current => _skinManager.ClearGloveSkin(current))
+        };
+        options.AddRange(state.Glove.Skins
             .Where(s => player is null || _skinManager.CanUse(player, s))
             .Select(s => new MenuOption(s.Localized(state.PreferZh), () =>
             {
@@ -1344,8 +1425,8 @@ public sealed class MenuManager
                     : $"{AstraSkinsPlugin.FormatPrefix()} {_localizer.ForPlayer(current, "menu.save_failed")}");
                 state.LastInteractionUtc = DateTime.UtcNow;
                 Render(current, state);
-            }, s.Id.Equals(selectedId, StringComparison.OrdinalIgnoreCase), ThrottleSelection: true, LabelColor: RarityColor(s.Rarity)))
-            .ToList();
+            }, s.Id.Equals(selectedId, StringComparison.OrdinalIgnoreCase), ThrottleSelection: true, LabelColor: RarityColor(s.Rarity))));
+        return options;
     }
 
     private IReadOnlyList<MenuOption> BuildAgentTeamOptions(PlayerMenuState state)
@@ -1389,7 +1470,12 @@ public sealed class MenuManager
             ? agentId
             : null;
 
-        return _skinManager.Catalog.Agents
+        var team = state.AgentTeam;
+        var options = new List<MenuOption>
+        {
+            DefaultOption(state, "menu.agent.default", player is not null && selectedId is null, current => _skinManager.ClearAgent(current, team), "menu.agent.cleared")
+        };
+        options.AddRange(_skinManager.Catalog.Agents
             .Where(a => a.Team.Equals(state.AgentTeam, StringComparison.OrdinalIgnoreCase))
             .Where(a => player is null || _skinManager.CanUse(player, a))
             .Select(a => new MenuOption(a.Localized(state.PreferZh), () =>
@@ -1409,8 +1495,8 @@ public sealed class MenuManager
                     : $"{AstraSkinsPlugin.FormatPrefix()} {_localizer.ForPlayer(current, "menu.save_failed")}");
                 state.LastInteractionUtc = DateTime.UtcNow;
                 Render(current, state);
-            }, a.Id.Equals(selectedId, StringComparison.OrdinalIgnoreCase), ThrottleSelection: true, LabelColor: RarityColor(a.Rarity)))
-            .ToList();
+            }, a.Id.Equals(selectedId, StringComparison.OrdinalIgnoreCase), ThrottleSelection: true, LabelColor: RarityColor(a.Rarity))));
+        return options;
     }
 
     // Flat search across every cosmetic the player may equip. Every whitespace
@@ -1454,7 +1540,8 @@ public sealed class MenuManager
             }, selected, ThrottleSelection: true, LabelColor: color ?? RarityColor(rarity)));
         }
 
-        foreach (var weapon in catalog.Weapons)
+        // Every section answers to its module switch and flag.
+        foreach (var weapon in _skinManager.CanUseWeapons(player) ? catalog.Weapons : Array.Empty<WeaponDefinition>())
         {
             foreach (var skin in weapon.Skins)
             {
@@ -1478,7 +1565,7 @@ public sealed class MenuManager
             }
         }
 
-        foreach (var knife in catalog.Knives)
+        foreach (var knife in _skinManager.CanUseKnives(player) ? catalog.Knives : Array.Empty<KnifeDefinition>())
         {
             if (!_skinManager.CanUse(player, knife))
             {
@@ -1505,7 +1592,7 @@ public sealed class MenuManager
             }
         }
 
-        foreach (var glove in catalog.Gloves)
+        foreach (var glove in _skinManager.CanUseGloves(player) ? catalog.Gloves : Array.Empty<GloveDefinition>())
         {
             if (!_skinManager.CanUse(player, glove))
             {
@@ -1532,7 +1619,7 @@ public sealed class MenuManager
             }
         }
 
-        foreach (var agent in catalog.Agents)
+        foreach (var agent in _skinManager.CanUseAgents(player) ? catalog.Agents : Array.Empty<AgentDefinition>())
         {
             if (options.Count >= MaxSearchResults)
             {
@@ -1555,7 +1642,7 @@ public sealed class MenuManager
 
         var preferZh = state.PreferZh;
         var musicLabel = _localizer.ForPlayer(player, "menu.music");
-        foreach (var kit in catalog.MusicKits)
+        foreach (var kit in _skinManager.CanUseMusicKits(player) ? catalog.MusicKits : Array.Empty<MusicKitDefinition>())
         {
             if (options.Count >= MaxSearchResults)
             {

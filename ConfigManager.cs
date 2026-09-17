@@ -34,15 +34,26 @@ public sealed class ConfigManager
             throw new InvalidOperationException("Customization config section is required.");
         }
 
-        if (config.Stickers is null)
+        foreach (var (name, module) in new (string, ModuleConfig?)[]
+                 {
+                     ("Weapons", config.Weapons), ("Knives", config.Knives), ("Gloves", config.Gloves), ("Agents", config.Agents),
+                     ("MusicKits", config.MusicKits), ("Stickers", config.Stickers), ("Keychains", config.Keychains)
+                 })
         {
-            throw new InvalidOperationException("Stickers config section is required.");
+            if (module is null)
+            {
+                throw new InvalidOperationException($"{name} config section is required.");
+            }
+
+            module.Permission ??= string.Empty;
         }
 
-        if (config.Keychains is null)
+        if (config.Commands is null)
         {
-            throw new InvalidOperationException("Keychains config section is required.");
+            throw new InvalidOperationException("Commands config section is required.");
         }
+
+        NormalizeCommands(config.Commands);
 
         if (config.Definitions is null)
         {
@@ -119,5 +130,52 @@ public sealed class ConfigManager
         }
 
         _logger.LogInformation("Astra Skins config validated with DatabaseMode={DatabaseMode}", config.DatabaseMode);
+    }
+
+    // Command names end up as CounterStrikeSharp console commands, so they are
+    // lower-cased, prefixed with "css_" when written bare ("kch" or "!kch"
+    // both mean css_kch) and checked for characters the console accepts. A
+    // name used by two commands is a configuration error, not a coin toss.
+    private static void NormalizeCommands(CommandsConfig commands)
+    {
+        var seen = new Dictionary<string, string>(StringComparer.Ordinal);
+        foreach (var (name, aliases) in commands.Entries())
+        {
+            if (aliases is null)
+            {
+                throw new InvalidOperationException($"Commands.{name} must be a list of command names (it may be empty).");
+            }
+
+            var normalized = new List<string>();
+            foreach (var raw in aliases)
+            {
+                var alias = (raw ?? string.Empty).Trim().TrimStart('!', '/').ToLowerInvariant();
+                if (alias.Length > 0 && !alias.StartsWith("css_", StringComparison.Ordinal))
+                {
+                    alias = "css_" + alias;
+                }
+
+                if (alias.Length <= 4 || alias.Any(c => !(char.IsAsciiLetterOrDigit(c) || c == '_')))
+                {
+                    throw new InvalidOperationException($"Commands.{name} contains an invalid command name \"{raw}\": use letters, digits and underscores.");
+                }
+
+                if (normalized.Contains(alias))
+                {
+                    continue;
+                }
+
+                if (seen.TryGetValue(alias, out var owner) && owner != name)
+                {
+                    throw new InvalidOperationException($"Command name \"{alias}\" is used by both Commands.{owner} and Commands.{name}.");
+                }
+
+                seen[alias] = name;
+                normalized.Add(alias);
+            }
+
+            aliases.Clear();
+            aliases.AddRange(normalized);
+        }
     }
 }

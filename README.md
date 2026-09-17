@@ -19,7 +19,7 @@
 
 - 🎨 **1,400+ weapon skins, 20 knives with 576 finishes, 8 glove types, 63 agents, 99 music kits, 11,000+ stickers, 78 charms** — all data-driven from JSON, no datasets baked into the code.
 - 🕹️ **Built-in WASD menu** — navigate with `W`/`S`, select with `E`. No external menu plugin required.
-- 🔧 **Per-player customization** — custom paint seed, wear/float, name tags, and StatTrak counters via `!seed`, `!wear`, `!nametag`, and `!stattrak`.
+- 🔧 **Per-player customization** — custom paint seed, wear/float, name tags, and StatTrak counters via `!seed`, `!wear`, `!nametag`, and `!stattrak`; name tags and StatTrak work on the default skin too.
 - 🔎 **Search** — `!ws <text>` finds any skin, knife, glove, agent, or music kit without scrolling through pages.
 - 🏷️ **Stickers and charms** — up to five stickers and a charm on every gun, with or without a skin, browsed by tournament and capsule or found with `!stickers <text>` and `!charms <text>`.
 - 🎵 **Music kits** — pick any of 99 kits from the menu, with an optional per-kit MVP counter shown on the scoreboard.
@@ -28,7 +28,8 @@
 - 🎬 **Team intro** shows your agent, gloves, and weapon skins on the match intro and on the team select screen once you are on a team (the very first team select after connecting has no owner assigned by the engine, so it keeps the defaults).
 - 🗣️ **Agent radio voices** — agents keep their voice lines where the CS2 schema exposes the voice data.
 - 🤖 **Bot takeover aware** leaves a possessed bot's loadout alone by default, so bot cosmetics plugins keep working. Opt in to see your own skins on the bot instead.
-- 🛡️ **Permission gating** — restrict individual skins, knives, gloves, agents, stickers, charms, or the whole customization, sticker or charm feature to admin flags.
+- 🛡️ **Permission gating** — restrict individual skins, knives, gloves, agents, stickers, charms, or a whole module (weapons, knives, gloves, agents, music kits, stickers, charms, customization) to admin flags.
+- 🧩 **Modules and commands** — every module has its own on/off switch, so a server can run only the parts it wants, and every chat command name is configurable, with any number of aliases.
 - ⚙️ **Admin tooling** — hot reload of definitions and a diagnostics command.
 
 ## Requirements
@@ -71,6 +72,8 @@
 
 ## Commands
 
+The names below are the defaults. Every command can be renamed or given extra aliases in the `Commands` section of the config; usage messages show the configured name.
+
 ### Players
 
 | Command | Description |
@@ -96,7 +99,7 @@
 | `!nametag <text>` | Name tag for the held weapon · `!nametag reset` to remove |
 | `!stattrak` | Toggle StatTrak on the held weapon · `!stattrak <count>` sets the counter · `!stattrak reset` removes it |
 
-Overrides apply on top of the selected skin, take effect instantly, and persist in the database. They target the weapon currently held (knife included); pass `gloves` as the first argument to target equipped gloves instead. A skin must be selected for the item first.
+Overrides apply on top of the selected skin, take effect instantly, and persist in the database. They target the weapon currently held (knife included); pass `gloves` as the first argument to target equipped gloves instead. Seed and wear need a skin selected for the item; name tags and StatTrak also work on the default skin of any gun or the knife.
 
 StatTrak works the same way: enable it on a weapon or knife and the counter goes up with every kill you get with that item, persisting across reconnects and map changes. With `EnableStatTrakByDefault` on, every weapon and knife with a selected skin starts counting at 0 without asking, and `!stattrak reset` turns it off for that item.
 
@@ -122,6 +125,8 @@ Both can be disabled entirely in the config.
 | `R` | Close |
 
 The menu items are numbered as a visual guide for orientation; navigation is by keys, not numbers. While the menu is open the player is held in place. Heads up: `E` still performs its normal in-world action (open doors, pick up weapons, defuse), so avoid confirming a selection while standing on the bomb.
+
+Every skin, knife, glove, agent and music kit list starts with a **Default** row that removes the selection and is marked when nothing is selected: the stock finish of a gun or knife (stickers, charms, name tags and counters saved for it stay on), the default knife, the default gloves, the default agent (back on the next spawn) and the default music kit.
 
 ## Search
 
@@ -195,6 +200,26 @@ Stickers use the game's stock placement, size and wear for each slot; there is n
     "MaxNameTagLength": 20,
     "BlockedNameTagWords": []
   },
+  "Weapons": {
+    "Enabled": true,
+    "Permission": ""
+  },
+  "Knives": {
+    "Enabled": true,
+    "Permission": ""
+  },
+  "Gloves": {
+    "Enabled": true,
+    "Permission": ""
+  },
+  "Agents": {
+    "Enabled": true,
+    "Permission": ""
+  },
+  "MusicKits": {
+    "Enabled": true,
+    "Permission": ""
+  },
   "Stickers": {
     "Enabled": true,
     "Permission": ""
@@ -202,6 +227,23 @@ Stickers use the game's stock placement, size and wear for each slot; there is n
   "Keychains": {
     "Enabled": true,
     "Permission": ""
+  },
+  "Commands": {
+    "Menu": ["css_ws"],
+    "Knife": ["css_knife"],
+    "Gloves": ["css_gloves"],
+    "Agents": ["css_agents"],
+    "Stickers": ["css_stickers"],
+    "Charms": ["css_charms", "css_keychains", "css_keychain"],
+    "Refresh": ["css_wsrefresh"],
+    "Reset": ["css_wsreset"],
+    "Seed": ["css_seed"],
+    "Wear": ["css_wear"],
+    "NameTag": ["css_nametag"],
+    "StatTrak": ["css_stattrak"],
+    "Reload": ["css_wsreload"],
+    "Debug": ["css_wsdebug"],
+    "ResetPlayer": ["css_wsresetplayer"]
   },
   "ApplyPlayerCosmeticsOnBotTakeover": false,
   "EnableStatTrakByDefault": false,
@@ -237,10 +279,10 @@ Stickers use the game's stock placement, size and wear for each slot; there is n
 | `Customization.Permission` | Restrict customization to a flag; empty = everyone |
 | `Customization.MaxNameTagLength` | Name tag cap, 4–32 (default 20 matches the real game) |
 | `Customization.BlockedNameTagWords` | Words a name tag may not contain, matched as case-insensitive substrings. Empty by default, each server adds its own, for example `["badword", "slur"]`. Avoid short or common words (`puta` would also block `computadora`) |
-| `Stickers.Enabled` / `Stickers.Permission` | Switch and flag for stickers; empty flag = everyone. Off hides the menu entry and stops applying saved stickers |
-| `Keychains.Enabled` / `Keychains.Permission` | Same for charms |
+| `Weapons`, `Knives`, `Gloves`, `Agents`, `MusicKits`, `Stickers`, `Keychains` | One section per module, each with `Enabled` and `Permission`. Off hides the module from the menu and the search, its commands answer that it is unavailable, and saved selections stop applying (they stay in the database and come back when it is switched on). The flag does the same for players who do not hold it; empty = everyone |
+| `Commands` | Chat command names, a list per command; the first name is the one shown in usage messages. Names are lower-cased and get the `css_` prefix when it is missing, so `"kch"` registers `css_kch` and answers to `!kch` and `/kch`. An empty list leaves that command unregistered; the same name on two commands is rejected at startup |
 | `ApplyPlayerCosmeticsOnBotTakeover` | Off by default: a bot you take over keeps its own loadout. Set to `true` to apply your knife, agent and music kit to the possessed bot (guns and gloves already in hand keep their look) |
-| `EnableStatTrakByDefault` | Every weapon and knife with a selected skin starts with a StatTrak counter at 0; players can still turn it off per item with `!stattrak reset` |
+| `EnableStatTrakByDefault` | Every weapon and knife with a selected skin starts with a StatTrak counter at 0; players can still turn it off per item with `!stattrak reset`. That counter belongs to the selection: while the selection is not applied (module off, flag lost) it stays hidden, and it comes back with it |
 | `EnableMusicKitMvpCounter` | Track per-player MVP counts for selected music kits |
 
 ### SQLite
@@ -307,7 +349,7 @@ Every entry in the data files accepts an optional `permission` field: weapon, kn
 
 Any CounterStrikeSharp flag (`@css/vip`) or group (`#css/vip`) works, and `@css/root` passes everything. The flag is per entry, so different entries can require different flags, and a flag on a knife or glove type covers all of its skins. Players without the flag do not see the entry in the menu or in the `!ws` search and cannot select it. The same check runs when cosmetics are applied, so a saved selection whose flag expired stops applying at the next spawn (music kits within a tick) and comes back as soon as the flag does. Flags are read live, nothing is cached per player.
 
-`Customization.Permission` in `config.json` is separate: it gates the `!seed`, `!wear`, `!nametag` and `!stattrak` commands. `Stickers.Permission` and `Keychains.Permission` gate the sticker and charm features the same way, menu and apply side alike. The plugin does not grant flags itself; use `configs/admins.json` or any VIP/rank plugin that assigns flags.
+`Customization.Permission` in `config.json` is separate: it gates the `!seed`, `!wear`, `!nametag` and `!stattrak` commands. The module sections (`Weapons`, `Knives`, `Gloves`, `Agents`, `MusicKits`, `Stickers`, `Keychains`) each carry their own `Permission` that gates the whole module the same way, menu and apply side alike, and an `Enabled` switch that turns it off for everyone. The plugin does not grant flags itself; use `configs/admins.json` or any VIP/rank plugin that assigns flags.
 
 The generator rewrites the data files, so re-apply your permissions after regenerating.
 
@@ -337,6 +379,7 @@ The release zip does not ship the Linux SQLite library from the NuGet package, w
 | `!wsreload` / `!wsdebug` say no permission | Add your SteamID to `configs/admins.json` with the `@css/config` flag |
 | `!seed` looks like it does nothing | The held skin's pattern doesn't vary by seed — try Case Hardened or Crimson Web |
 | `GLIBC_2.3x not found` when loading in sqlite mode | Releases before 1.1.2 shipped a SQLite library that needs glibc 2.34; update, the current one loads on any host that can run CS2 |
+| A menu entry or a command is missing | Its module is switched off or flag-gated in the config (`Weapons`, `Knives`, `Gloves`, `Agents`, `MusicKits`, `Stickers`, `Keychains`), or the command was renamed in `Commands`; `!wsdebug` lists the module states |
 
 ## Disclaimer
 

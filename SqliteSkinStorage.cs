@@ -127,11 +127,16 @@ public sealed class SqliteSkinStorage : ISkinStorage
 
     public void ClearCustomization(ulong steamId64, string field, string target)
     {
+        ClearSelection(steamId64, field, target);
+    }
+
+    public void ClearSelection(ulong steamId64, string selectionType, string target)
+    {
         using var connection = Open();
         using var command = connection.CreateCommand();
         command.CommandText = "DELETE FROM astra_player_skin_selections WHERE steam_id = $steam_id AND selection_type = $selection_type AND target = $target";
         command.Parameters.AddWithValue("$steam_id", unchecked((long)steamId64));
-        command.Parameters.AddWithValue("$selection_type", field);
+        command.Parameters.AddWithValue("$selection_type", selectionType);
         command.Parameters.AddWithValue("$target", target);
         command.ExecuteNonQuery();
     }

@@ -12,8 +12,14 @@ public sealed class PluginConfig : BasePluginConfig
     public MySqlConfig MySql { get; set; } = new();
     public MenuConfig Menu { get; set; } = new();
     public CustomizationConfig Customization { get; set; } = new();
-    public StickersConfig Stickers { get; set; } = new();
-    public KeychainsConfig Keychains { get; set; } = new();
+    public ModuleConfig Weapons { get; set; } = new();
+    public ModuleConfig Knives { get; set; } = new();
+    public ModuleConfig Gloves { get; set; } = new();
+    public ModuleConfig Agents { get; set; } = new();
+    public ModuleConfig MusicKits { get; set; } = new();
+    public ModuleConfig Stickers { get; set; } = new();
+    public ModuleConfig Keychains { get; set; } = new();
+    public CommandsConfig Commands { get; set; } = new();
     // Off by default so a possessed bot keeps whatever cosmetics its pawn has
     // (for example from a bot randomizer plugin). Opt in to see your own instead.
     public bool ApplyPlayerCosmeticsOnBotTakeover { get; set; } = false;
@@ -68,16 +74,82 @@ public sealed class CustomizationConfig
 
 // Stickers and charms each have their own switch and flag, separate from the
 // Customization commands, so a server can hand them out to different ranks.
-public sealed class StickersConfig
+// One switch per feature: off hides it from the menu and the search, its
+// commands answer that it is unavailable, and saved selections stop applying.
+// The flag does the same for players who do not hold it.
+public sealed class ModuleConfig
 {
     public bool Enabled { get; set; } = true;
     public string Permission { get; set; } = string.Empty;
 }
 
-public sealed class KeychainsConfig
+// The seven switches gathered for SkinManager, which does not read the
+// plugin config itself.
+public sealed class ModuleSwitches
 {
-    public bool Enabled { get; set; } = true;
-    public string Permission { get; set; } = string.Empty;
+    public ModuleConfig Weapons { get; init; } = new();
+    public ModuleConfig Knives { get; init; } = new();
+    public ModuleConfig Gloves { get; init; } = new();
+    public ModuleConfig Agents { get; init; } = new();
+    public ModuleConfig MusicKits { get; init; } = new();
+    public ModuleConfig Stickers { get; init; } = new();
+    public ModuleConfig Keychains { get; init; } = new();
+
+    public static ModuleSwitches From(PluginConfig config)
+    {
+        return new ModuleSwitches
+        {
+            Weapons = config.Weapons,
+            Knives = config.Knives,
+            Gloves = config.Gloves,
+            Agents = config.Agents,
+            MusicKits = config.MusicKits,
+            Stickers = config.Stickers,
+            Keychains = config.Keychains
+        };
+    }
+}
+
+// Chat command names, any number per command. Names are registered as
+// CounterStrikeSharp commands ("css_ws" answers to "!ws" and "/ws" in chat);
+// the validator adds the "css_" prefix when it is missing. An empty list
+// leaves that command unregistered.
+public sealed class CommandsConfig
+{
+    public List<string> Menu { get; set; } = new() { "css_ws" };
+    public List<string> Knife { get; set; } = new() { "css_knife" };
+    public List<string> Gloves { get; set; } = new() { "css_gloves" };
+    public List<string> Agents { get; set; } = new() { "css_agents" };
+    public List<string> Stickers { get; set; } = new() { "css_stickers" };
+    public List<string> Charms { get; set; } = new() { "css_charms", "css_keychains", "css_keychain" };
+    public List<string> Refresh { get; set; } = new() { "css_wsrefresh" };
+    public List<string> Reset { get; set; } = new() { "css_wsreset" };
+    public List<string> Seed { get; set; } = new() { "css_seed" };
+    public List<string> Wear { get; set; } = new() { "css_wear" };
+    public List<string> NameTag { get; set; } = new() { "css_nametag" };
+    public List<string> StatTrak { get; set; } = new() { "css_stattrak" };
+    public List<string> Reload { get; set; } = new() { "css_wsreload" };
+    public List<string> Debug { get; set; } = new() { "css_wsdebug" };
+    public List<string> ResetPlayer { get; set; } = new() { "css_wsresetplayer" };
+
+    public IEnumerable<(string Name, List<string> Aliases)> Entries()
+    {
+        yield return (nameof(Menu), Menu);
+        yield return (nameof(Knife), Knife);
+        yield return (nameof(Gloves), Gloves);
+        yield return (nameof(Agents), Agents);
+        yield return (nameof(Stickers), Stickers);
+        yield return (nameof(Charms), Charms);
+        yield return (nameof(Refresh), Refresh);
+        yield return (nameof(Reset), Reset);
+        yield return (nameof(Seed), Seed);
+        yield return (nameof(Wear), Wear);
+        yield return (nameof(NameTag), NameTag);
+        yield return (nameof(StatTrak), StatTrak);
+        yield return (nameof(Reload), Reload);
+        yield return (nameof(Debug), Debug);
+        yield return (nameof(ResetPlayer), ResetPlayer);
+    }
 }
 
 public sealed class DefinitionPathConfig

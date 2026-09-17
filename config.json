@@ -25,6 +25,26 @@
     "MaxNameTagLength": 20,
     "BlockedNameTagWords": []
   },
+  "Weapons": {
+    "Enabled": true,
+    "Permission": ""
+  },
+  "Knives": {
+    "Enabled": true,
+    "Permission": ""
+  },
+  "Gloves": {
+    "Enabled": true,
+    "Permission": ""
+  },
+  "Agents": {
+    "Enabled": true,
+    "Permission": ""
+  },
+  "MusicKits": {
+    "Enabled": true,
+    "Permission": ""
+  },
   "Stickers": {
     "Enabled": true,
     "Permission": ""
@@ -32,6 +52,23 @@
   "Keychains": {
     "Enabled": true,
     "Permission": ""
+  },
+  "Commands": {
+    "Menu": ["css_ws"],
+    "Knife": ["css_knife"],
+    "Gloves": ["css_gloves"],
+    "Agents": ["css_agents"],
+    "Stickers": ["css_stickers"],
+    "Charms": ["css_charms", "css_keychains", "css_keychain"],
+    "Refresh": ["css_wsrefresh"],
+    "Reset": ["css_wsreset"],
+    "Seed": ["css_seed"],
+    "Wear": ["css_wear"],
+    "NameTag": ["css_nametag"],
+    "StatTrak": ["css_stattrak"],
+    "Reload": ["css_wsreload"],
+    "Debug": ["css_wsdebug"],
+    "ResetPlayer": ["css_wsresetplayer"]
   },
   "ApplyPlayerCosmeticsOnBotTakeover": false,
   "EnableStatTrakByDefault": false,

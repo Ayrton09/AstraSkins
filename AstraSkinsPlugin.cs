@@ -53,7 +53,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
     public PluginConfig Config { get; set; } = new();
 
     public override string ModuleName => "Astra Skins";
-    public override string ModuleVersion => "1.1.2";
+    public override string ModuleVersion => "1.2.0";
     public override string ModuleAuthor => "Ayrton09";
     public override string ModuleDescription => string.Empty;
 
@@ -69,23 +69,24 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             Logger.LogCritical(ex, "Astra Skins failed to load. No fallback mode will be used.");
         }
 
-        AddCommand("css_ws", "Open Astra Skins menu.", CommandOpenWeapons);
-        AddCommand("css_knife", "Open knife skins menu.", CommandOpenKnives);
-        AddCommand("css_gloves", "Open glove skins menu.", CommandOpenGloves);
-        AddCommand("css_agents", "Open agents menu.", CommandOpenAgents);
-        AddCommand("css_stickers", "Open the sticker menu for the held weapon.", CommandOpenStickers);
-        AddCommand("css_charms", "Open the charm menu for the held weapon.", CommandOpenCharms);
-        AddCommand("css_keychains", "Open the charm menu for the held weapon.", CommandOpenCharms);
-        AddCommand("css_keychain", "Open the charm menu for the held weapon.", CommandOpenCharms);
-        AddCommand("css_wsrefresh", "Reapply selected skins.", CommandRefresh);
-        AddCommand("css_wsreset", "Reset all selected skins.", CommandReset);
-        AddCommand("css_wsreload", "Reload Astra Skins definitions.", CommandReload);
-        AddCommand("css_wsresetplayer", "Reset a player's selections by SteamID64.", CommandResetPlayer);
-        AddCommand("css_wsdebug", "Show Astra Skins diagnostic information.", CommandDebug);
-        AddCommand("css_seed", "Set a custom paint seed for the held weapon.", CommandSeed);
-        AddCommand("css_wear", "Set a custom wear value for the held weapon.", CommandWear);
-        AddCommand("css_nametag", "Set a custom name tag for the held weapon.", CommandNameTag);
-        AddCommand("css_stattrak", "Toggle StatTrak on the held weapon.", CommandStatTrak);
+        // Command names come from the config (parsed before Load); the
+        // validator already normalized them and rejected duplicates.
+        var commands = _config?.Commands ?? new CommandsConfig();
+        RegisterCommand(commands.Menu, "Open Astra Skins menu.", CommandOpenWeapons);
+        RegisterCommand(commands.Knife, "Open knife skins menu.", CommandOpenKnives);
+        RegisterCommand(commands.Gloves, "Open glove skins menu.", CommandOpenGloves);
+        RegisterCommand(commands.Agents, "Open agents menu.", CommandOpenAgents);
+        RegisterCommand(commands.Stickers, "Open the sticker menu for the held weapon.", CommandOpenStickers);
+        RegisterCommand(commands.Charms, "Open the charm menu for the held weapon.", CommandOpenCharms);
+        RegisterCommand(commands.Refresh, "Reapply selected skins.", CommandRefresh);
+        RegisterCommand(commands.Reset, "Reset all selected skins.", CommandReset);
+        RegisterCommand(commands.Reload, "Reload Astra Skins definitions.", CommandReload);
+        RegisterCommand(commands.ResetPlayer, "Reset a player's selections by SteamID64.", CommandResetPlayer);
+        RegisterCommand(commands.Debug, "Show Astra Skins diagnostic information.", CommandDebug);
+        RegisterCommand(commands.Seed, "Set a custom paint seed for the held weapon.", CommandSeed);
+        RegisterCommand(commands.Wear, "Set a custom wear value for the held weapon.", CommandWear);
+        RegisterCommand(commands.NameTag, "Set a custom name tag for the held weapon.", CommandNameTag);
+        RegisterCommand(commands.StatTrak, "Toggle StatTrak on the held weapon.", CommandStatTrak);
 
         RegisterListener<Listeners.OnClientAuthorized>(OnClientAuthorized);
         RegisterListener<Listeners.OnMapStart>(OnMapStart);
@@ -131,6 +132,27 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         _ready = false;
     }
 
+    private void RegisterCommand(IEnumerable<string> names, string description, CommandInfo.CommandCallback handler)
+    {
+        foreach (var name in names)
+        {
+            AddCommand(name, description, handler);
+        }
+    }
+
+    // The first configured name of a command, the way players type it in
+    // chat ("css_seed" is typed as "!seed") or in the console.
+    private static string ChatCommand(List<string> names, string fallback)
+    {
+        var name = names.Count > 0 ? names[0] : fallback;
+        return name.StartsWith("css_", StringComparison.Ordinal) ? "!" + name[4..] : name;
+    }
+
+    private static string ConsoleCommand(List<string> names, string fallback)
+    {
+        return names.Count > 0 ? names[0] : fallback;
+    }
+
     public void OnConfigParsed(PluginConfig config)
     {
         var configManager = new ConfigManager(Logger);
@@ -154,8 +176,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             config.EnableStatTrakByDefault,
             // No precache pass seen yet (plugin loaded mid-map): nothing to check against.
             model => _precachedModels.Count == 0 || _precachedModels.Contains(model),
-            config.Stickers,
-            config.Keychains);
+            ModuleSwitches.From(config));
         _menuManager = new MenuManager(_skinManager, config, Localizer, Logger);
         _ready = true;
 
@@ -171,6 +192,12 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             config.DatabaseMode,
             config.EnableStatTrakByDefault,
             config.EnableMusicKitMvpCounter);
+
+        var disabledModules = _skinManager.DisabledModules();
+        if (disabledModules.Count > 0)
+        {
+            Logger.LogInformation("Astra Skins modules switched off in the config: {Modules}.", string.Join(", ", disabledModules));
+        }
     }
 
     private ISkinStorage CreateStorage(PluginConfig config)
@@ -187,6 +214,14 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
     {
         if (!RequireReadyPlayer(player, command) || !RequireMenuAllowed(player!, command))
         {
+            return;
+        }
+
+        // Every module off, or none the player may use: say so instead of
+        // opening an empty menu that holds the player in place.
+        if (!_skinManager!.CanUseAnyModule(player!))
+        {
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.menu_no_modules")}");
             return;
         }
 
@@ -243,7 +278,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             }
             else
             {
-                command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.stattrak_usage")}");
+                command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.stattrak_usage", ChatCommand(_config!.Commands.StatTrak, "css_stattrak"))}");
                 return;
             }
         }
@@ -360,7 +395,8 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
 
     private void CommandOpenKnives(CCSPlayerController? player, CommandInfo command)
     {
-        if (!RequireReadyPlayer(player, command) || !RequireMenuAllowed(player!, command))
+        if (!RequireReadyPlayer(player, command) || !RequireMenuAllowed(player!, command) ||
+            !RequireModule(player!, command, _skinManager!.KnivesAvailable, _skinManager.CanUseKnives(player!), "astra.knives_disabled", "astra.knives_no_permission"))
         {
             return;
         }
@@ -370,7 +406,8 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
 
     private void CommandOpenGloves(CCSPlayerController? player, CommandInfo command)
     {
-        if (!RequireReadyPlayer(player, command) || !RequireMenuAllowed(player!, command))
+        if (!RequireReadyPlayer(player, command) || !RequireMenuAllowed(player!, command) ||
+            !RequireModule(player!, command, _skinManager!.GlovesAvailable, _skinManager.CanUseGloves(player!), "astra.gloves_disabled", "astra.gloves_no_permission"))
         {
             return;
         }
@@ -380,12 +417,31 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
 
     private void CommandOpenAgents(CCSPlayerController? player, CommandInfo command)
     {
-        if (!RequireReadyPlayer(player, command) || !RequireMenuAllowed(player!, command))
+        if (!RequireReadyPlayer(player, command) || !RequireMenuAllowed(player!, command) ||
+            !RequireModule(player!, command, _skinManager!.AgentsAvailable, _skinManager.CanUseAgents(player!), "astra.agents_disabled", "astra.agents_no_permission"))
         {
             return;
         }
 
         _menuManager!.OpenAgents(player!);
+    }
+
+    // Module off: "not available"; on but the player lacks its flag: "no permission".
+    private bool RequireModule(CCSPlayerController player, CommandInfo command, bool available, bool allowed, string disabledKey, string noPermissionKey)
+    {
+        if (!available)
+        {
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, disabledKey)}");
+            return false;
+        }
+
+        if (!allowed)
+        {
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, noPermissionKey)}");
+            return false;
+        }
+
+        return true;
     }
 
     private void CommandRefresh(CCSPlayerController? player, CommandInfo command)
@@ -417,7 +473,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
 
         if (!_skinManager!.ResetCategory(player!, category))
         {
-            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.reset_usage")}");
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.reset_usage", ChatCommand(_config!.Commands.Reset, "css_wsreset"))}");
             return;
         }
 
@@ -459,7 +515,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
 
         if (command.ArgCount < 2 || !ulong.TryParse(command.GetArg(1).Trim(), NumberStyles.None, CultureInfo.InvariantCulture, out var steamId) || steamId == 0)
         {
-            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.adminreset_usage")}");
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.adminreset_usage", ConsoleCommand(_config.Commands.ResetPlayer, "css_wsresetplayer"))}");
             return;
         }
 
@@ -484,7 +540,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
 
         if (!done)
         {
-            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.adminreset_usage")}");
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.adminreset_usage", ConsoleCommand(_config.Commands.ResetPlayer, "css_wsresetplayer"))}");
             return;
         }
 
@@ -583,6 +639,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         var agentVoiceCount = catalog.Agents.Count(a => !string.IsNullOrWhiteSpace(a.VoicePrefix));
         command.ReplyToCommand($"{FormatPrefix()} Debug: ready={_ready}, db={_config.DatabaseMode}, inputCooldown={_config.Menu.CooldownMilliseconds}ms, selectionCooldown={_config.Menu.SelectionCooldownMilliseconds}ms");
         command.ReplyToCommand($"{FormatPrefix()} Data: weapons={catalog.Weapons.Count}/{weaponSkinCount}, knives={catalog.Knives.Count}/{knifeSkinCount}, gloves={catalog.Gloves.Count}/{gloveSkinCount}, agents={catalog.Agents.Count} voices={agentVoiceCount}, musicKits={catalog.MusicKits.Count}, stickers={catalog.Stickers.Count}, keychains={catalog.Keychains.Count}");
+        command.ReplyToCommand($"{FormatPrefix()} Modules: {ModuleState("weapons", _config.Weapons.Enabled, _config.Weapons.Permission)}, {ModuleState("knives", _config.Knives.Enabled, _config.Knives.Permission)}, {ModuleState("gloves", _config.Gloves.Enabled, _config.Gloves.Permission)}, {ModuleState("agents", _config.Agents.Enabled, _config.Agents.Permission)}, {ModuleState("music", _config.MusicKits.Enabled, _config.MusicKits.Permission)}, {ModuleState("stickers", _config.Stickers.Enabled, _config.Stickers.Permission)}, {ModuleState("charms", _config.Keychains.Enabled, _config.Keychains.Permission)}, {ModuleState("customization", _config.Customization.Enabled, _config.Customization.Permission)}");
 
         if (player is null || !IsLiveHuman(player))
         {
@@ -600,6 +657,12 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         command.ReplyToCommand($"{FormatPrefix()} Selections: weapons={profile.WeaponSkins.Count}, knifeType={profile.KnifeId ?? "none"}, knifeSkin={profile.KnifeSkinId ?? "none"}, glove={profile.GloveSkinId ?? "none"}, agentT={agentT}, agentCT={agentCt}, musicKit={profile.MusicKitId ?? "none"} mvps={musicMvps}, stickers={profile.Stickers.Sum(s => s.Value.Count)}, keychains={profile.Keychains.Count}");
     }
 
+    private static string ModuleState(string name, bool enabled, string permission)
+    {
+        var flag = string.IsNullOrWhiteSpace(permission) ? string.Empty : $"({permission})";
+        return $"{name}={(enabled ? "on" : "off")}{flag}";
+    }
+
     private void CommandSeed(CCSPlayerController? player, CommandInfo command)
     {
         if (!RequireReadyPlayer(player, command) || !RequireCustomization(player!, command))
@@ -610,7 +673,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         var (target, valueToken) = ResolveCustomizationArgs(player!, command);
         if (valueToken is null)
         {
-            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.seed_usage")}");
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.seed_usage", ChatCommand(_config!.Commands.Seed, "css_seed"))}");
             return;
         }
 
@@ -631,7 +694,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         }
         else
         {
-            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.seed_usage")}");
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.seed_usage", ChatCommand(_config!.Commands.Seed, "css_seed"))}");
             return;
         }
 
@@ -661,7 +724,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         var (target, valueToken) = ResolveCustomizationArgs(player!, command);
         if (valueToken is null)
         {
-            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.wear_usage")}");
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.wear_usage", ChatCommand(_config!.Commands.Wear, "css_wear"))}");
             return;
         }
 
@@ -683,7 +746,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         }
         else
         {
-            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.wear_usage")}");
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.wear_usage", ChatCommand(_config!.Commands.Wear, "css_wear"))}");
             return;
         }
 
@@ -713,7 +776,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         var text = command.ArgString.Trim();
         if (text.Length == 0)
         {
-            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.nametag_usage")}");
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.nametag_usage", ChatCommand(_config!.Commands.NameTag, "css_nametag"))}");
             return;
         }
 
@@ -734,7 +797,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             nameTag = SanitizeNameTag(text);
             if (nameTag.Length == 0)
             {
-                command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.nametag_usage")}");
+                command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.nametag_usage", ChatCommand(_config!.Commands.NameTag, "css_nametag"))}");
                 return;
             }
 
