@@ -124,7 +124,7 @@ Both can be disabled entirely in the config.
 | `Shift` | Back |
 | `R` | Close |
 
-The menu items are numbered as a visual guide for orientation; navigation is by keys, not numbers. While the menu is open the player is held in place. Heads up: `E` still performs its normal in-world action (open doors, pick up weapons, defuse), so avoid confirming a selection while standing on the bomb.
+The menu items are numbered as a visual guide for orientation; navigation is by keys, not numbers. While the menu is open the player is held in place. The menu closes when a new round starts. Heads up: `E` still performs its normal in-world action (open doors, pick up weapons, defuse), so avoid confirming a selection while standing on the bomb.
 
 Every skin, knife, glove, agent and music kit list starts with a **Default** row that removes the selection and is marked when nothing is selected: the stock finish of a gun or knife (stickers, charms, name tags and counters saved for it stay on), the default knife, the default gloves, the default agent (back on the next spawn) and the default music kit.
 

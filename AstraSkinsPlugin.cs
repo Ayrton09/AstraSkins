@@ -936,6 +936,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
     private HookResult OnRoundPrestart(EventRoundPrestart @event, GameEventInfo info)
     {
         _pendingMvpCue = null;
+        _menuManager?.CloseAll();
         // Valve fills team_intro Xuid on this event; write after the assignment lands.
         ScheduleTeamPreviewApply();
         return HookResult.Continue;
