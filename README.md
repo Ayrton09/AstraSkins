@@ -124,7 +124,7 @@ Both can be disabled entirely in the config.
 | `Shift` | Back |
 | `R` | Close |
 
-The menu items are numbered as a visual guide for orientation; navigation is by keys, not numbers. While the menu is open the player is held in place. The menu closes when a new round starts. Heads up: `E` still performs its normal in-world action (open doors, pick up weapons, defuse), so avoid confirming a selection while standing on the bomb.
+The menu items are numbered as a visual guide for orientation; navigation is by keys, not numbers. While the menu is open the player is held in place. With `Menu.CloseOnRoundStart` on, every open menu closes when a new round starts. Heads up: `E` still performs its normal in-world action (open doors, pick up weapons, defuse), so avoid confirming a selection while standing on the bomb.
 
 Every skin, knife, glove, agent and music kit list starts with a **Default** row that removes the selection and is marked when nothing is selected: the stock finish of a gun or knife (stickers, charms, name tags and counters saved for it stay on), the default knife, the default gloves, the default agent (back on the next spawn) and the default music kit.
 
@@ -192,7 +192,8 @@ Stickers use the game's stock placement, size and wear for each slot; there is n
     "TimeoutSeconds": 25,
     "CooldownMilliseconds": 180,
     "SelectionCooldownMilliseconds": 900,
-    "AllowWhileDead": true
+    "AllowWhileDead": true,
+    "CloseOnRoundStart": false
   },
   "Customization": {
     "Enabled": true,
@@ -275,6 +276,7 @@ Stickers use the game's stock placement, size and wear for each slot; there is n
 | `Menu.CooldownMilliseconds` | Minimum delay between menu key presses |
 | `Menu.SelectionCooldownMilliseconds` | Minimum delay between skin selections |
 | `Menu.AllowWhileDead` | Allow opening the menu while dead |
+| `Menu.CloseOnRoundStart` | Close every open menu when a new round starts, so the overlay does not sit over the round start. Off by default, since the end of a round is when most players open the menu |
 | `Customization.Enabled` | Master switch for `!seed` / `!wear` / `!nametag` |
 | `Customization.Permission` | Restrict customization to a flag; empty = everyone |
 | `Customization.MaxNameTagLength` | Name tag cap, 4–32 (default 20 matches the real game) |

@@ -17,7 +17,8 @@
     "TimeoutSeconds": 25,
     "CooldownMilliseconds": 180,
     "SelectionCooldownMilliseconds": 900,
-    "AllowWhileDead": true
+    "AllowWhileDead": true,
+    "CloseOnRoundStart": false
   },
   "Customization": {
     "Enabled": true,

@@ -58,6 +58,10 @@ public sealed class MenuConfig
     public int CooldownMilliseconds { get; set; } = 180;
     public int SelectionCooldownMilliseconds { get; set; } = 900;
     public bool AllowWhileDead { get; set; } = true;
+    // Off by default: the end of a round is when most players open the menu,
+    // and closing it at round start makes them open it again in freeze time.
+    // On, for servers where the overlay over the round start bothers more.
+    public bool CloseOnRoundStart { get; set; } = false;
 }
 
 public sealed class CustomizationConfig
