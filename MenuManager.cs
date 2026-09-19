@@ -1226,6 +1226,20 @@ public sealed class MenuManager
 
                 break;
             }
+
+            // Chinese names have no spaces to cut at: drop the shared start
+            // outright when that tells the rows apart.
+            if (members.All(m => result[m.Index] == m.Label) && prefix > 0 && members.Any(m => m.Label.Any(IsWideGlyph)))
+            {
+                var tails = members.Select(m => "..." + m.Label[prefix..]).ToList();
+                if (tails.Select(t => TrimForOverlay(t, MaxItemLabelLength)).Distinct(StringComparer.Ordinal).Count() == members.Count)
+                {
+                    for (var i = 0; i < members.Count; i++)
+                    {
+                        result[members[i].Index] = tails[i];
+                    }
+                }
+            }
         }
 
         return result;
@@ -1720,7 +1734,9 @@ public sealed class MenuManager
 
         var options = GetOptions(state);
         state.Cursor = Math.Clamp(state.Cursor, 0, Math.Max(0, options.Count - 1));
-        var visibleItems = Math.Clamp(_config.Menu.ItemsPerPage, 3, 6);
+        // Chinese glyphs make every row taller: with six of them the footer
+        // falls off the bottom of the overlay, so those players get five.
+        var visibleItems = Math.Clamp(_config.Menu.ItemsPerPage, 3, state.PreferZh ? 5 : 6);
         var start = Math.Max(0, state.Cursor - visibleItems / 2);
         if (start + visibleItems > options.Count)
         {
@@ -1886,13 +1902,65 @@ public sealed class MenuManager
         return null;
     }
 
-    private static string TrimForOverlay(string text, int maxLength)
+    // The cap is in display columns, not characters: a Chinese glyph takes
+    // about two Latin ones, so a row capped by characters came out up to twice
+    // as wide as an English one and wrapped inside the overlay. Latin text
+    // trims exactly as before.
+    private static string TrimForOverlay(string text, int maxColumns)
     {
-        if (string.IsNullOrWhiteSpace(text) || text.Length <= maxLength)
+        if (string.IsNullOrWhiteSpace(text) || DisplayWidth(text) <= maxColumns)
         {
             return text;
         }
 
-        return $"{text[..Math.Max(0, maxLength - 3)]}...";
+        var budget = Math.Max(0, maxColumns - 3);
+        var width = 0;
+        var end = 0;
+        while (end < text.Length)
+        {
+            var columns = IsWideGlyph(text[end]) ? 2 : 1;
+            if (width + columns > budget)
+            {
+                break;
+            }
+
+            width += columns;
+            end++;
+        }
+
+        // Never split a surrogate pair.
+        if (end > 0 && char.IsHighSurrogate(text[end - 1]))
+        {
+            end--;
+        }
+
+        return $"{text[..end]}...";
+    }
+
+    private static int DisplayWidth(string text)
+    {
+        var width = 0;
+        foreach (var c in text)
+        {
+            width += IsWideGlyph(c) ? 2 : 1;
+        }
+
+        return width;
+    }
+
+    // CJK ideographs, kana, hangul and the fullwidth punctuation that comes
+    // with them.
+    private static bool IsWideGlyph(char c)
+    {
+        return c is >= '\u1100' and <= '\u115F'
+            or >= '\u2E80' and <= '\u303E'
+            or >= '\u3041' and <= '\u33FF'
+            or >= '\u3400' and <= '\u4DBF'
+            or >= '\u4E00' and <= '\u9FFF'
+            or >= '\uAC00' and <= '\uD7A3'
+            or >= '\uF900' and <= '\uFAFF'
+            or >= '\uFE30' and <= '\uFE4F'
+            or >= '\uFF00' and <= '\uFF60'
+            or >= '\uFFE0' and <= '\uFFE6';
     }
 }
