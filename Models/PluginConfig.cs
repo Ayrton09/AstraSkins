@@ -58,6 +58,10 @@ public sealed class MenuConfig
     public int CooldownMilliseconds { get; set; } = 180;
     public int SelectionCooldownMilliseconds { get; set; } = 900;
     public bool AllowWhileDead { get; set; } = true;
+    // The key that goes back one view: "Shift", "A" (strafe left, next to
+    // W/S) or "Both", the default. The player is held in place while the menu
+    // is open, so A does nothing else in the meantime.
+    public string BackKey { get; set; } = "Both";
     // Off by default: the end of a round is when most players open the menu,
     // and closing it at round start makes them open it again in freeze time.
     // On, for servers where the overlay over the round start bothers more.

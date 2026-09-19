@@ -121,7 +121,7 @@ Both can be disabled entirely in the config.
 | --- | --- |
 | `W` / `S` | Move up / down |
 | `E` | Select |
-| `Shift` | Back |
+| `Shift` or `A` | Back (one key only with `Menu.BackKey`) |
 | `R` | Close |
 
 The menu items are numbered as a visual guide for orientation; navigation is by keys, not numbers. While the menu is open the player is held in place. With `Menu.CloseOnRoundStart` on, every open menu closes when a new round starts. Heads up: `E` still performs its normal in-world action (open doors, pick up weapons, defuse), so avoid confirming a selection while standing on the bomb.
@@ -193,6 +193,7 @@ Stickers use the game's stock placement, size and wear for each slot; there is n
     "CooldownMilliseconds": 180,
     "SelectionCooldownMilliseconds": 900,
     "AllowWhileDead": true,
+    "BackKey": "Both",
     "CloseOnRoundStart": false
   },
   "Customization": {
@@ -276,6 +277,7 @@ Stickers use the game's stock placement, size and wear for each slot; there is n
 | `Menu.CooldownMilliseconds` | Minimum delay between menu key presses |
 | `Menu.SelectionCooldownMilliseconds` | Minimum delay between skin selections |
 | `Menu.AllowWhileDead` | Allow opening the menu while dead |
+| `Menu.BackKey` | Key that goes back one view: `"Both"` (default, Shift and A), `"Shift"` or `"A"` |
 | `Menu.CloseOnRoundStart` | Close every open menu when a new round starts, so the overlay does not sit over the round start. Off by default, since the end of a round is when most players open the menu |
 | `Customization.Enabled` | Master switch for `!seed` / `!wear` / `!nametag` |
 | `Customization.Permission` | Restrict customization to a flag; empty = everyone |

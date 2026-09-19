@@ -352,6 +352,16 @@ public sealed class MenuManager
         Close(player);
     }
 
+    // Menu.BackKey, normalized by the validator to "Shift", "A" or "Both".
+    private PlayerButtons BackButton => _config.Menu.BackKey switch
+    {
+        "A" => PlayerButtons.Moveleft,
+        "Both" => PlayerButtons.Speed | PlayerButtons.Moveleft,
+        _ => PlayerButtons.Speed
+    };
+
+    private string BackKeyLabel => _config.Menu.BackKey == "Both" ? "Shift/A" : _config.Menu.BackKey;
+
     private void Select(CCSPlayerController player, PlayerMenuState state)
     {
         var options = GetOptions(state);
@@ -594,7 +604,7 @@ public sealed class MenuManager
         {
             Select(player, state);
         }
-        else if ((pressed & PlayerButtons.Speed) != 0)
+        else if ((pressed & BackButton) != 0)
         {
             GoBack(player, state);
         }
@@ -1740,18 +1750,18 @@ public sealed class MenuManager
                 var isCursor = index == state.Cursor;
                 var label = WebUtility.HtmlEncode(TrimForOverlay(option.Label, MaxItemLabelLength));
                 var labelColor = option.LabelColor ?? (isCursor ? "#f7d774" : "#e8e8e8");
-                var prefix = isCursor ? "<font color='#f0b65a'>► </font>" : "<font color='#f0b65a'>   </font>";
-                var body = isCursor
-                    ? $"<font color='{labelColor}'><b>{label}</b></font>"
-                    : $"<font color='{labelColor}'>{label}</font>";
                 var selected = option.IsSelected ? " <font color='#7dff8a'>✔</font>" : string.Empty;
-                lines.Add($"{prefix}{body}{selected}");
+                // The cursor row sits between brackets; the overlay is
+                // centered, so the other rows need no padding to line up.
+                lines.Add(isCursor
+                    ? $"<font color='#f0b65a'>►[</font> <font color='{labelColor}'><b>{label}</b></font> <font color='#f0b65a'>]◄</font>{selected}"
+                    : $"<font color='{labelColor}'>{label}</font>{selected}");
             }
         }
 
         lines.Add(state.View == MenuView.Main
             ? "<small><small><font color='#8a8f98'>W/S · E · R</font></small></small>"
-            : "<small><small><font color='#8a8f98'>W/S · E · Shift · R</font></small></small>");
+            : $"<small><small><font color='#8a8f98'>W/S · E · {BackKeyLabel} · R</font></small></small>");
         SafePrint(player, string.Join("<br>", lines));
     }
 

@@ -116,6 +116,15 @@ public sealed class ConfigManager
             throw new InvalidOperationException("Menu.SelectionCooldownMilliseconds must be between 0 and 5000.");
         }
 
+        var backKey = config.Menu.BackKey?.Trim().ToLowerInvariant();
+        config.Menu.BackKey = backKey switch
+        {
+            "shift" => "Shift",
+            "a" => "A",
+            "both" => "Both",
+            _ => throw new InvalidOperationException("Menu.BackKey must be \"Shift\", \"A\" or \"Both\".")
+        };
+
         if (config.Customization.MaxNameTagLength is < 4 or > 32)
         {
             throw new InvalidOperationException("Customization.MaxNameTagLength must be between 4 and 32.");

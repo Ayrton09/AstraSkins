@@ -18,6 +18,7 @@
     "CooldownMilliseconds": 180,
     "SelectionCooldownMilliseconds": 900,
     "AllowWhileDead": true,
+    "BackKey": "Both",
     "CloseOnRoundStart": false
   },
   "Customization": {
