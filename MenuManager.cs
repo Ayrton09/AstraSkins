@@ -21,6 +21,7 @@ public sealed class MenuManager
     private const int InitialInputDelayMilliseconds = 200;
     private const int MaxTitleLength = 46;
     private const int MaxItemLabelLength = 34;
+    private const int CursorBracketColumns = 4;
     private const int MaxSearchResults = 64;
     private const string MusicKitColor = "#f08ac8";
     private const string StickerColor = "#f5c542";
@@ -606,6 +607,14 @@ public sealed class MenuManager
         }
         else if ((pressed & BackButton) != 0)
         {
+            // From a root view going back closes the menu. A is also the
+            // strafe key, so a reflex tap must not do that: there A does
+            // nothing, and Shift and R still close.
+            if ((pressed & PlayerButtons.Speed) == 0 && state.BackStack.Count == 0)
+            {
+                return;
+            }
+
             GoBack(player, state);
         }
         else
@@ -1231,6 +1240,18 @@ public sealed class MenuManager
             // outright when that tells the rows apart.
             if (members.All(m => result[m.Index] == m.Label) && prefix > 0 && members.Any(m => m.Label.Any(IsWideGlyph)))
             {
+                // Keep surrogate pairs whole, and never leave a row that is
+                // only the dots (one name being the start of another).
+                if (char.IsHighSurrogate(first[prefix - 1]))
+                {
+                    prefix--;
+                }
+
+                if (prefix == 0 || members.Any(m => m.Label.Length <= prefix))
+                {
+                    continue;
+                }
+
                 var tails = members.Select(m => "..." + m.Label[prefix..]).ToList();
                 if (tails.Select(t => TrimForOverlay(t, MaxItemLabelLength)).Distinct(StringComparer.Ordinal).Count() == members.Count)
                 {
@@ -1734,9 +1755,10 @@ public sealed class MenuManager
 
         var options = GetOptions(state);
         state.Cursor = Math.Clamp(state.Cursor, 0, Math.Max(0, options.Count - 1));
-        // Chinese glyphs make every row taller: with six of them the footer
-        // falls off the bottom of the overlay, so those players get five.
-        var visibleItems = Math.Clamp(_config.Menu.ItemsPerPage, 3, state.PreferZh ? 5 : 6);
+        // Five rows at most: with six, the footer falls off the bottom of the
+        // overlay as soon as the rows get taller (Chinese glyphs, the cursor
+        // brackets), and which client that hits cannot be known from here.
+        var visibleItems = Math.Clamp(_config.Menu.ItemsPerPage, 3, 5);
         var start = Math.Max(0, state.Cursor - visibleItems / 2);
         if (start + visibleItems > options.Count)
         {
@@ -1764,7 +1786,8 @@ public sealed class MenuManager
             {
                 var option = options[index];
                 var isCursor = index == state.Cursor;
-                var label = WebUtility.HtmlEncode(TrimForOverlay(option.Label, MaxItemLabelLength));
+                // The brackets take about four columns of the cursor row.
+                var label = WebUtility.HtmlEncode(TrimForOverlay(option.Label, isCursor ? MaxItemLabelLength - CursorBracketColumns : MaxItemLabelLength));
                 var labelColor = option.LabelColor ?? (isCursor ? "#f7d774" : "#e8e8e8");
                 var selected = option.IsSelected ? " <font color='#7dff8a'>✔</font>" : string.Empty;
                 // The cursor row sits between brackets; the overlay is

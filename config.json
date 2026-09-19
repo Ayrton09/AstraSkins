@@ -13,7 +13,7 @@
     "SslMode": "required"
   },
   "Menu": {
-    "ItemsPerPage": 6,
+    "ItemsPerPage": 5,
     "TimeoutSeconds": 25,
     "CooldownMilliseconds": 180,
     "SelectionCooldownMilliseconds": 900,
