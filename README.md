@@ -17,12 +17,12 @@
 
 ## Features
 
-- 🎨 **1,400+ weapon skins, 20 knives with 576 finishes, 8 glove types, 63 agents, 99 music kits, 11,000+ stickers, 78 charms** — all data-driven from JSON, no datasets baked into the code.
+- 🎨 **1,400+ weapon skins, 20 knives with 576 finishes, 8 glove types, 63 agents, 100 music kits, 11,000+ stickers, 78 charms** — all data-driven from JSON, no datasets baked into the code.
 - 🕹️ **Built-in WASD menu** — navigate with `W`/`S`, select with `E`, go back with `Shift` or `A`. No external menu plugin required.
 - 🔧 **Per-player customization** — custom paint seed, wear/float, name tags, and StatTrak counters via `!seed`, `!wear`, `!nametag`, and `!stattrak`; name tags and StatTrak work on the default skin too.
 - 🔎 **Search** — `!ws <text>` finds any skin, knife, glove, agent, or music kit without scrolling through pages.
 - 🏷️ **Stickers and charms** — up to five stickers and a charm on every gun, with or without a skin, browsed by tournament and capsule or found with `!stickers <text>` and `!charms <text>`.
-- 🎵 **Music kits** — pick any of 99 kits from the menu, with an optional per-kit MVP counter shown on the scoreboard.
+- 🎵 **Music kits** — pick any of 100 kits from the menu, with an optional per-kit MVP counter shown on the scoreboard.
 - 💾 **Persistent selections** — SQLite or MySQL, keyed by SteamID64. Selections survive reconnects, map changes, and restarts.
 - 🌍 **7 languages** — per-player localization (English, Spanish, Chinese, Portuguese, German, French, Russian). Chinese players also get skin, knife, glove, agent, category, and music kit names in Chinese, and can search in either language.
 - 🎬 **Team intro** shows your agent, gloves, and weapon skins on the match intro and on the team select screen once you are on a team (the very first team select after connecting has no owner assigned by the engine, so it keeps the defaults).
@@ -328,7 +328,7 @@ Currently packaged:
 | Glove types | 8 |
 | Glove skins | 94 |
 | Agents | 63 |
-| Music kits | 99 |
+| Music kits | 100 |
 | Stickers | 11,134 |
 | Charms | 78 |
 

@@ -592,5 +592,11 @@
     "musicKit": 103,
     "displayName": "ShockOne, Voices",
     "displayNameZh": "ShockOne, 声流"
+  },
+  {
+    "id": "104",
+    "musicKit": 104,
+    "displayName": "Starjunk 95, Industrial Sunset Memories",
+    "displayNameZh": "Starjunk 95, Industrial Sunset Memories"
   }
 ]
