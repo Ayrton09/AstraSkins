@@ -371,7 +371,7 @@ dotnet build -c Release
 
 Requires the .NET 10 SDK. Deployable output lands in `bin/Release/net10.0/`.
 
-The release zip does not ship the Linux SQLite library from the NuGet package, which needs glibc 2.34 and fails to load on older host images (Debian 11, Ubuntu 20.04). `scripts/build_sqlite_linux.sh` builds the same SQLite, with the same options, against glibc 2.28 using zig, and `scripts/package.sh` puts that build in the zip; CI runs both.
+The release zip does not ship the Linux SQLite library from the NuGet package, which needs glibc 2.34 and fails to load on older host images (Debian 11, Ubuntu 20.04). `scripts/build_sqlite_linux.sh` builds the same SQLite, with the same options, against glibc 2.31 (the Steam Runtime 3 baseline CS2 runs on) using zig, and `scripts/package.sh` puts that build in the zip; CI runs both.
 
 ## Troubleshooting
 

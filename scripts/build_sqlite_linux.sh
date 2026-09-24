@@ -4,8 +4,8 @@
 # The library in the SQLitePCLRaw NuGet package is linked against glibc 2.34,
 # which older CS2 host images (Debian 11, Ubuntu 20.04) do not have. This build
 # uses the same SQLite options as that package (e_sqlite3) but targets glibc
-# 2.28, older than what CS2 itself needs, so it loads on every host that can
-# run the server at all.
+# 2.31, the version in Steam Runtime 3 (sniper), which CS2 itself runs on, so
+# it loads on every host that can run the server at all.
 #
 # Usage: scripts/build_sqlite_linux.sh [output-dir]   (default: native/linux-x64)
 # Needs curl, python3 and tar; zig is downloaded into the work directory.
@@ -14,7 +14,7 @@ set -euo pipefail
 SQLITE_ZIP="2026/sqlite-amalgamation-3530400.zip"   # SQLite 3.53.4
 SQLITE_SHA3="628a44cfe82c66aed1ccbbe85a562d2e33ebe64b3288981ed76285612227934e"
 ZIG_VERSION="0.15.2"
-GLIBC_TARGET="2.28"
+GLIBC_TARGET="2.31"
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT="${1:-$ROOT/native/linux-x64}"
