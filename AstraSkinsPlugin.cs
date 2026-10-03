@@ -15,7 +15,7 @@ using AstraSkins.Models;
 
 namespace AstraSkins;
 
-[MinimumApiVersion(369)]
+[MinimumApiVersion(375)]
 public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
 {
     private const int MaintenanceCommandCooldownMilliseconds = 2000;

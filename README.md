@@ -5,7 +5,7 @@
 **Weapon skins, knives, gloves, agents, stickers and charms for Counter-Strike 2 — with a built-in WASD menu, per-player customization, and database-backed persistence.**
 
 [![CS2](https://img.shields.io/badge/game-Counter--Strike%202-orange)](https://www.counter-strike.net/)
-[![CounterStrikeSharp](https://img.shields.io/badge/CounterStrikeSharp-%E2%89%A5%201.0.369-blue)](https://github.com/roflmuffin/CounterStrikeSharp)
+[![CounterStrikeSharp](https://img.shields.io/badge/CounterStrikeSharp-%E2%89%A5%201.0.375-blue)](https://github.com/roflmuffin/CounterStrikeSharp)
 [![.NET](https://img.shields.io/badge/.NET-10-512BD4)](https://dotnet.microsoft.com/)
 [![CI](https://github.com/Ayrton09/AstraSkins/actions/workflows/ci.yml/badge.svg)](https://github.com/Ayrton09/AstraSkins/actions/workflows/ci.yml)
 [![Downloads](https://img.shields.io/github/downloads/Ayrton09/AstraSkins/total?label=downloads&color=brightgreen)](https://github.com/Ayrton09/AstraSkins/releases)
@@ -34,7 +34,7 @@
 
 ## Requirements
 
-- [CounterStrikeSharp](https://github.com/roflmuffin/CounterStrikeSharp) `1.0.369` or newer (with Metamod:Source), running on `.NET 10`.
+- [CounterStrikeSharp](https://github.com/roflmuffin/CounterStrikeSharp) `1.0.375` or newer (with Metamod:Source), running on `.NET 10`.
 - SQLite (zero setup) or a MySQL server, selected explicitly in the config.
 
 ## Installation
