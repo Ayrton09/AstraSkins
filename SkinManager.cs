@@ -3029,12 +3029,23 @@ public sealed class SkinManager : IDisposable
             if (econGloves.Handle != IntPtr.Zero)
             {
                 _econAttributes.ClearPaintAttributes(econGloves, $"gloves player {player.SteamID}");
-                UpdateEconItemIdentity(econGloves, player);
+                // Back to no inventory gloves, the way the game spawns a
+                // player without them, so the agent's own gloves show again.
+                // Keeping the old definition index left a paintless copy of
+                // the previous glove: the client kept drawing it in first
+                // person and the third-person model lost its hands.
+                econGloves.ItemDefinitionIndex = 0;
+                econGloves.EntityQuality = 0;
+                econGloves.ItemID = 0;
+                econGloves.ItemIDLow = 0;
+                econGloves.ItemIDHigh = 0;
+                econGloves.AccountID = 0;
+                econGloves.Initialized = false;
             }
 
             pawn.EconGlovesChanged++;
             MarkGlovesStateChanged(pawn);
-            RefreshGloves(player, pawn);
+            RefreshGloves(player, pawn, hideDefaultGloves: false);
         }
         catch (Exception ex)
         {
@@ -4014,7 +4025,12 @@ public sealed class SkinManager : IDisposable
         }
     }
 
-    private void RefreshGloves(CCSPlayerController player, CCSPlayerPawn pawn)
+    // Toggling first_or_third_person makes the client rebuild the gloves.
+    // The value it ends on matters: 1 hides the agent's own gloves on the
+    // third-person model, which is right under inventory gloves, but after
+    // going back to the default gloves it left the player without hands
+    // until the next spawn.
+    private void RefreshGloves(CCSPlayerController player, CCSPlayerPawn pawn, bool hideDefaultGloves = true)
     {
         try
         {
@@ -4026,12 +4042,12 @@ public sealed class SkinManager : IDisposable
                 }
 
                 player.ExecuteClientCommand("lastinv");
-                pawn.AcceptInput("SetBodygroup", value: "first_or_third_person,0");
+                pawn.AcceptInput("SetBodygroup", value: $"first_or_third_person,{(hideDefaultGloves ? 0 : 1)}");
                 Server.NextFrame(() =>
                 {
                     if (pawn.IsValid)
                     {
-                        pawn.AcceptInput("SetBodygroup", value: "first_or_third_person,1");
+                        pawn.AcceptInput("SetBodygroup", value: $"first_or_third_person,{(hideDefaultGloves ? 1 : 0)}");
                     }
                 });
             });
