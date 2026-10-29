@@ -124,6 +124,29 @@ def load_text(path_or_url):
     return Path(path_or_url).read_text(encoding="utf-8", errors="replace")
 
 
+# Doppler and Gamma Doppler phases share one finish name, so without the
+# phase every phase reads the same in the menu.
+PHASE_ZH = {
+    "Ruby": "红宝石",
+    "Sapphire": "蓝宝石",
+    "Black Pearl": "黑珍珠",
+    "Emerald": "绿宝石",
+    "Phase 1": "P1",
+    "Phase 2": "P2",
+    "Phase 3": "P3",
+    "Phase 4": "P4",
+}
+
+
+def skin_display_name(skin, phase_names=None, phase_format=" ({})"):
+    pattern = skin.get("pattern") or {}
+    name = (pattern.get("name") or (skin.get("name") or "").split("|")[-1]).strip()
+    phase = skin.get("phase")
+    if not name or not phase:
+        return name
+    return name + phase_format.format((phase_names or {}).get(phase, phase))
+
+
 def localize(token, translations):
     if not token:
         return ""
@@ -225,11 +248,10 @@ def build_weapons_from_api(api_skins):
         if entity not in grouped or paint_index is None:
             continue
         category = skin.get("category", {})
-        pattern = skin.get("pattern", {})
         rarity = skin.get("rarity", {})
         grouped[entity].append({
             "id": f"{entity}:{paint_index}",
-            "displayName": pattern.get("name") or skin.get("name", "").split("|")[-1].strip(),
+            "displayName": skin_display_name(skin),
             "paintKit": int(paint_index),
             "seed": 0,
             "wear": float(skin.get("min_float") or 0.0001),
@@ -321,12 +343,11 @@ def build_knives_from_api(root, translations, api_skins):
         paint_index = skin.get("paint_index")
         if weapon_id not in grouped or paint_index is None:
             continue
-        pattern = skin.get("pattern", {})
         rarity = skin.get("rarity", {})
         entity = knife_items[weapon_id].get("name")
         grouped[weapon_id].append({
             "id": f"{entity}:{paint_index}",
-            "displayName": pattern.get("name") or skin.get("name", "").split("|")[-1].strip(),
+            "displayName": skin_display_name(skin),
             "paintKit": int(paint_index),
             "seed": 0,
             "wear": float(skin.get("min_float") or 0.0001),
@@ -423,12 +444,11 @@ def build_gloves_from_api(root, translations, api_skins):
         paint_index = skin.get("paint_index")
         if weapon_id not in grouped or paint_index is None:
             continue
-        pattern = skin.get("pattern", {})
         rarity = skin.get("rarity", {})
         entity = glove_items[weapon_id].get("name")
         grouped[weapon_id].append({
             "id": f"{entity}:{paint_index}",
-            "displayName": pattern.get("name") or skin.get("name", "").split("|")[-1].strip(),
+            "displayName": skin_display_name(skin),
             "paintKit": int(paint_index),
             "seed": 0,
             "wear": float(skin.get("min_float") or 0.0001),
@@ -769,8 +789,7 @@ def attach_zh_names(weapons, knives, gloves, agents, api_skins_zh, api_agents_zh
     for skin in api_skins_zh or []:
         weapon = skin.get("weapon") or {}
         paint_index = skin.get("paint_index")
-        pattern = skin.get("pattern") or {}
-        name = (pattern.get("name") or (skin.get("name") or "").split("|")[-1]).strip()
+        name = skin_display_name(skin, PHASE_ZH, "（{}）")
         if paint_index is None or not name:
             continue
         skin_zh[(weapon.get("id"), int(paint_index))] = name
