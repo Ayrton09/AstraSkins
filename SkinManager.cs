@@ -1433,6 +1433,64 @@ public sealed class SkinManager : IDisposable
         return wear + offset <= 1f ? wear + offset : Math.Max(0f, wear - offset);
     }
 
+    // Every knife is a weapon_knife with its subclass changed, so the client's
+    // finish cache above sees the same paint kit, seed and wear on every knife
+    // type: a Doppler built on one type is reused on the next, and the new
+    // blade shows plain until the player reconnects. Each knife type gets its
+    // own wear, 0.004 apart (one cache step), kept inside the same exterior
+    // tier while there is room so the inspect label does not change.
+    private const float KnifeWearStep = 0.004f;
+    private static readonly float[] WearTierEnds = { 0.07f, 0.15f, 0.38f, 0.45f, 1.0001f };
+
+    private float AdjustWearForKnifeType(CosmeticEntry cosmetic, float wear)
+    {
+        if (cosmetic.PaintKit == 0 || !cosmetic.ItemDefinitionIndex.HasValue)
+        {
+            return wear;
+        }
+
+        var defIndex = cosmetic.ItemDefinitionIndex.Value;
+        var slot = Catalog.Knives.Count(knife => knife.ItemDefinitionIndex < defIndex);
+        if (slot == 0)
+        {
+            return wear;
+        }
+
+        var tier = Array.FindIndex(WearTierEnds, end => wear < end);
+        if (tier < 0)
+        {
+            tier = WearTierEnds.Length - 1;
+        }
+
+        var tierEnd = WearTierEnds[tier];
+        var tierStart = tier > 0 ? WearTierEnds[tier - 1] : 0f;
+        var found = 0;
+        for (var step = 1; step <= 500; step++)
+        {
+            var up = wear + step * KnifeWearStep;
+            if (up < tierEnd && up <= 1f && ++found == slot)
+            {
+                return up;
+            }
+
+            var down = wear - step * KnifeWearStep;
+            if (down >= tierStart && ++found == slot)
+            {
+                return down;
+            }
+
+            if (up >= tierEnd && down < tierStart)
+            {
+                // The tier is full: keep going outside it, upward first.
+                var beyond = slot - found;
+                var outside = wear + (step - 1 + beyond) * KnifeWearStep;
+                return outside <= 1f ? outside : Math.Max(0f, wear - (step - 1 + beyond) * KnifeWearStep);
+            }
+        }
+
+        return wear;
+    }
+
     private CosmeticEntry VanillaEntry(string weaponEntity)
     {
         if (!_vanillaEntries.TryGetValue(weaponEntity, out var entry))
@@ -2809,10 +2867,9 @@ public sealed class SkinManager : IDisposable
             var statTrak = ResolveStatTrakForPaint(profile, resolvedTarget, customization, cosmetic);
             var stickers = isKnife ? null : ResolveUsableStickers(player, profile, resolvedTarget);
             var keychainId = isKnife ? null : ResolveUsableKeychain(player, profile, resolvedTarget);
-            if (!isKnife)
-            {
-                wear = AdjustWearForStickers(player, profile, resolvedTarget, wear, stickers is { Count: > 0 });
-            }
+            wear = isKnife
+                ? AdjustWearForKnifeType(cosmetic, wear)
+                : AdjustWearForStickers(player, profile, resolvedTarget, wear, stickers is { Count: > 0 });
 
             weapon.FallbackPaintKit = cosmetic.PaintKit;
             weapon.FallbackSeed = seed;
@@ -3714,10 +3771,9 @@ public sealed class SkinManager : IDisposable
             var statTrak = ResolveStatTrakForPaint(profile, customizationTarget, customization, cosmetic);
             var stickers = isKnife ? null : ResolveUsableStickers(player, profile, customizationTarget);
             var keychainId = isKnife ? null : ResolveUsableKeychain(player, profile, customizationTarget);
-            if (!isKnife)
-            {
-                wear = AdjustWearForStickers(player, profile, customizationTarget, wear, stickers is { Count: > 0 });
-            }
+            wear = isKnife
+                ? AdjustWearForKnifeType(cosmetic, wear)
+                : AdjustWearForStickers(player, profile, customizationTarget, wear, stickers is { Count: > 0 });
 
             var attributesApplied = PaintEconItem(player, item, cosmetic, isKnife, seed, wear, statTrak, customization?.NameTag, context, stickers, keychainId);
             if (!attributesApplied && logFailures)

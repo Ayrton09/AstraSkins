@@ -101,6 +101,8 @@ The names below are the defaults. Every command can be renamed or given extra al
 
 Overrides apply on top of the selected skin, take effect instantly, and persist in the database. They target the weapon currently held (knife included); pass `gloves` as the first argument to target equipped gloves instead. Seed and wear need a skin selected for the item; name tags and StatTrak also work on the default skin of any gun or the knife.
 
+On knives the float shown on inspect can differ from the set wear by up to about 0.08 (usually within the same exterior): each knife type gets its own value, 0.004 apart, so the client does not reuse one knife's finish on another type (which drew Doppler phases plain after a knife change).
+
 StatTrak works the same way: enable it on a weapon or knife and the counter goes up with every kill you get with that item, persisting across reconnects and map changes. With `EnableStatTrakByDefault` on, every weapon and knife with a selected skin starts counting at 0 without asking, and `!stattrak reset` turns it off for that item.
 
 > **Tip:** seeds only change finishes whose pattern placement varies — Case Hardened, Crimson Web, Marble Fade, Fade. Most other skins look identical on every seed.
