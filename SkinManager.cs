@@ -423,11 +423,39 @@ public sealed class SkinManager : IDisposable
 
         var steamId = GetSteamId64(player);
         var profile = GetProfile(player);
+        var carried = FindSameFinishOnKnife(player, profile, knife);
         profile.KnifeId = knife.Id;
         var selectedKnifeId = knife.Id;
         QueueStorageWrite($"knife type {selectedKnifeId} for {steamId}", () => _storage.SaveKnifeType(steamId, selectedKnifeId));
+        if (carried is not null)
+        {
+            profile.KnifeSkinId = carried.Id;
+            var carriedId = carried.Id;
+            QueueStorageWrite($"knife skin {carriedId} for {steamId}", () => _storage.SaveKnifeSkin(steamId, carriedId));
+            ApplyKnifeSelection(player, carried, logFailures: true);
+            return true;
+        }
+
         ApplyKnifeTypeSelection(player, knife, logFailures: true);
         return true;
+    }
+
+    // Changing knife type keeps the current finish when the new type has it:
+    // the same paint kit first, then the same name (the Butterfly's Doppler
+    // phases use their own paint kits).
+    private CosmeticEntry? FindSameFinishOnKnife(CCSPlayerController player, PlayerSkinProfile profile, KnifeDefinition knife)
+    {
+        if (profile.KnifeSkinId is null ||
+            !Catalog.KnifeSkinsById.TryGetValue(profile.KnifeSkinId, out var current) ||
+            current.PaintKit == 0 ||
+            current.ItemDefinitionIndex == knife.ItemDefinitionIndex)
+        {
+            return null;
+        }
+
+        var usable = knife.Skins.Where(skin => skin.Enabled && skin.PaintKit != 0 && CanUse(player, skin)).ToList();
+        return usable.FirstOrDefault(skin => skin.PaintKit == current.PaintKit)
+               ?? usable.FirstOrDefault(skin => skin.DisplayName.Equals(current.DisplayName, StringComparison.OrdinalIgnoreCase));
     }
 
     public bool SetGloveSkin(CCSPlayerController player, string cosmeticId)
