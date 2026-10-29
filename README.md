@@ -381,6 +381,7 @@ The release zip does not ship the Linux SQLite library from the NuGet package, w
 | --- | --- |
 | Skins never apply, no errors | Set `FollowCS2ServerGuidelines: false` in `configs/core.json` and restart |
 | "gamedata signature is missing" in logs | Copy `gamedata/astra_skins.json` to `addons/counterstrikesharp/gamedata/` |
+| `Could not load file or assembly 'Microsoft.Data.Sqlite'` or `'MySqlConnector'` | Only `AstraSkins.dll` was uploaded; copy the whole `plugins/AstraSkins` folder from the release zip |
 | Skins stopped working after a CS2 update | The gamedata signature broke — see [Gamedata](#gamedata) |
 | `!wsreload` / `!wsdebug` say no permission | Add your SteamID to `configs/admins.json` with the `@css/config` flag |
 | `!seed` looks like it does nothing | The held skin's pattern doesn't vary by seed — try Case Hardened or Crimson Web |
