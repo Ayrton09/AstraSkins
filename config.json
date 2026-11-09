@@ -64,6 +64,7 @@
     "Charms": ["css_charms", "css_keychains", "css_keychain"],
     "Refresh": ["css_wsrefresh"],
     "Reset": ["css_wsreset"],
+    "Random": ["css_randomskins"],
     "Seed": ["css_seed"],
     "Wear": ["css_wear"],
     "NameTag": ["css_nametag"],

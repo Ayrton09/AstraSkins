@@ -80,6 +80,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         RegisterCommand(commands.Charms, "Open the charm menu for the held weapon.", CommandOpenCharms);
         RegisterCommand(commands.Refresh, "Reapply selected skins.", CommandRefresh);
         RegisterCommand(commands.Reset, "Reset all selected skins.", CommandReset);
+        RegisterCommand(commands.Random, "Pick random skins, all or per category.", CommandRandom);
         RegisterCommand(commands.Reload, "Reload Astra Skins definitions.", CommandReload);
         RegisterCommand(commands.ResetPlayer, "Reset a player's selections by SteamID64.", CommandResetPlayer);
         RegisterCommand(commands.Debug, "Show Astra Skins diagnostic information.", CommandDebug);
@@ -489,6 +490,44 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             _ => "astra.reset_all"
         };
         command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, messageKey)}");
+    }
+
+    private void CommandRandom(CCSPlayerController? player, CommandInfo command)
+    {
+        if (!RequireReadyPlayer(player, command))
+        {
+            return;
+        }
+
+        var argument = command.ArgCount > 1 ? command.GetArg(1).Trim().ToLowerInvariant() : "all";
+        var category = argument is "all" or "*" ? null : SkinManager.NormalizeResetCategory(argument);
+        if (argument is not ("all" or "*") && category is null)
+        {
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.random_usage", ChatCommand(_config!.Commands.Random, "css_randomskins"))}");
+            return;
+        }
+
+        if (!RequireMaintenanceCooldown(player!, command))
+        {
+            return;
+        }
+
+        var done = _skinManager!.Randomize(player!, category);
+        if (done is null)
+        {
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.random_loading")}");
+            return;
+        }
+
+        if (done == false)
+        {
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.random_nothing")}");
+            return;
+        }
+
+        // The open menu shows the old picks; reset closes it the same way.
+        _menuManager!.Close(player!, clearScreen: true);
+        command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.random_done")}");
     }
 
     // Admin reset by SteamID64: works whether the target is connected or not,

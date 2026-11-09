@@ -204,18 +204,42 @@ public sealed class MySqlSkinStorage : ISkinStorage
         return connection;
     }
 
-    private void Upsert(ulong steamId64, string type, string target, string cosmeticId)
-    {
-        using var connection = Open();
-        using var command = connection.CreateCommand();
-        // Referencing the bound parameter instead of VALUES(cosmetic_id) avoids
-        // the MySQL 8.0.20+ deprecation while staying compatible with MariaDB,
-        // which does not support the row-alias (AS new) replacement syntax.
-        command.CommandText = """
+    // Referencing the bound parameter instead of VALUES(cosmetic_id) avoids
+    // the MySQL 8.0.20+ deprecation while staying compatible with MariaDB,
+    // which does not support the row-alias (AS new) replacement syntax.
+    private const string UpsertSql = """
         INSERT INTO astra_player_skin_selections (steam_id, selection_type, target, cosmetic_id)
         VALUES (@steam_id, @selection_type, @target, @cosmetic_id)
         ON DUPLICATE KEY UPDATE cosmetic_id = @cosmetic_id, updated_at = CURRENT_TIMESTAMP;
         """;
+
+    public void SaveSelections(ulong steamId64, IReadOnlyList<(string Type, string Target, string Value)> rows)
+    {
+        using var connection = Open();
+        using var transaction = connection.BeginTransaction();
+        using var command = connection.CreateCommand();
+        command.Transaction = transaction;
+        command.CommandText = UpsertSql;
+        command.Parameters.AddWithValue("@steam_id", steamId64);
+        var type = command.Parameters.Add("@selection_type", MySqlDbType.VarChar);
+        var target = command.Parameters.Add("@target", MySqlDbType.VarChar);
+        var value = command.Parameters.Add("@cosmetic_id", MySqlDbType.VarChar);
+        foreach (var row in rows)
+        {
+            type.Value = row.Type;
+            target.Value = row.Target;
+            value.Value = row.Value;
+            command.ExecuteNonQuery();
+        }
+
+        transaction.Commit();
+    }
+
+    private void Upsert(ulong steamId64, string type, string target, string cosmeticId)
+    {
+        using var connection = Open();
+        using var command = connection.CreateCommand();
+        command.CommandText = UpsertSql;
         command.Parameters.AddWithValue("@steam_id", steamId64);
         command.Parameters.AddWithValue("@selection_type", type);
         command.Parameters.AddWithValue("@target", target);

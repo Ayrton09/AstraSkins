@@ -981,6 +981,183 @@ public sealed class SkinManager : IDisposable
         return true;
     }
 
+    // !randomskins: a random pick for every slot the player could fill from
+    // the menu (modules they can use, entries whose flag they hold), all
+    // categories or one reset category. Seed, wear, name tags and StatTrak
+    // stay as they are. False when nothing was usable, null while the profile
+    // is still loading: a merge landing afterwards would mix stored picks
+    // back in, as with the Default rows.
+    public bool? Randomize(CCSPlayerController player, string? category = null)
+    {
+        var steamId = GetSteamId64(player);
+        var profile = GetProfile(player);
+        if (!_loadedProfiles.Contains(steamId))
+        {
+            return null;
+        }
+
+        var random = Random.Shared;
+        T? Pick<T>(IEnumerable<T> items) where T : class
+        {
+            var list = items as IReadOnlyList<T> ?? items.ToList();
+            return list.Count == 0 ? null : list[random.Next(list.Count)];
+        }
+
+        bool Wants(string name) => category is null || category == name;
+        var rows = new List<(string Type, string Target, string Value)>();
+        var targets = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        if (Wants("weapons") && CanUseWeapons(player))
+        {
+            foreach (var weapon in Catalog.Weapons)
+            {
+                var skin = Pick(weapon.Skins.Where(s => CanUse(player, s)));
+                if (skin is null)
+                {
+                    continue;
+                }
+
+                profile.WeaponSkins[weapon.EntityName] = skin.Id;
+                rows.Add(("weapon", weapon.EntityName, skin.Id));
+                targets.Add(weapon.EntityName);
+            }
+        }
+
+        var stickers = Wants("stickers") && CanUseStickers(player)
+            ? Catalog.Stickers.Where(s => CanUse(player, s)).ToList()
+            : new List<StickerDefinition>();
+        if (stickers.Count > 0 && Catalog.Weapons.Count > 0)
+        {
+            foreach (var weapon in Catalog.Weapons)
+            {
+                var slots = new Dictionary<int, string>();
+                for (var slot = 0; slot < StickerSlots; slot++)
+                {
+                    slots[slot] = Pick(stickers)!.Id;
+                    rows.Add(("sticker", StickerTarget(weapon.EntityName, slot), slots[slot]));
+                }
+
+                profile.Stickers[weapon.EntityName] = slots;
+                targets.Add(weapon.EntityName);
+            }
+        }
+
+        var keychains = Wants("keychains") && CanUseKeychains(player)
+            ? Catalog.Keychains.Where(k => CanUse(player, k)).ToList()
+            : new List<KeychainDefinition>();
+        if (keychains.Count > 0 && Catalog.Weapons.Count > 0)
+        {
+            foreach (var weapon in Catalog.Weapons)
+            {
+                var keychain = Pick(keychains)!;
+                profile.Keychains[weapon.EntityName] = keychain.Id;
+                rows.Add(("keychain", weapon.EntityName, keychain.Id));
+                targets.Add(weapon.EntityName);
+            }
+        }
+
+        var clearKnifeSkin = false;
+        if (Wants("knife") && CanUseKnives(player) && Pick(Catalog.Knives.Where(k => CanUse(player, k))) is { } knife)
+        {
+            // A knife type without a usable finish is still a valid pick: it
+            // shows on its stock look, and the old finish (another knife's)
+            // has to go so it does not come back with that knife.
+            var knifeSkin = Pick(knife.Skins.Where(s => CanUse(player, s)));
+            profile.KnifeId = knife.Id;
+            profile.KnifeSkinId = knifeSkin?.Id;
+            rows.Add(("knife_type", KnifeTarget, knife.Id));
+            if (knifeSkin is not null)
+            {
+                rows.Add(("knife", KnifeTarget, knifeSkin.Id));
+            }
+            else
+            {
+                clearKnifeSkin = true;
+            }
+
+            targets.Add(KnifeTarget);
+        }
+
+        // Type first, then a finish of it, so glove types with many finishes
+        // do not crowd out the rest.
+        if (Wants("gloves") && CanUseGloves(player) &&
+            Pick(Catalog.Gloves.Where(g => CanUse(player, g) && g.Skins.Any(s => CanUse(player, s)))) is { } glove)
+        {
+            var gloveSkin = Pick(glove.Skins.Where(s => CanUse(player, s)))!;
+            profile.GloveSkinId = gloveSkin.Id;
+            rows.Add(("glove", GloveTarget, gloveSkin.Id));
+            targets.Add(GloveTarget);
+        }
+
+        var agentsChanged = false;
+        if (Wants("agents") && CanUseAgents(player))
+        {
+            foreach (var team in new[] { "t", "ct" })
+            {
+                var agent = Pick(Catalog.Agents.Where(a => a.Team.Equals(team, StringComparison.OrdinalIgnoreCase) && CanUse(player, a)));
+                if (agent is null)
+                {
+                    continue;
+                }
+
+                profile.AgentIdsByTeam[team] = agent.Id;
+                rows.Add(("agent", team, agent.Id));
+                agentsChanged = true;
+            }
+        }
+
+        var musicChanged = false;
+        if (Wants("music") && CanUseMusicKits(player) && Pick(Catalog.MusicKits.Where(k => CanUse(player, k))) is { } kit)
+        {
+            profile.MusicKitId = kit.Id;
+            rows.Add(("music_kit", "music", kit.Id));
+            musicChanged = true;
+        }
+
+        if (rows.Count == 0)
+        {
+            return false;
+        }
+
+        QueueStorageWrite($"{rows.Count} random selections for {steamId}", () =>
+        {
+            _storage.SaveSelections(steamId, rows);
+            if (clearKnifeSkin)
+            {
+                _storage.ClearSelection(steamId, "knife", KnifeTarget);
+            }
+        });
+
+        // New stickers need the wear step like any sticker change, or the gun
+        // in hand keeps its old first-person finish (see BumpStickerWear).
+        if (stickers.Count > 0)
+        {
+            foreach (var weapon in Catalog.Weapons)
+            {
+                BumpStickerWear(steamId, profile, weapon.EntityName);
+            }
+        }
+
+        // One re-give per item in hand; guns not owned pick their skin up
+        // when they are bought or picked up, like any saved selection.
+        foreach (var target in targets)
+        {
+            ReapplyTarget(player, profile, target, logFailures: false);
+        }
+
+        if (agentsChanged && TryGetPawn(player, out var pawn, logFailures: false))
+        {
+            ApplyAgent(player, pawn!, profile, logFailures: false);
+        }
+
+        if (musicChanged)
+        {
+            ApplyMusicKitToPlayer(player);
+        }
+
+        return true;
+    }
+
     public bool ResetCategory(CCSPlayerController player, string category)
     {
         var normalized = NormalizeResetCategory(category);
@@ -3568,7 +3745,7 @@ public sealed class SkinManager : IDisposable
         };
     }
 
-    private static string? NormalizeResetCategory(string category)
+    internal static string? NormalizeResetCategory(string category)
     {
         return category.Trim().ToLowerInvariant() switch
         {
