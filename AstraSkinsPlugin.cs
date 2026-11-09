@@ -142,11 +142,18 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
     }
 
     // The first configured name of a command, the way players type it in
-    // chat ("css_seed" is typed as "!seed") or in the console.
+    // chat ("css_seed" is typed as "!seed") or in the console. The prefix is
+    // the server's first public chat trigger from CounterStrikeSharp's
+    // core.json, so a server that uses "." shows ".seed".
     private static string ChatCommand(List<string> names, string fallback)
     {
         var name = names.Count > 0 ? names[0] : fallback;
-        return name.StartsWith("css_", StringComparison.Ordinal) ? "!" + name[4..] : name;
+        return name.StartsWith("css_", StringComparison.Ordinal) ? ChatTrigger() + name[4..] : name;
+    }
+
+    private static string ChatTrigger()
+    {
+        return CoreConfig.PublicChatTrigger.FirstOrDefault(trigger => !string.IsNullOrWhiteSpace(trigger)) ?? "!";
     }
 
     private static string ConsoleCommand(List<string> names, string fallback)

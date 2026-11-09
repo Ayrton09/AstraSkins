@@ -74,6 +74,8 @@
 
 The names below are the defaults. Every command can be renamed or given extra aliases in the `Commands` section of the config; usage messages show the configured name.
 
+The `!` and `/` prefixes come from CounterStrikeSharp, not from the plugin: add another one, such as `.`, to `PublicChatTrigger` or `SilentChatTrigger` in `addons/counterstrikesharp/configs/core.json` and restart the server. Usage messages show the first `PublicChatTrigger`.
+
 ### Players
 
 | Command | Description |
@@ -292,7 +294,7 @@ Stickers use the game's stock placement, size and wear for each slot; there is n
 | `Customization.MaxNameTagLength` | Name tag cap, 4–32 (default 20 matches the real game) |
 | `Customization.BlockedNameTagWords` | Words a name tag may not contain, matched as case-insensitive substrings. Empty by default, each server adds its own, for example `["badword", "slur"]`. Avoid short or common words (`puta` would also block `computadora`) |
 | `Weapons`, `Knives`, `Gloves`, `Agents`, `MusicKits`, `Stickers`, `Keychains` | One section per module, each with `Enabled` and `Permission`. Off hides the module from the menu and the search, its commands answer that it is unavailable, and saved selections stop applying (they stay in the database and come back when it is switched on). The flag does the same for players who do not hold it; empty = everyone |
-| `Commands` | Chat command names, a list per command; the first name is the one shown in usage messages. Names are lower-cased and get the `css_` prefix when it is missing, so `"kch"` registers `css_kch` and answers to `!kch` and `/kch`. An empty list leaves that command unregistered; the same name on two commands is rejected at startup |
+| `Commands` | Chat command names, a list per command; the first name is the one shown in usage messages. Names are lower-cased and get the `css_` prefix when it is missing, so `"kch"` (or `"!kch"`, or written with any chat trigger the server uses) registers `css_kch` and answers to `!kch` and `/kch`. An empty list leaves that command unregistered; the same name on two commands is rejected at startup |
 | `ApplyPlayerCosmeticsOnBotTakeover` | Off by default: a bot you take over keeps its own loadout. Set to `true` to apply your knife, agent and music kit to the possessed bot (guns and gloves already in hand keep their look) |
 | `EnableStatTrakByDefault` | Every weapon and knife with a selected skin starts with a StatTrak counter at 0; players can still turn it off per item with `!stattrak reset`. That counter belongs to the selection: while the selection is not applied (module off, flag lost) it stays hidden, and it comes back with it |
 | `EnableMusicKitMvpCounter` | Track per-player MVP counts for selected music kits |

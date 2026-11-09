@@ -1,3 +1,4 @@
+using CounterStrikeSharp.API.Core;
 using Microsoft.Extensions.Logging;
 using AstraSkins.Models;
 
@@ -142,8 +143,8 @@ public sealed class ConfigManager
     }
 
     // Command names end up as CounterStrikeSharp console commands, so they are
-    // lower-cased, prefixed with "css_" when written bare ("kch" or "!kch"
-    // both mean css_kch) and checked for characters the console accepts. A
+    // lower-cased, prefixed with "css_" when written bare ("kch", "!kch" or ".kch"
+    // all mean css_kch) and checked for characters the console accepts. A
     // name used by two commands is a configuration error, not a coin toss.
     private static void NormalizeCommands(CommandsConfig commands)
     {
@@ -158,7 +159,7 @@ public sealed class ConfigManager
             var normalized = new List<string>();
             foreach (var raw in aliases)
             {
-                var alias = (raw ?? string.Empty).Trim().TrimStart('!', '/').ToLowerInvariant();
+                var alias = StripChatTrigger((raw ?? string.Empty).Trim()).ToLowerInvariant();
                 if (alias.Length > 0 && !alias.StartsWith("css_", StringComparison.Ordinal))
                 {
                     alias = "css_" + alias;
@@ -186,5 +187,25 @@ public sealed class ConfigManager
             aliases.Clear();
             aliases.AddRange(normalized);
         }
+    }
+
+    // A name may be written the way it is typed in chat: "!kch", "/kch" or
+    // with any trigger the server set in CounterStrikeSharp's core.json.
+    private static string StripChatTrigger(string name)
+    {
+        var triggers = CoreConfig.PublicChatTrigger
+            .Concat(CoreConfig.SilentChatTrigger)
+            .Append("!")
+            .Append("/")
+            .Where(trigger => !string.IsNullOrWhiteSpace(trigger));
+        foreach (var trigger in triggers)
+        {
+            if (name.StartsWith(trigger, StringComparison.Ordinal))
+            {
+                return name[trigger.Length..];
+            }
+        }
+
+        return name;
     }
 }
