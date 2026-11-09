@@ -133,6 +133,7 @@ public sealed class CommandsConfig
     public List<string> Charms { get; set; } = new() { "css_charms", "css_keychains", "css_keychain" };
     public List<string> Refresh { get; set; } = new() { "css_wsrefresh" };
     public List<string> Reset { get; set; } = new() { "css_wsreset" };
+    public List<string> Random { get; set; } = new() { "css_randomskins" };
     public List<string> Seed { get; set; } = new() { "css_seed" };
     public List<string> Wear { get; set; } = new() { "css_wear" };
     public List<string> NameTag { get; set; } = new() { "css_nametag" };
@@ -151,6 +152,7 @@ public sealed class CommandsConfig
         yield return (nameof(Charms), Charms);
         yield return (nameof(Refresh), Refresh);
         yield return (nameof(Reset), Reset);
+        yield return (nameof(Random), Random);
         yield return (nameof(Seed), Seed);
         yield return (nameof(Wear), Wear);
         yield return (nameof(NameTag), NameTag);

@@ -89,6 +89,7 @@ The names below are the defaults. Every command can be renamed or given extra al
 | `!charms <search>` | Search every charm for the held gun |
 | `!wsrefresh` | Reapply saved selections |
 | `!wsreset [all\|weapons\|knife\|gloves\|agents\|music\|stickers\|charms]` | Reset saved selections, all or per category |
+| `!randomskins [all\|weapons\|knife\|gloves\|agents\|music\|stickers\|charms]` | Random picks for every gun, the knife, gloves, both agents, the music kit, all five sticker slots and a charm, or one category. Replaces the current picks |
 
 ### Customization
 
@@ -170,6 +171,10 @@ Both features have their own `Enabled` switch and `Permission` flag in the confi
 
 Stickers use the game's stock placement, size and wear for each slot; there is no scraping or moving. The game only rebuilds a gun's first-person finish when its wear changes, so a gun that has had stickers gets its wear shifted by a small amount (0.006 per change, 0.06 at most), invisible on the finish; guns that never had stickers keep their exact wear.
 
+## Random Skins
+
+`!randomskins` fills every slot at random from what the menu would offer the player: switched-off modules, entries behind a flag they do not hold and disabled entries are never picked. `!randomskins knife` (or any `!wsreset` category) randomizes only that part. Seed, wear, name tags and StatTrak counters are kept. Items in hand update right away; guns not in hand get their skin when bought or picked up, and the other team's agent on the next spawn there. The previous picks are overwritten, so there is no undo; `!wsreset` goes back to defaults. The command shares the 2-second cooldown of `!wsrefresh` and `!wsreset`, and rename or remove it with `Commands.Random`.
+
 ## Configuration
 
 `configs/plugins/AstraSkins/AstraSkins.json` — the defaults are safe to publish and use placeholder credentials:
@@ -241,6 +246,7 @@ Stickers use the game's stock placement, size and wear for each slot; there is n
     "Charms": ["css_charms", "css_keychains", "css_keychain"],
     "Refresh": ["css_wsrefresh"],
     "Reset": ["css_wsreset"],
+    "Random": ["css_randomskins"],
     "Seed": ["css_seed"],
     "Wear": ["css_wear"],
     "NameTag": ["css_nametag"],

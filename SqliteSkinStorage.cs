@@ -188,16 +188,40 @@ public sealed class SqliteSkinStorage : ISkinStorage
         return connection;
     }
 
-    private void Upsert(ulong steamId64, string type, string target, string cosmeticId)
-    {
-        using var connection = Open();
-        using var command = connection.CreateCommand();
-        command.CommandText = """
+    private const string UpsertSql = """
         INSERT INTO astra_player_skin_selections (steam_id, selection_type, target, cosmetic_id, updated_at)
         VALUES ($steam_id, $selection_type, $target, $cosmetic_id, CURRENT_TIMESTAMP)
         ON CONFLICT(steam_id, selection_type, target)
         DO UPDATE SET cosmetic_id = excluded.cosmetic_id, updated_at = CURRENT_TIMESTAMP;
         """;
+
+    public void SaveSelections(ulong steamId64, IReadOnlyList<(string Type, string Target, string Value)> rows)
+    {
+        using var connection = Open();
+        using var transaction = connection.BeginTransaction();
+        using var command = connection.CreateCommand();
+        command.Transaction = transaction;
+        command.CommandText = UpsertSql;
+        command.Parameters.AddWithValue("$steam_id", unchecked((long)steamId64));
+        var type = command.Parameters.Add("$selection_type", SqliteType.Text);
+        var target = command.Parameters.Add("$target", SqliteType.Text);
+        var value = command.Parameters.Add("$cosmetic_id", SqliteType.Text);
+        foreach (var row in rows)
+        {
+            type.Value = row.Type;
+            target.Value = row.Target;
+            value.Value = row.Value;
+            command.ExecuteNonQuery();
+        }
+
+        transaction.Commit();
+    }
+
+    private void Upsert(ulong steamId64, string type, string target, string cosmeticId)
+    {
+        using var connection = Open();
+        using var command = connection.CreateCommand();
+        command.CommandText = UpsertSql;
         command.Parameters.AddWithValue("$steam_id", unchecked((long)steamId64));
         command.Parameters.AddWithValue("$selection_type", type);
         command.Parameters.AddWithValue("$target", target);

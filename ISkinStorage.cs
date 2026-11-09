@@ -17,6 +17,8 @@ public interface ISkinStorage : IDisposable
     // Drops one saved selection row (weapon, knife, knife_type, glove, agent) so
     // the item goes back to its default; nothing else of the player is touched.
     void ClearSelection(ulong steamId64, string selectionType, string target);
+    // Upserts many selection rows in one transaction (used by !randomskins).
+    void SaveSelections(ulong steamId64, IReadOnlyList<(string Type, string Target, string Value)> rows);
     void ResetProfile(ulong steamId64);
     void ResetCategory(ulong steamId64, string category);
 }
