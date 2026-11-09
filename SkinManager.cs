@@ -982,12 +982,14 @@ public sealed class SkinManager : IDisposable
     }
 
     // !randomskins: a random pick for every slot the player could fill from
-    // the menu (modules they can use, entries whose flag they hold), all
-    // categories or one reset category. Seed, wear, name tags and StatTrak
+    // the menu (modules they can use, entries whose flag they hold), or one
+    // reset category. Without a category, stickers and charms are left alone
+    // (five random stickers and a charm on every gun is rarely wanted) unless
+    // everything is asked for. Seed, wear, name tags and StatTrak
     // stay as they are. False when nothing was usable, null while the profile
     // is still loading: a merge landing afterwards would mix stored picks
     // back in, as with the Default rows.
-    public bool? Randomize(CCSPlayerController player, string? category = null)
+    public bool? Randomize(CCSPlayerController player, string? category = null, bool everything = false)
     {
         var steamId = GetSteamId64(player);
         var profile = GetProfile(player);
@@ -1003,7 +1005,7 @@ public sealed class SkinManager : IDisposable
             return list.Count == 0 ? null : list[random.Next(list.Count)];
         }
 
-        bool Wants(string name) => category is null || category == name;
+        bool Wants(string name) => category == name || (category is null && (everything || name is not ("stickers" or "keychains")));
         var rows = new List<(string Type, string Target, string Value)>();
         var targets = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
@@ -1119,6 +1121,17 @@ public sealed class SkinManager : IDisposable
             return false;
         }
 
+        // New stickers need the wear step like any sticker change, or the gun
+        // in hand keeps its old first-person finish (see BumpStickerWear). The
+        // steps go in the same transaction as the picks.
+        if (stickers.Count > 0)
+        {
+            foreach (var weapon in Catalog.Weapons)
+            {
+                rows.Add((StickerWearField, weapon.EntityName, NextStickerWearStep(profile, weapon.EntityName)));
+            }
+        }
+
         QueueStorageWrite($"{rows.Count} random selections for {steamId}", () =>
         {
             _storage.SaveSelections(steamId, rows);
@@ -1127,16 +1140,6 @@ public sealed class SkinManager : IDisposable
                 _storage.ClearSelection(steamId, "knife", KnifeTarget);
             }
         });
-
-        // New stickers need the wear step like any sticker change, or the gun
-        // in hand keeps its old first-person finish (see BumpStickerWear).
-        if (stickers.Count > 0)
-        {
-            foreach (var weapon in Catalog.Weapons)
-            {
-                BumpStickerWear(steamId, profile, weapon.EntityName);
-            }
-        }
 
         // One re-give per item in hand; guns not owned pick their skin up
         // when they are bought or picked up, like any saved selection.
@@ -1595,12 +1598,19 @@ public sealed class SkinManager : IDisposable
 
     private void BumpStickerWear(ulong steamId, PlayerSkinProfile profile, string weaponEntity)
     {
+        var stored = NextStickerWearStep(profile, weaponEntity);
+        QueueStorageWrite($"sticker wear step {stored} ({weaponEntity}) for {steamId}", () => _storage.SaveCustomization(steamId, StickerWearField, weaponEntity, stored));
+    }
+
+    // Advances the step in the profile and returns the value to store, for
+    // callers that save it together with other rows.
+    private static string NextStickerWearStep(PlayerSkinProfile profile, string weaponEntity)
+    {
         var steps = profile.StickerWearSteps.TryGetValue(weaponEntity, out var current)
             ? current % StickerWearStepCount + 1
             : 1;
         profile.StickerWearSteps[weaponEntity] = steps;
-        var stored = steps.ToString(CultureInfo.InvariantCulture);
-        QueueStorageWrite($"sticker wear step {stored} ({weaponEntity}) for {steamId}", () => _storage.SaveCustomization(steamId, StickerWearField, weaponEntity, stored));
+        return steps.ToString(CultureInfo.InvariantCulture);
     }
 
     private void BumpStickerWearForRenderedStickers(CCSPlayerController player, ulong steamId, PlayerSkinProfile profile)

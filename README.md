@@ -91,7 +91,7 @@ The `!` and `/` prefixes come from CounterStrikeSharp, not from the plugin: add 
 | `!charms <search>` | Search every charm for the held gun |
 | `!wsrefresh` | Reapply saved selections |
 | `!wsreset [all\|weapons\|knife\|gloves\|agents\|music\|stickers\|charms]` | Reset saved selections, all or per category |
-| `!randomskins [all\|weapons\|knife\|gloves\|agents\|music\|stickers\|charms]` | Random picks for every gun, the knife, gloves, both agents, the music kit, all five sticker slots and a charm, or one category. Replaces the current picks |
+| `!randomskins [all\|weapons\|knife\|gloves\|agents\|music\|stickers\|charms]` | Random picks for every gun, the knife, gloves, both agents and the music kit, or one category; `all` also puts random stickers and a charm on every gun. Replaces the current picks |
 
 ### Customization
 
@@ -175,7 +175,7 @@ Stickers use the game's stock placement, size and wear for each slot; there is n
 
 ## Random Skins
 
-`!randomskins` fills every slot at random from what the menu would offer the player: switched-off modules, entries behind a flag they do not hold and disabled entries are never picked. `!randomskins knife` (or any `!wsreset` category) randomizes only that part. Seed, wear, name tags and StatTrak counters are kept. Items in hand update right away; guns not in hand get their skin when bought or picked up, and the other team's agent on the next spawn there. The previous picks are overwritten, so there is no undo; `!wsreset` goes back to defaults. The command shares the 2-second cooldown of `!wsrefresh` and `!wsreset`, and rename or remove it with `Commands.Random`.
+`!randomskins` fills every slot at random from what the menu would offer the player: switched-off modules, entries behind a flag they do not hold and disabled entries are never picked. `!randomskins knife` (or any `!wsreset` category) randomizes only that part. Stickers and charms are left out of a plain `!randomskins`; `!randomskins stickers` puts a random sticker in all five slots of every gun, `!randomskins charms` a random charm on each, and `!randomskins all` changes everything, stickers and charms included. Seed, wear, name tags and StatTrak counters are kept. Items in hand update right away; guns not in hand get their skin when bought or picked up, and the other team's agent on the next spawn there. The previous picks are overwritten, so there is no undo; `!wsreset` goes back to defaults. The command shares the 2-second cooldown of `!wsrefresh` and `!wsreset`, and rename or remove it with `Commands.Random`.
 
 ## Configuration
 

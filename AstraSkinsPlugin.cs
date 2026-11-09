@@ -506,9 +506,11 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             return;
         }
 
-        var argument = command.ArgCount > 1 ? command.GetArg(1).Trim().ToLowerInvariant() : "all";
-        var category = argument is "all" or "*" ? null : SkinManager.NormalizeResetCategory(argument);
-        if (argument is not ("all" or "*") && category is null)
+        // No argument: everything but stickers and charms. "all" adds those too.
+        var argument = command.ArgCount > 1 ? command.GetArg(1).Trim().ToLowerInvariant() : string.Empty;
+        var everything = argument is "all" or "*";
+        var category = argument.Length == 0 || everything ? null : SkinManager.NormalizeResetCategory(argument);
+        if (argument.Length > 0 && !everything && category is null)
         {
             command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.random_usage", ChatCommand(_config!.Commands.Random, "css_randomskins"))}");
             return;
@@ -519,7 +521,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             return;
         }
 
-        var done = _skinManager!.Randomize(player!, category);
+        var done = _skinManager!.Randomize(player!, category, everything);
         if (done is null)
         {
             command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.random_loading")}");
