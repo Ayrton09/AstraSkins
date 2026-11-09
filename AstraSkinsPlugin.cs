@@ -507,7 +507,33 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         }
 
         // No argument: everything but stickers and charms. "all" adds those too.
+        // "on [scope]" rolls the same way now and every round, memory only;
+        // "off" stops that and puts the saved picks back.
         var argument = command.ArgCount > 1 ? command.GetArg(1).Trim().ToLowerInvariant() : string.Empty;
+        if (argument == "off")
+        {
+            if (!RequireMaintenanceCooldown(player!, command))
+            {
+                return;
+            }
+
+            if (!_skinManager!.StopRoundRandom(player!))
+            {
+                command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.random_round_not_on")}");
+                return;
+            }
+
+            _menuManager!.Close(player!, clearScreen: true);
+            command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.random_round_off")}");
+            return;
+        }
+
+        var everyRound = argument == "on";
+        if (everyRound)
+        {
+            argument = command.ArgCount > 2 ? command.GetArg(2).Trim().ToLowerInvariant() : string.Empty;
+        }
+
         var everything = argument is "all" or "*";
         var category = argument.Length == 0 || everything ? null : SkinManager.NormalizeResetCategory(argument);
         if (argument.Length > 0 && !everything && category is null)
@@ -521,7 +547,9 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             return;
         }
 
-        var done = _skinManager!.Randomize(player!, category, everything);
+        var done = everyRound
+            ? _skinManager!.StartRoundRandom(player!, category, everything)
+            : _skinManager!.Randomize(player!, category, everything);
         if (done is null)
         {
             command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.random_loading")}");
@@ -536,7 +564,10 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
 
         // The open menu shows the old picks; reset closes it the same way.
         _menuManager!.Close(player!, clearScreen: true);
-        command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.random_done")}");
+        var message = everyRound
+            ? Localizer.ForPlayer(player, "astra.random_round_on", ChatCommand(_config!.Commands.Random, "css_randomskins"))
+            : Localizer.ForPlayer(player, "astra.random_done");
+        command.ReplyToCommand($"{FormatPrefix()} {message}");
     }
 
     // Admin reset by SteamID64: works whether the target is connected or not,
@@ -937,6 +968,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             {
                 if (IsLiveHuman(player))
                 {
+                    _skinManager?.RollRoundRandom(player!);
                     _skinManager?.ApplyToPlayerWhenProfileReady(player!);
                 }
             }, TimerFlags.STOP_ON_MAPCHANGE);
@@ -984,6 +1016,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
     private HookResult OnRoundPrestart(EventRoundPrestart @event, GameEventInfo info)
     {
         _pendingMvpCue = null;
+        _skinManager?.NextRound();
         if (_config?.Menu.CloseOnRoundStart == true)
         {
             _menuManager?.CloseAll();
