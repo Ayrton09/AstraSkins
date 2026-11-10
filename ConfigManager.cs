@@ -49,6 +49,9 @@ public sealed class ConfigManager
             module.Permission ??= string.Empty;
         }
 
+        config.RandomSkins ??= new RandomSkinsConfig();
+        config.RandomSkins.SkipNames ??= new List<string>();
+
         if (config.Commands is null)
         {
             throw new InvalidOperationException("Commands config section is required.");

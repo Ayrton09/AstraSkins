@@ -76,6 +76,10 @@
   "ApplyPlayerCosmeticsOnBotTakeover": false,
   "EnableStatTrakByDefault": false,
   "EnableMusicKitMvpCounter": false,
+  "RandomSkins": {
+    "TopTierOnly": false,
+    "SkipNames": []
+  },
   "Definitions": {
     "Weapons": "data/weapons.json",
     "Knives": "data/knives.json",

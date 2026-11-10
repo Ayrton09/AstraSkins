@@ -184,12 +184,13 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             config.EnableStatTrakByDefault,
             // No precache pass seen yet (plugin loaded mid-map): nothing to check against.
             model => _precachedModels.Count == 0 || _precachedModels.Contains(model),
-            ModuleSwitches.From(config));
+            ModuleSwitches.From(config),
+            config.RandomSkins);
         _menuManager = new MenuManager(_skinManager, config, Localizer, Logger);
         _ready = true;
 
         Logger.LogInformation(
-            "Astra Skins loaded: {Weapons} weapons, {KnifeSkins} knife skins, {GloveSkins} glove skins, {Agents} agents, {MusicKits} music kits, {Stickers} stickers, {Keychains} keychains, DB={DatabaseMode}, StatTrakByDefault={StatTrakByDefault}, MusicKitMvpCounter={MusicKitMvpCounter}",
+            "Astra Skins loaded: {Weapons} weapons, {KnifeSkins} knife skins, {GloveSkins} glove skins, {Agents} agents, {MusicKits} music kits, {Stickers} stickers, {Keychains} keychains, DB={DatabaseMode}, StatTrakByDefault={StatTrakByDefault}, MusicKitMvpCounter={MusicKitMvpCounter}, RandomTopTier={RandomTopTier}",
             catalog.Weapons.Count,
             catalog.KnifeSkinsById.Count,
             catalog.GloveSkinsById.Count,
@@ -199,7 +200,8 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             catalog.Keychains.Count,
             config.DatabaseMode,
             config.EnableStatTrakByDefault,
-            config.EnableMusicKitMvpCounter);
+            config.EnableMusicKitMvpCounter,
+            config.RandomSkins.TopTierOnly);
 
         var disabledModules = _skinManager.DisabledModules();
         if (disabledModules.Count > 0)

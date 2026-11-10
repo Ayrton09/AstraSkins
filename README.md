@@ -180,6 +180,8 @@ Stickers use the game's stock placement, size and wear for each slot; there is n
 
 `!randomskins on` rolls the same way right away and again each round when the player spawns, but never saves the picks: the saved ones stay in the database untouched. It takes the same scope as `!randomskins` (`!randomskins on knife`, `!randomskins on weapons knife gloves agents`, `!randomskins on all`, ...); running it again changes the scope and rolls again. `!randomskins off` puts the saved picks back right away, and leaving the server turns it off (a map change does not). The only rows it writes are the internal sticker wear counters, so stickers in first person stay correct. Choosing something from the menu while it is on still saves that pick, and the next round rolls over it until `off`.
 
+`RandomSkins.TopTierOnly` limits both to the best items of each slot, and `RandomSkins.SkipNames` leaves out names you never want rolled (see Configuration).
+
 ## Configuration
 
 `configs/plugins/AstraSkins/AstraSkins.json` — the defaults are safe to publish and use placeholder credentials:
@@ -263,6 +265,10 @@ Stickers use the game's stock placement, size and wear for each slot; there is n
   "ApplyPlayerCosmeticsOnBotTakeover": false,
   "EnableStatTrakByDefault": false,
   "EnableMusicKitMvpCounter": false,
+  "RandomSkins": {
+    "TopTierOnly": false,
+    "SkipNames": []
+  },
   "Definitions": {
     "Weapons": "data/weapons.json",
     "Knives": "data/knives.json",
@@ -301,6 +307,8 @@ Stickers use the game's stock placement, size and wear for each slot; there is n
 | `ApplyPlayerCosmeticsOnBotTakeover` | Off by default: a bot you take over keeps its own loadout. Set to `true` to apply your knife, agent and music kit to the possessed bot (guns and gloves already in hand keep their look) |
 | `EnableStatTrakByDefault` | Every weapon and knife with a selected skin starts with a StatTrak counter at 0; players can still turn it off per item with `!stattrak reset`. That counter belongs to the selection: while the selection is not applied (module off, flag lost) it stays hidden, and it comes back with it |
 | `EnableMusicKitMvpCounter` | Track per-player MVP counts for selected music kits |
+| `RandomSkins.TopTierOnly` | `!randomskins` (and `on`) rolls only the best grades: Covert and Contraband guns, Master agents, gold stickers, the rarest charms. Where fewer than three such choices exist it goes down a grade at a time until there are three, so every gun still varies (a gun with one Covert also gets its Classified finishes). Knives only roll a real finish, never the stock one |
+| `RandomSkins.SkipNames` | Names `!randomskins` never picks, matched whole and case-insensitively against finishes, knife and glove types, stickers, charms, agents and music kits, e.g. `["Safari Mesh", "Boreal Forest", "Forest DDPAT", "Urban Masked", "Scorched", "Stained", "Rust Coat"]` for no dull knife finishes. Ignored for a slot where it would leave nothing |
 
 ### SQLite
 
