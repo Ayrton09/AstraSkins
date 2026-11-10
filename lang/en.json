@@ -15,7 +15,7 @@
   "astra.reset_music": "Music kit selection reset.",
   "astra.reset_stickers": "Sticker selections reset.",
   "astra.reset_charms": "Charm selections reset.",
-  "astra.random_usage": "Usage: {0} [on|off] [all|weapons|knife|gloves|agents|music|stickers|charms]",
+  "astra.random_usage": "Usage: {0} [on|off] [all|weapons knife gloves agents music stickers charms]",
   "astra.random_done": "Random selections applied. Weapons you do not hold pick theirs up when you get them.",
   "astra.random_nothing": "Nothing to randomize: those items are switched off or need a flag you do not have.",
   "astra.random_loading": "Your selections are still loading. Try again in a moment.",

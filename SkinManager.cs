@@ -50,7 +50,7 @@ public sealed class SkinManager : IDisposable
     private readonly Dictionary<ulong, int> _appliedMusicKits = new();
     // !randomskins on: scope and the round last rolled, per player. Memory
     // only, dropped on disconnect but kept across a map change.
-    private readonly Dictionary<ulong, (string? Category, bool Everything, int Round)> _roundRandom = new();
+    private readonly Dictionary<ulong, (IReadOnlySet<string>? Categories, bool Everything, int Round)> _roundRandom = new();
     private int _round;
     private readonly object _storageQueueLock = new();
     private Task _storageQueue = Task.CompletedTask;
@@ -1003,15 +1003,15 @@ public sealed class SkinManager : IDisposable
     }
 
     // !randomskins: a random pick for every slot the player could fill from
-    // the menu (modules they can use, entries whose flag they hold), or one
-    // reset category. Without a category, stickers and charms are left alone
+    // the menu (modules they can use, entries whose flag they hold), or only
+    // the given reset categories. Without a category, stickers and charms are left alone
     // (five random stickers and a charm on every gun is rarely wanted) unless
     // everything is asked for. Seed, wear, name tags and StatTrak
     // stay as they are. False when nothing was usable, null while the profile
     // is still loading: a merge landing afterwards would mix stored picks
     // back in, as with the Default rows. persist false keeps the picks in
     // memory only (!randomskins on); the saved ones come back on reload.
-    public bool? Randomize(CCSPlayerController player, string? category = null, bool everything = false, bool persist = true)
+    public bool? Randomize(CCSPlayerController player, IReadOnlySet<string>? categories = null, bool everything = false, bool persist = true)
     {
         var steamId = GetSteamId64(player);
         var profile = GetProfile(player);
@@ -1027,7 +1027,7 @@ public sealed class SkinManager : IDisposable
             return list.Count == 0 ? null : list[random.Next(list.Count)];
         }
 
-        bool Wants(string name) => category == name || (category is null && (everything || name is not ("stickers" or "keychains")));
+        bool Wants(string name) => categories?.Contains(name) ?? (everything || name is not ("stickers" or "keychains"));
         var rows = new List<(string Type, string Target, string Value)>();
         var targets = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
@@ -1192,12 +1192,12 @@ public sealed class SkinManager : IDisposable
     // !randomskins on: a memory-only roll now and one per round after, until
     // off or disconnect. Same results as Randomize; enabled only when the
     // first roll went through.
-    public bool? StartRoundRandom(CCSPlayerController player, string? category, bool everything)
+    public bool? StartRoundRandom(CCSPlayerController player, IReadOnlySet<string>? categories, bool everything)
     {
-        var done = Randomize(player, category, everything, persist: false);
+        var done = Randomize(player, categories, everything, persist: false);
         if (done == true)
         {
-            _roundRandom[GetSteamId64(player)] = (category, everything, _round);
+            _roundRandom[GetSteamId64(player)] = (categories, everything, _round);
         }
 
         return done;
@@ -1229,7 +1229,7 @@ public sealed class SkinManager : IDisposable
         }
 
         _roundRandom[steamId] = state with { Round = _round };
-        Randomize(player, state.Category, state.Everything, persist: false);
+        Randomize(player, state.Categories, state.Everything, persist: false);
     }
 
     // !randomskins off: drop the memory-only picks and put the saved ones
