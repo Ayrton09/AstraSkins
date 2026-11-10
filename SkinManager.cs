@@ -45,6 +45,10 @@ public sealed class SkinManager : IDisposable
     // Kit ids this plugin wrote per player, so a clear only touches players
     // we painted and everyone else keeps the value Valve put there.
     private readonly Dictionary<ulong, int> _appliedMusicKits = new();
+    // !randomskins on: scope and the round last rolled, per player. Memory
+    // only, dropped on disconnect.
+    private readonly Dictionary<ulong, (string? Category, bool Everything, int Round)> _roundRandom = new();
+    private int _round;
     private readonly object _storageQueueLock = new();
     private Task _storageQueue = Task.CompletedTask;
     private ulong _nextItemId = MinimumCustomItemId;
@@ -231,6 +235,7 @@ public sealed class SkinManager : IDisposable
         _activeSteamIds.Remove(steamId64);
         _appliedMusicKits.Remove(steamId64);
         _profileRetryAfterUtc.Remove(steamId64);
+        _roundRandom.Remove(steamId64);
 
         // A read still in flight must come back stale: bump the epoch instead
         // of deleting it so the callback can tell this lifecycle ended.
@@ -431,7 +436,13 @@ public sealed class SkinManager : IDisposable
         {
             profile.KnifeSkinId = carried.Id;
             var carriedId = carried.Id;
-            QueueStorageWrite($"knife skin {carriedId} for {steamId}", () => _storage.SaveKnifeSkin(steamId, carriedId));
+            // Under !randomskins on the current finish is a memory-only roll;
+            // carry it in memory but do not save it as the player's own.
+            if (!_roundRandom.ContainsKey(steamId))
+            {
+                QueueStorageWrite($"knife skin {carriedId} for {steamId}", () => _storage.SaveKnifeSkin(steamId, carriedId));
+            }
+
             ApplyKnifeSelection(player, carried, logFailures: true);
             return true;
         }
@@ -988,8 +999,9 @@ public sealed class SkinManager : IDisposable
     // everything is asked for. Seed, wear, name tags and StatTrak
     // stay as they are. False when nothing was usable, null while the profile
     // is still loading: a merge landing afterwards would mix stored picks
-    // back in, as with the Default rows.
-    public bool? Randomize(CCSPlayerController player, string? category = null, bool everything = false)
+    // back in, as with the Default rows. persist false keeps the picks in
+    // memory only (!randomskins on); the saved ones come back on reload.
+    public bool? Randomize(CCSPlayerController player, string? category = null, bool everything = false, bool persist = true)
     {
         var steamId = GetSteamId64(player);
         var profile = GetProfile(player);
@@ -1123,23 +1135,29 @@ public sealed class SkinManager : IDisposable
 
         // New stickers need the wear step like any sticker change, or the gun
         // in hand keeps its old first-person finish (see BumpStickerWear). The
-        // steps go in the same transaction as the picks.
+        // steps go in the same transaction as the picks, and are saved even
+        // for memory-only picks: a step the client already built must not
+        // come back from storage on reload.
+        var saved = persist ? rows : new List<(string Type, string Target, string Value)>();
         if (stickers.Count > 0)
         {
             foreach (var weapon in Catalog.Weapons)
             {
-                rows.Add((StickerWearField, weapon.EntityName, NextStickerWearStep(profile, weapon.EntityName)));
+                saved.Add((StickerWearField, weapon.EntityName, NextStickerWearStep(profile, weapon.EntityName)));
             }
         }
 
-        QueueStorageWrite($"{rows.Count} random selections for {steamId}", () =>
+        if (saved.Count > 0)
         {
-            _storage.SaveSelections(steamId, rows);
-            if (clearKnifeSkin)
+            QueueStorageWrite($"{saved.Count} random selections for {steamId}", () =>
             {
-                _storage.ClearSelection(steamId, "knife", KnifeTarget);
-            }
-        });
+                _storage.SaveSelections(steamId, saved);
+                if (persist && clearKnifeSkin)
+                {
+                    _storage.ClearSelection(steamId, "knife", KnifeTarget);
+                }
+            });
+        }
 
         // One re-give per item in hand; guns not owned pick their skin up
         // when they are bought or picked up, like any saved selection.
@@ -1158,6 +1176,64 @@ public sealed class SkinManager : IDisposable
             ApplyMusicKitToPlayer(player);
         }
 
+        return true;
+    }
+
+    // !randomskins on: a memory-only roll now and one per round after, until
+    // off or disconnect. Same results as Randomize; enabled only when the
+    // first roll went through.
+    public bool? StartRoundRandom(CCSPlayerController player, string? category, bool everything)
+    {
+        var done = Randomize(player, category, everything, persist: false);
+        if (done == true)
+        {
+            _roundRandom[GetSteamId64(player)] = (category, everything, _round);
+        }
+
+        return done;
+    }
+
+    public void NextRound() => _round++;
+
+    // Called on spawn: rolls once per round. A profile still loading skips
+    // this round (the saved picks apply as usual).
+    public void RollRoundRandom(CCSPlayerController player)
+    {
+        if (!TryGetSteamId64(player, out var steamId) ||
+            !_roundRandom.TryGetValue(steamId, out var state) ||
+            state.Round == _round ||
+            !_loadedProfiles.Contains(steamId))
+        {
+            return;
+        }
+
+        _roundRandom[steamId] = state with { Round = _round };
+        Randomize(player, state.Category, state.Everything, persist: false);
+    }
+
+    // !randomskins off: drop the memory-only picks and put the saved ones
+    // back. Same path as Reset without the wipe: strip what is on the player,
+    // then reload from storage and apply.
+    public bool StopRoundRandom(CCSPlayerController player)
+    {
+        var steamId = GetSteamId64(player);
+        if (!_roundRandom.Remove(steamId))
+        {
+            return false;
+        }
+
+        BumpProfileEpoch(steamId);
+        var stockPaintedWeapons = _profiles.TryGetValue(steamId, out var profile) ? StockPaintedWeapons(player, profile) : null;
+        if (profile is not null)
+        {
+            BumpStickerWearForRenderedStickers(player, steamId, profile);
+        }
+
+        _profiles.Remove(steamId);
+        _loadedProfiles.Remove(steamId);
+        _applyAfterLoadRequests.Remove(steamId);
+        ClearPlayerCosmetics(player, logFailures: false, stockPaintedWeapons);
+        ApplyToPlayerWhenProfileReady(player);
         return true;
     }
 
