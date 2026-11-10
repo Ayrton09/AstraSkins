@@ -40,13 +40,16 @@ public sealed class SkinManager : IDisposable
     private readonly HashSet<ulong> _loadedProfiles = new();
     private readonly HashSet<ulong> _loadingProfiles = new();
     private readonly HashSet<ulong> _applyAfterLoadRequests = new();
+    // Players whose items in hand must be re-given once their profile loads
+    // (!randomskins off), not just painted in place.
+    private readonly HashSet<ulong> _regiveAfterLoad = new();
     private readonly HashSet<ulong> _activeSteamIds = new();
     private readonly Dictionary<ulong, ulong> _profileEpochs = new();
     // Kit ids this plugin wrote per player, so a clear only touches players
     // we painted and everyone else keeps the value Valve put there.
     private readonly Dictionary<ulong, int> _appliedMusicKits = new();
     // !randomskins on: scope and the round last rolled, per player. Memory
-    // only, dropped on disconnect.
+    // only, dropped on disconnect but kept across a map change.
     private readonly Dictionary<ulong, (string? Category, bool Everything, int Round)> _roundRandom = new();
     private int _round;
     private readonly object _storageQueueLock = new();
@@ -169,6 +172,7 @@ public sealed class SkinManager : IDisposable
         _loadedProfiles.Clear();
         _loadingProfiles.Clear();
         _applyAfterLoadRequests.Clear();
+        _regiveAfterLoad.Clear();
         _profiles.Clear();
         _profileEpochs.Clear();
         _appliedMusicKits.Clear();
@@ -219,23 +223,29 @@ public sealed class SkinManager : IDisposable
         return profile;
     }
 
-    public void Forget(CCSPlayerController player)
+    public void Forget(CCSPlayerController player, bool keepRoundRandom = false)
     {
         if (TryGetSteamId64(player, out var steamId))
         {
-            Forget(steamId);
+            Forget(steamId, keepRoundRandom);
         }
     }
 
-    public void Forget(ulong steamId64)
+    // keepRoundRandom: the player was dropped by a map change and comes back
+    // on the next map, so !randomskins on stays on for them.
+    public void Forget(ulong steamId64, bool keepRoundRandom = false)
     {
         _profiles.Remove(steamId64);
         _loadedProfiles.Remove(steamId64);
         _applyAfterLoadRequests.Remove(steamId64);
+        _regiveAfterLoad.Remove(steamId64);
         _activeSteamIds.Remove(steamId64);
         _appliedMusicKits.Remove(steamId64);
         _profileRetryAfterUtc.Remove(steamId64);
-        _roundRandom.Remove(steamId64);
+        if (!keepRoundRandom)
+        {
+            _roundRandom.Remove(steamId64);
+        }
 
         // A read still in flight must come back stale: bump the epoch instead
         // of deleting it so the callback can tell this lifecycle ended.
@@ -1195,6 +1205,17 @@ public sealed class SkinManager : IDisposable
 
     public void NextRound() => _round++;
 
+    // At map end: keep !randomskins on for the players still connected (a
+    // changelevel usually keeps them) and for those the map change dropped,
+    // so only someone who left for good stops being listed.
+    public void KeepRoundRandomFor(IReadOnlySet<ulong> droppedByMapChange)
+    {
+        foreach (var steamId in _roundRandom.Keys.Where(id => !droppedByMapChange.Contains(id) && !_activeSteamIds.Contains(id)).ToList())
+        {
+            _roundRandom.Remove(steamId);
+        }
+    }
+
     // Called on spawn: rolls once per round. A profile still loading skips
     // this round (the saved picks apply as usual).
     public void RollRoundRandom(CCSPlayerController player)
@@ -1212,8 +1233,9 @@ public sealed class SkinManager : IDisposable
     }
 
     // !randomskins off: drop the memory-only picks and put the saved ones
-    // back. Same path as Reset without the wipe: strip what is on the player,
-    // then reload from storage and apply.
+    // back: reload from storage, then hand every item over again with the
+    // loaded picks (or stock). Nothing is stripped first: a stock gun handed
+    // out now would race the re-give after the load.
     public bool StopRoundRandom(CCSPlayerController player)
     {
         var steamId = GetSteamId64(player);
@@ -1223,8 +1245,7 @@ public sealed class SkinManager : IDisposable
         }
 
         BumpProfileEpoch(steamId);
-        var stockPaintedWeapons = _profiles.TryGetValue(steamId, out var profile) ? StockPaintedWeapons(player, profile) : null;
-        if (profile is not null)
+        if (_profiles.TryGetValue(steamId, out var profile))
         {
             BumpStickerWearForRenderedStickers(player, steamId, profile);
         }
@@ -1232,9 +1253,64 @@ public sealed class SkinManager : IDisposable
         _profiles.Remove(steamId);
         _loadedProfiles.Remove(steamId);
         _applyAfterLoadRequests.Remove(steamId);
-        ClearPlayerCosmetics(player, logFailures: false, stockPaintedWeapons);
+        _regiveAfterLoad.Add(steamId);
         ApplyToPlayerWhenProfileReady(player);
         return true;
+    }
+
+    // Painting in place does not always show in first person (a knife type
+    // change never does), so every item is handed over again: with its
+    // loaded pick, or stock when there is none. No in-place pass over the
+    // weapons afterwards: it would also paint the replacements created this
+    // frame, before they are set up, and the client can then keep drawing
+    // the stock finish on them.
+    private void RegiveLoadedPicks(CCSPlayerController player, PlayerSkinProfile profile)
+    {
+        // A gun handed back its saved finish right after a random one can stay
+        // stock in first person until its wear changes, so the guns in hand
+        // step their wear like a sticker change does (see BumpStickerWear).
+        var steamId = GetSteamId64(player);
+        var steps = new List<(string Type, string Target, string Value)>();
+        if (TryGetPawn(player, out var heldPawn, logFailures: false) && heldPawn!.WeaponServices is not null)
+        {
+            var held = heldPawn.WeaponServices.MyWeapons
+                .Select(handle => handle.Value)
+                .Where(weapon => weapon is { IsValid: true })
+                .Select(weapon => ResolveWeaponEntityName(weapon!))
+                .Where(name => Catalog.WeaponsByEntity.ContainsKey(name))
+                .Distinct(StringComparer.OrdinalIgnoreCase);
+            foreach (var weaponEntity in held)
+            {
+                steps.Add((StickerWearField, weaponEntity, NextStickerWearStep(profile, weaponEntity)));
+            }
+        }
+
+        if (steps.Count > 0)
+        {
+            QueueStorageWrite($"{steps.Count} wear steps for {steamId}", () => _storage.SaveSelections(steamId, steps));
+        }
+
+        ApplyMusicKitToPlayer(player);
+        ApplyTeamPreviewCosmetics(player, logFailures: false);
+        if (TryGetPawn(player, out var agentPawn, logFailures: false))
+        {
+            ApplyAgent(player, agentPawn!, profile, logFailures: false);
+        }
+
+        ReapplyTarget(player, profile, KnifeTarget, logFailures: false, clearWhenBare: true);
+        foreach (var weapon in Catalog.Weapons)
+        {
+            ReapplyTarget(player, profile, weapon.EntityName, logFailures: false, clearWhenBare: true);
+        }
+
+        if (ResolveUsableGloveSkin(player, profile, logFailures: false) is not null)
+        {
+            ReapplyTarget(player, profile, GloveTarget, logFailures: false);
+        }
+        else if (TryGetPawn(player, out var pawn, logFailures: false))
+        {
+            ClearGloveCosmetic(player, pawn!);
+        }
     }
 
     public bool ResetCategory(CCSPlayerController player, string category)
@@ -2638,7 +2714,14 @@ public sealed class SkinManager : IDisposable
                 var player = Utilities.GetPlayers().FirstOrDefault(p => IsUsablePlayer(p) && p.SteamID == steamId64);
                 if (player is not null)
                 {
-                    ApplyToPlayer(player, logFailures);
+                    if (_regiveAfterLoad.Remove(steamId64))
+                    {
+                        RegiveLoadedPicks(player, _profiles[steamId64]);
+                    }
+                    else
+                    {
+                        ApplyToPlayer(player, logFailures);
+                    }
                 }
             });
         });

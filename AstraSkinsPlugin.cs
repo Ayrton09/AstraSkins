@@ -1213,9 +1213,12 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         var player = @event.Userid;
         if (player is not null)
         {
+            // A map change drops everyone with reason SHUTDOWN; they come back
+            // on the next map.
+            var mapChange = @event.Reason == (int)CounterStrikeSharp.API.ValveConstants.Protobuf.NetworkDisconnectionReason.NETWORK_DISCONNECT_SHUTDOWN;
             _menuManager?.CloseSlot(player.Slot);
             _maintenanceCooldownsBySlot.Remove(player.Slot);
-            _skinManager?.Forget(player);
+            _skinManager?.Forget(player, keepRoundRandom: mapChange);
             if (!_steamIdsBySlot.Remove(player.Slot, out var steamId))
             {
                 steamId = player.IsBot ? 0 : player.SteamID;
@@ -1223,8 +1226,8 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
 
             if (steamId != 0)
             {
-                _skinManager?.Forget(steamId);
-                if (@event.Reason == (int)CounterStrikeSharp.API.ValveConstants.Protobuf.NetworkDisconnectionReason.NETWORK_DISCONNECT_SHUTDOWN)
+                _skinManager?.Forget(steamId, keepRoundRandom: mapChange);
+                if (mapChange)
                 {
                     _shutdownSteamIds.Add(steamId);
                 }
@@ -1310,6 +1313,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
     {
         _carriedOverSteamIds.Clear();
         _carriedOverSteamIds.UnionWith(_shutdownSteamIds);
+        _skinManager?.KeepRoundRandomFor(_shutdownSteamIds);
         _shutdownSteamIds.Clear();
         Logger.LogDebug("Astra Skins map end: {Count} humans carried over.", _carriedOverSteamIds.Count);
     }
