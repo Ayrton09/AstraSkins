@@ -50,7 +50,7 @@ public sealed class SkinManager : IDisposable
     private readonly Dictionary<ulong, int> _appliedMusicKits = new();
     // !randomskins on: scope and the round last rolled, per player. Memory
     // only, dropped on disconnect but kept across a map change.
-    private readonly Dictionary<ulong, (string? Category, bool Everything, int Round)> _roundRandom = new();
+    private readonly Dictionary<ulong, (IReadOnlySet<string>? Categories, bool Everything, int Round)> _roundRandom = new();
     private int _round;
     private readonly object _storageQueueLock = new();
     private Task _storageQueue = Task.CompletedTask;
@@ -137,8 +137,13 @@ public sealed class SkinManager : IDisposable
         Action<float, Action>? scheduleDelayed = null,
         bool statTrakByDefault = false,
         Func<string, bool>? isModelPrecached = null,
-        ModuleSwitches? modules = null)
+        ModuleSwitches? modules = null,
+        RandomSkinsConfig? randomSkins = null)
     {
+        _randomTopTierOnly = randomSkins?.TopTierOnly ?? false;
+        _randomSkipNames = new HashSet<string>(
+            (randomSkins?.SkipNames ?? new List<string>()).Where(n => !string.IsNullOrWhiteSpace(n)).Select(n => n.Trim()),
+            StringComparer.OrdinalIgnoreCase);
         _storage = storage;
         Catalog = catalog;
         _logger = logger;
@@ -1002,16 +1007,65 @@ public sealed class SkinManager : IDisposable
         return true;
     }
 
+    private readonly bool _randomTopTierOnly;
+    private readonly HashSet<string> _randomSkipNames;
+    private const int TopTierMinChoices = 3;
+    private static readonly string[] RarityGrades =
+        { "common", "uncommon", "rare", "mythical", "legendary", "ancient", "immortal", "contraband" };
+
+    // "rarity_ancient_weapon", "rarity_ancient" and "ancient" all give the
+    // same grade; higher is better, -1 for none or unknown.
+    private static int RarityGrade(string? rarity)
+    {
+        var parts = (rarity ?? string.Empty).Trim().Split('_', StringSplitOptions.RemoveEmptyEntries);
+        var token = parts.Length > 1 && parts[0].Equals("rarity", StringComparison.OrdinalIgnoreCase) ? parts[1] : parts.FirstOrDefault();
+        return token is null ? -1 : Array.FindIndex(RarityGrades, g => g.Equals(token, StringComparison.OrdinalIgnoreCase));
+    }
+
+    // What a random roll picks from: the usable entries minus RandomSkins.SkipNames
+    // (unless that empties it) and, with TopTierOnly, the best grades down
+    // to TopTierMinChoices entries. Never empty when the input is not.
+    private static List<T> RandomPool<T>(IEnumerable<T> items, Func<T, string> name, Func<T, string?> rarity, bool topTierOnly, IReadOnlySet<string> skipNames)
+    {
+        var all = items.ToList();
+        var pool = all.Where(i => !skipNames.Contains(name(i))).ToList();
+        if (pool.Count == 0)
+        {
+            pool = all;
+        }
+
+        if (!topTierOnly)
+        {
+            return pool;
+        }
+
+        var kept = new List<T>();
+        foreach (var grade in pool.GroupBy(i => RarityGrade(rarity(i))).OrderByDescending(g => g.Key))
+        {
+            if (kept.Count >= TopTierMinChoices || (grade.Key < 0 && kept.Count > 0))
+            {
+                break;
+            }
+
+            kept.AddRange(grade);
+        }
+
+        return kept;
+    }
+
+    private List<T> RandomPool<T>(IEnumerable<T> items, Func<T, string> name, Func<T, string?> rarity) =>
+        RandomPool(items, name, rarity, _randomTopTierOnly, _randomSkipNames);
+
     // !randomskins: a random pick for every slot the player could fill from
-    // the menu (modules they can use, entries whose flag they hold), or one
-    // reset category. Without a category, stickers and charms are left alone
+    // the menu (modules they can use, entries whose flag they hold), or only
+    // the given reset categories. Without a category, stickers and charms are left alone
     // (five random stickers and a charm on every gun is rarely wanted) unless
     // everything is asked for. Seed, wear, name tags and StatTrak
     // stay as they are. False when nothing was usable, null while the profile
     // is still loading: a merge landing afterwards would mix stored picks
     // back in, as with the Default rows. persist false keeps the picks in
     // memory only (!randomskins on); the saved ones come back on reload.
-    public bool? Randomize(CCSPlayerController player, string? category = null, bool everything = false, bool persist = true)
+    public bool? Randomize(CCSPlayerController player, IReadOnlySet<string>? categories = null, bool everything = false, bool persist = true)
     {
         var steamId = GetSteamId64(player);
         var profile = GetProfile(player);
@@ -1027,7 +1081,7 @@ public sealed class SkinManager : IDisposable
             return list.Count == 0 ? null : list[random.Next(list.Count)];
         }
 
-        bool Wants(string name) => category == name || (category is null && (everything || name is not ("stickers" or "keychains")));
+        bool Wants(string name) => categories?.Contains(name) ?? (everything || name is not ("stickers" or "keychains"));
         var rows = new List<(string Type, string Target, string Value)>();
         var targets = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
@@ -1035,7 +1089,7 @@ public sealed class SkinManager : IDisposable
         {
             foreach (var weapon in Catalog.Weapons)
             {
-                var skin = Pick(weapon.Skins.Where(s => CanUse(player, s)));
+                var skin = Pick(RandomPool(weapon.Skins.Where(s => CanUse(player, s)), s => s.DisplayName, s => s.Rarity));
                 if (skin is null)
                 {
                     continue;
@@ -1048,7 +1102,7 @@ public sealed class SkinManager : IDisposable
         }
 
         var stickers = Wants("stickers") && CanUseStickers(player)
-            ? Catalog.Stickers.Where(s => CanUse(player, s)).ToList()
+            ? RandomPool(Catalog.Stickers.Where(s => CanUse(player, s)), s => s.DisplayName, s => s.Rarity)
             : new List<StickerDefinition>();
         if (stickers.Count > 0 && Catalog.Weapons.Count > 0)
         {
@@ -1067,7 +1121,7 @@ public sealed class SkinManager : IDisposable
         }
 
         var keychains = Wants("keychains") && CanUseKeychains(player)
-            ? Catalog.Keychains.Where(k => CanUse(player, k)).ToList()
+            ? RandomPool(Catalog.Keychains.Where(k => CanUse(player, k)), k => k.DisplayName, k => k.Rarity)
             : new List<KeychainDefinition>();
         if (keychains.Count > 0 && Catalog.Weapons.Count > 0)
         {
@@ -1081,12 +1135,21 @@ public sealed class SkinManager : IDisposable
         }
 
         var clearKnifeSkin = false;
-        if (Wants("knife") && CanUseKnives(player) && Pick(Catalog.Knives.Where(k => CanUse(player, k))) is { } knife)
+        // Top tier: only knife types that have a graded finish to show, so a
+        // stock-only knife is not rolled while better ones exist.
+        var knives = Catalog.Knives.Where(k => CanUse(player, k)).ToList();
+        var gradedKnives = knives.Where(k => k.Skins.Any(s => CanUse(player, s) && RarityGrade(s.Rarity) >= 0)).ToList();
+        if (_randomTopTierOnly && gradedKnives.Count > 0)
+        {
+            knives = gradedKnives;
+        }
+
+        if (Wants("knife") && CanUseKnives(player) && Pick(RandomPool(knives, k => k.DisplayName, _ => null)) is { } knife)
         {
             // A knife type without a usable finish is still a valid pick: it
             // shows on its stock look, and the old finish (another knife's)
             // has to go so it does not come back with that knife.
-            var knifeSkin = Pick(knife.Skins.Where(s => CanUse(player, s)));
+            var knifeSkin = Pick(RandomPool(knife.Skins.Where(s => CanUse(player, s)), s => s.DisplayName, s => s.Rarity));
             profile.KnifeId = knife.Id;
             profile.KnifeSkinId = knifeSkin?.Id;
             rows.Add(("knife_type", KnifeTarget, knife.Id));
@@ -1105,9 +1168,9 @@ public sealed class SkinManager : IDisposable
         // Type first, then a finish of it, so glove types with many finishes
         // do not crowd out the rest.
         if (Wants("gloves") && CanUseGloves(player) &&
-            Pick(Catalog.Gloves.Where(g => CanUse(player, g) && g.Skins.Any(s => CanUse(player, s)))) is { } glove)
+            Pick(RandomPool(Catalog.Gloves.Where(g => CanUse(player, g) && g.Skins.Any(s => CanUse(player, s))), g => g.DisplayName, _ => null)) is { } glove)
         {
-            var gloveSkin = Pick(glove.Skins.Where(s => CanUse(player, s)))!;
+            var gloveSkin = Pick(RandomPool(glove.Skins.Where(s => CanUse(player, s)), s => s.DisplayName, s => s.Rarity))!;
             profile.GloveSkinId = gloveSkin.Id;
             rows.Add(("glove", GloveTarget, gloveSkin.Id));
             targets.Add(GloveTarget);
@@ -1118,7 +1181,7 @@ public sealed class SkinManager : IDisposable
         {
             foreach (var team in new[] { "t", "ct" })
             {
-                var agent = Pick(Catalog.Agents.Where(a => a.Team.Equals(team, StringComparison.OrdinalIgnoreCase) && CanUse(player, a)));
+                var agent = Pick(RandomPool(Catalog.Agents.Where(a => a.Team.Equals(team, StringComparison.OrdinalIgnoreCase) && CanUse(player, a)), a => a.DisplayName, a => a.Rarity));
                 if (agent is null)
                 {
                     continue;
@@ -1131,7 +1194,7 @@ public sealed class SkinManager : IDisposable
         }
 
         var musicChanged = false;
-        if (Wants("music") && CanUseMusicKits(player) && Pick(Catalog.MusicKits.Where(k => CanUse(player, k))) is { } kit)
+        if (Wants("music") && CanUseMusicKits(player) && Pick(RandomPool(Catalog.MusicKits.Where(k => CanUse(player, k)), k => k.DisplayName, _ => null)) is { } kit)
         {
             profile.MusicKitId = kit.Id;
             rows.Add(("music_kit", "music", kit.Id));
@@ -1192,12 +1255,12 @@ public sealed class SkinManager : IDisposable
     // !randomskins on: a memory-only roll now and one per round after, until
     // off or disconnect. Same results as Randomize; enabled only when the
     // first roll went through.
-    public bool? StartRoundRandom(CCSPlayerController player, string? category, bool everything)
+    public bool? StartRoundRandom(CCSPlayerController player, IReadOnlySet<string>? categories, bool everything)
     {
-        var done = Randomize(player, category, everything, persist: false);
+        var done = Randomize(player, categories, everything, persist: false);
         if (done == true)
         {
-            _roundRandom[GetSteamId64(player)] = (category, everything, _round);
+            _roundRandom[GetSteamId64(player)] = (categories, everything, _round);
         }
 
         return done;
@@ -1229,7 +1292,7 @@ public sealed class SkinManager : IDisposable
         }
 
         _roundRandom[steamId] = state with { Round = _round };
-        Randomize(player, state.Category, state.Everything, persist: false);
+        Randomize(player, state.Categories, state.Everything, persist: false);
     }
 
     // !randomskins off: drop the memory-only picks and put the saved ones

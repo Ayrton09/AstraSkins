@@ -27,6 +27,7 @@ public sealed class PluginConfig : BasePluginConfig
     // at 0. Players can still turn it off per item with !stattrak reset.
     public bool EnableStatTrakByDefault { get; set; } = false;
     public bool EnableMusicKitMvpCounter { get; set; } = false;
+    public RandomSkinsConfig RandomSkins { get; set; } = new();
     public DefinitionPathConfig Definitions { get; set; } = new();
     public bool EnableAdminReloadCommand { get; set; } = true;
     public string AdminReloadPermission { get; set; } = "@css/config";
@@ -79,6 +80,20 @@ public sealed class CustomizationConfig
     // default; each server adds its own. Avoid words that occur inside
     // normal words, since the match is by substring.
     public List<string> BlockedNameTagWords { get; set; } = new();
+}
+
+// What !randomskins (and !randomskins on) may roll.
+public sealed class RandomSkinsConfig
+{
+    // Only the best grades: Covert/Contraband guns, Master agents, gold
+    // stickers and so on, dropping a grade at a time while fewer than three
+    // choices are left, so every slot still varies. Ungraded entries (the
+    // stock knife finish) are rolled only when nothing graded is left.
+    public bool TopTierOnly { get; set; } = false;
+    // Display names never rolled, matched whole and case-insensitively
+    // against any finish, sticker, charm, agent or music kit, for example
+    // "Safari Mesh". Ignored where it would leave nothing to pick from.
+    public List<string> SkipNames { get; set; } = new();
 }
 
 // Stickers and charms each have their own switch and flag, separate from the

@@ -91,8 +91,8 @@ The `!` and `/` prefixes come from CounterStrikeSharp, not from the plugin: add 
 | `!charms <search>` | Search every charm for the held gun |
 | `!wsrefresh` | Reapply saved selections |
 | `!wsreset [all\|weapons\|knife\|gloves\|agents\|music\|stickers\|charms]` | Reset saved selections, all or per category |
-| `!randomskins [all\|weapons\|knife\|gloves\|agents\|music\|stickers\|charms]` | Random picks for every gun, the knife, gloves, both agents and the music kit, or one category; `all` also puts random stickers and a charm on every gun. Replaces the current picks |
-| `!randomskins on [all\|weapons\|knife\|gloves\|agents\|music\|stickers\|charms]` / `!randomskins off` | New random picks now and at every round start, same scope as above, kept in memory only; `off` brings the saved picks back |
+| `!randomskins [all\|weapons knife gloves agents music stickers charms]` | Random picks for every gun, the knife, gloves, both agents and the music kit, or only the categories listed (any number, spaces or commas); `all` also puts random stickers and a charm on every gun. Replaces the current picks |
+| `!randomskins on [all\|weapons knife gloves agents music stickers charms]` / `!randomskins off` | New random picks now and at every round start, same scope as above, kept in memory only; `off` brings the saved picks back |
 
 ### Customization
 
@@ -176,9 +176,11 @@ Stickers use the game's stock placement, size and wear for each slot; there is n
 
 ## Random Skins
 
-`!randomskins` fills every slot at random from what the menu would offer the player: switched-off modules, entries behind a flag they do not hold and disabled entries are never picked. `!randomskins knife` (or any `!wsreset` category) randomizes only that part. Stickers and charms are left out of a plain `!randomskins`; `!randomskins stickers` puts a random sticker in all five slots of every gun, `!randomskins charms` a random charm on each, and `!randomskins all` changes everything, stickers and charms included. Seed, wear, name tags and StatTrak counters are kept. Items in hand update right away; guns not in hand get their skin when bought or picked up, and the other team's agent on the next spawn there. The previous picks are overwritten, so there is no undo; `!wsreset` goes back to defaults. The command shares the 2-second cooldown of `!wsrefresh` and `!wsreset`, and rename or remove it with `Commands.Random`.
+`!randomskins` fills every slot at random from what the menu would offer the player: switched-off modules, entries behind a flag they do not hold and disabled entries are never picked. `!randomskins knife` (or any `!wsreset` category) randomizes only that part; list several to pick them together, e.g. `!randomskins weapons knife gloves agents` (everything but music) or `!randomskins weapons,stickers`. Stickers and charms are left out of a plain `!randomskins`; `!randomskins stickers` puts a random sticker in all five slots of every gun, `!randomskins charms` a random charm on each, and `!randomskins all` changes everything, stickers and charms included. Seed, wear, name tags and StatTrak counters are kept. Items in hand update right away; guns not in hand get their skin when bought or picked up, and the other team's agent on the next spawn there. The previous picks are overwritten, so there is no undo; `!wsreset` goes back to defaults. The command shares the 2-second cooldown of `!wsrefresh` and `!wsreset`, and rename or remove it with `Commands.Random`.
 
-`!randomskins on` rolls the same way right away and again each round when the player spawns, but never saves the picks: the saved ones stay in the database untouched. It takes the same scope as `!randomskins` (`!randomskins on knife`, `!randomskins on all`, ...); running it again changes the scope and rolls again. `!randomskins off` puts the saved picks back right away, and leaving the server turns it off (a map change does not). The only rows it writes are the internal sticker wear counters, so stickers in first person stay correct. Choosing something from the menu while it is on still saves that pick, and the next round rolls over it until `off`.
+`!randomskins on` rolls the same way right away and again each round when the player spawns, but never saves the picks: the saved ones stay in the database untouched. It takes the same scope as `!randomskins` (`!randomskins on knife`, `!randomskins on weapons knife gloves agents`, `!randomskins on all`, ...); running it again changes the scope and rolls again. `!randomskins off` puts the saved picks back right away, and leaving the server turns it off (a map change does not). The only rows it writes are the internal sticker wear counters, so stickers in first person stay correct. Choosing something from the menu while it is on still saves that pick, and the next round rolls over it until `off`.
+
+`RandomSkins.TopTierOnly` limits both to the best items of each slot, and `RandomSkins.SkipNames` leaves out names you never want rolled (see Configuration).
 
 ## Configuration
 
@@ -263,6 +265,10 @@ Stickers use the game's stock placement, size and wear for each slot; there is n
   "ApplyPlayerCosmeticsOnBotTakeover": false,
   "EnableStatTrakByDefault": false,
   "EnableMusicKitMvpCounter": false,
+  "RandomSkins": {
+    "TopTierOnly": false,
+    "SkipNames": []
+  },
   "Definitions": {
     "Weapons": "data/weapons.json",
     "Knives": "data/knives.json",
@@ -301,6 +307,8 @@ Stickers use the game's stock placement, size and wear for each slot; there is n
 | `ApplyPlayerCosmeticsOnBotTakeover` | Off by default: a bot you take over keeps its own loadout. Set to `true` to apply your knife, agent and music kit to the possessed bot (guns and gloves already in hand keep their look) |
 | `EnableStatTrakByDefault` | Every weapon and knife with a selected skin starts with a StatTrak counter at 0; players can still turn it off per item with `!stattrak reset`. That counter belongs to the selection: while the selection is not applied (module off, flag lost) it stays hidden, and it comes back with it |
 | `EnableMusicKitMvpCounter` | Track per-player MVP counts for selected music kits |
+| `RandomSkins.TopTierOnly` | `!randomskins` (and `on`) rolls only the best grades: Covert and Contraband guns, Master agents, gold stickers, the rarest charms. Where fewer than three such choices exist it goes down a grade at a time until there are three, so every gun still varies (a gun with one Covert also gets its Classified finishes). Knives only roll a real finish, never the stock one |
+| `RandomSkins.SkipNames` | Names `!randomskins` never picks, matched whole and case-insensitively against finishes, knife and glove types, stickers, charms, agents and music kits, e.g. `["Safari Mesh", "Boreal Forest", "Forest DDPAT", "Urban Masked", "Scorched", "Stained", "Rust Coat"]` for no dull knife finishes. Every knife finish has the same grade (Covert), so `TopTierOnly` alone cannot rank them; for premium knives only (Dopplers, Gamma Dopplers, Fade, Marble Fade, Tiger Tooth, Lore, Autotronic, Slaughter) also add `"Black Laminate", "Blue Steel", "Bright Water", "Case Hardened", "Crimson Web", "Damascus Steel", "Freehand", "Night", "Night Stripe", "Ultraviolet"` (these names also match a few low-grade gun skins and Hydra Gloves \| Case Hardened). Knife and glove types are names too, so `"Gut Knife"` or `"Bloodhound Gloves"` drops a whole type, and `"Doppler (Phase 1)"` a single phase (Glock-18 shares the Gamma Doppler phase names). Ignored for a slot where it would leave nothing |
 
 ### SQLite
 

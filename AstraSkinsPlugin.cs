@@ -184,12 +184,13 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             config.EnableStatTrakByDefault,
             // No precache pass seen yet (plugin loaded mid-map): nothing to check against.
             model => _precachedModels.Count == 0 || _precachedModels.Contains(model),
-            ModuleSwitches.From(config));
+            ModuleSwitches.From(config),
+            config.RandomSkins);
         _menuManager = new MenuManager(_skinManager, config, Localizer, Logger);
         _ready = true;
 
         Logger.LogInformation(
-            "Astra Skins loaded: {Weapons} weapons, {KnifeSkins} knife skins, {GloveSkins} glove skins, {Agents} agents, {MusicKits} music kits, {Stickers} stickers, {Keychains} keychains, DB={DatabaseMode}, StatTrakByDefault={StatTrakByDefault}, MusicKitMvpCounter={MusicKitMvpCounter}",
+            "Astra Skins loaded: {Weapons} weapons, {KnifeSkins} knife skins, {GloveSkins} glove skins, {Agents} agents, {MusicKits} music kits, {Stickers} stickers, {Keychains} keychains, DB={DatabaseMode}, StatTrakByDefault={StatTrakByDefault}, MusicKitMvpCounter={MusicKitMvpCounter}, RandomTopTier={RandomTopTier}",
             catalog.Weapons.Count,
             catalog.KnifeSkinsById.Count,
             catalog.GloveSkinsById.Count,
@@ -199,7 +200,8 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             catalog.Keychains.Count,
             config.DatabaseMode,
             config.EnableStatTrakByDefault,
-            config.EnableMusicKitMvpCounter);
+            config.EnableMusicKitMvpCounter,
+            config.RandomSkins.TopTierOnly);
 
         var disabledModules = _skinManager.DisabledModules();
         if (disabledModules.Count > 0)
@@ -507,7 +509,7 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
         }
 
         // No argument: everything but stickers and charms. "all" adds those too.
-        // "on [scope]" rolls the same way now and every round, memory only;
+        // "on [scopes]" rolls the same way now and every round, memory only;
         // "off" stops that and puts the saved picks back.
         var argument = command.ArgCount > 1 ? command.GetArg(1).Trim().ToLowerInvariant() : string.Empty;
         if (argument == "off")
@@ -528,28 +530,29 @@ public sealed class AstraSkinsPlugin : BasePlugin, IPluginConfig<PluginConfig>
             return;
         }
 
+        // Scopes can be listed together, by spaces or commas:
+        // "on weapons knife gloves", "weapons,agents".
         var everyRound = argument == "on";
-        if (everyRound)
-        {
-            argument = command.ArgCount > 2 ? command.GetArg(2).Trim().ToLowerInvariant() : string.Empty;
-        }
-
-        var everything = argument is "all" or "*";
-        var category = argument.Length == 0 || everything ? null : SkinManager.NormalizeResetCategory(argument);
-        if (argument.Length > 0 && !everything && category is null)
+        var scopes = Enumerable.Range(everyRound ? 2 : 1, Math.Max(0, command.ArgCount - (everyRound ? 2 : 1)))
+            .SelectMany(i => command.GetArg(i).Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+            .Select(s => s.ToLowerInvariant())
+            .ToList();
+        var everything = scopes.Any(s => s is "all" or "*");
+        if (scopes.Any(s => s is not ("all" or "*") && SkinManager.NormalizeResetCategory(s) is null))
         {
             command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.random_usage", ChatCommand(_config!.Commands.Random, "css_randomskins"))}");
             return;
         }
 
+        var categories = scopes.Count == 0 || everything ? null : scopes.Select(s => SkinManager.NormalizeResetCategory(s)!).ToHashSet();
         if (!RequireMaintenanceCooldown(player!, command))
         {
             return;
         }
 
         var done = everyRound
-            ? _skinManager!.StartRoundRandom(player!, category, everything)
-            : _skinManager!.Randomize(player!, category, everything);
+            ? _skinManager!.StartRoundRandom(player!, categories, everything)
+            : _skinManager!.Randomize(player!, categories, everything);
         if (done is null)
         {
             command.ReplyToCommand($"{FormatPrefix()} {Localizer.ForPlayer(player, "astra.random_loading")}");

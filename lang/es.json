@@ -15,7 +15,7 @@
   "astra.reset_music": "Selección de kit de música restablecida.",
   "astra.reset_stickers": "Selecciones de stickers restablecidas.",
   "astra.reset_charms": "Selecciones de llaveros restablecidas.",
-  "astra.random_usage": "Uso: {0} [on|off] [all|weapons|knife|gloves|agents|music|stickers|charms]",
+  "astra.random_usage": "Uso: {0} [on|off] [all|weapons knife gloves agents music stickers charms]",
   "astra.random_done": "Selecciones aleatorias aplicadas. Las armas que no llevas las reciben cuando las consigas.",
   "astra.random_nothing": "Nada que aleatorizar: esos objetos están desactivados o requieren un permiso que no tienes.",
   "astra.random_loading": "Tus selecciones aún se están cargando. Inténtalo de nuevo en un momento.",
