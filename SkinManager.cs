@@ -3941,14 +3941,29 @@ public sealed class SkinManager : IDisposable
     // A gun picked up from another player still carries that player's skin,
     // name tag and owner stamp (every paint we apply stamps the owner). It
     // stays theirs: re-painting it at the next round start would swap their
-    // skin for the picker's picks. Unstamped guns (0) count as the player's.
+    // skin for the picker's picks. Unstamped guns count as the player's unless dropped by someone else.
     // Compares the account id only, the part every stamp format has.
     private static bool IsForeignWeapon(CCSPlayerController player, CBasePlayerWeapon weapon)
     {
         try
         {
             var owner = weapon.OriginalOwnerXuidLow;
-            return owner != 0 && owner != (uint)(player.SteamID & 0xFFFFFFFF);
+            if (owner != 0)
+            {
+                return owner != (uint)(player.SteamID & 0xFFFFFFFF);
+            }
+
+            // Bot guns are never painted, so they carry no stamp. The engine
+            // records who dropped a weapon last: anyone but this player marks
+            // a pickup.
+            var prev = weapon.As<CCSWeaponBase>().PrevOwner;
+            if (!prev.IsValid)
+            {
+                return false;
+            }
+
+            var prevPawn = prev.Value;
+            return prevPawn is null || prevPawn.Controller.Index != player.Index;
         }
         catch
         {
