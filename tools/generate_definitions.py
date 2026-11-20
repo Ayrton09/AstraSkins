@@ -822,6 +822,33 @@ def attach_zh_names(weapons, knives, gloves, agents, api_skins_zh, api_agents_zh
         agents[index] = with_zh(agent, agent_zh.get(agent["id"]))
 
 
+def mark_legacy_duplicates(containers):
+    """Tell apart two finishes with the same name on one item.
+
+    Valve remade some classic knife finishes for the CS2 models under new
+    paint kits (Case Hardened is 44 on the legacy model and 1482 on the new
+    one); both keep the same name, so the legacy one gets a suffix.
+    """
+    for container in containers:
+        skins = container.get("skins", [])
+        by_name = {}
+        for skin in skins:
+            by_name.setdefault(skin.get("displayName"), []).append(skin)
+        changed = False
+        for same in by_name.values():
+            if len(same) < 2 or not any(s.get("legacyModel") for s in same) or all(s.get("legacyModel") for s in same):
+                continue
+            for skin in same:
+                if skin.get("legacyModel"):
+                    skin["displayName"] += " (Legacy)"
+                    if skin.get("displayNameZh"):
+                        skin["displayNameZh"] += "（旧版）"
+                    changed = True
+        if changed:
+            container["skins"] = [s for s in skins if s.get("paintKit") == 0] + sorted(
+                (s for s in skins if s.get("paintKit") != 0), key=lambda x: (x["displayName"], x["paintKit"]))
+
+
 def unique_by_id(entries):
     result = []
     seen = set()
@@ -872,6 +899,7 @@ def main():
     stickers = build_stickers(api_stickers, api_stickers_zh)
     keychains = build_keychains(api_keychains, api_keychains_zh)
     attach_zh_names(weapons, knives, gloves, agents, api_skins_zh, api_agents_zh)
+    mark_legacy_duplicates(knives)
 
     if not any(w["skins"] for w in weapons):
         print("No weapon skins were generated; check item_sets and paint_kits in the input schema.", file=sys.stderr)

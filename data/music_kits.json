@@ -598,5 +598,53 @@
     "musicKit": 104,
     "displayName": "Starjunk 95, Industrial Sunset Memories",
     "displayNameZh": "Starjunk 95，工业忆夕"
+  },
+  {
+    "id": "105",
+    "musicKit": 105,
+    "displayName": "ALLEYCVT & LEVEL UP, BELIEVE",
+    "displayNameZh": "ALLEYCVT & LEVEL UP, 相信"
+  },
+  {
+    "id": "106",
+    "musicKit": 106,
+    "displayName": "Arcando & Pirapus, Ultrasound",
+    "displayNameZh": "Arcando & Pirapus, 超声波"
+  },
+  {
+    "id": "107",
+    "musicKit": 107,
+    "displayName": "DJ DIESEL & Hairitage, BANG YOUR HEAD",
+    "displayNameZh": "DJ DIESEL & Hairitage, 甩起头来"
+  },
+  {
+    "id": "108",
+    "musicKit": 108,
+    "displayName": "F.O.O.L, Criminals",
+    "displayNameZh": "F.O.O.L, 狂徒"
+  },
+  {
+    "id": "109",
+    "musicKit": 109,
+    "displayName": "Noisestorm, Crab Rave",
+    "displayNameZh": "Noisestorm, 横行无忌"
+  },
+  {
+    "id": "110",
+    "musicKit": 110,
+    "displayName": "Pegboard Nerds, Disconnected",
+    "displayNameZh": "Pegboard Nerds, 断开连接"
+  },
+  {
+    "id": "111",
+    "musicKit": 111,
+    "displayName": "Tristam & Braken, Flight",
+    "displayNameZh": "Tristam & Braken, 翱翔"
+  },
+  {
+    "id": "112",
+    "musicKit": 112,
+    "displayName": "Vicetone & Cozi Zuehlsdorff, Nevada",
+    "displayNameZh": "Vicetone & Cozi Zuehlsdorff, 内华达"
   }
 ]

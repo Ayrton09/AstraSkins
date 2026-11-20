@@ -43,9 +43,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_bayonet:42",
+        "id": "weapon_bayonet:1480",
         "displayName": "Blue Steel",
         "displayNameZh": "蓝钢",
+        "paintKit": 1480,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 500,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_bayonet:42",
+        "displayName": "Blue Steel (Legacy)",
+        "displayNameZh": "蓝钢（旧版）",
         "paintKit": 42,
         "seed": 0,
         "wear": 0.0001,
@@ -55,9 +67,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_bayonet:77",
+        "id": "weapon_bayonet:1483",
         "displayName": "Boreal Forest",
         "displayNameZh": "北方森林",
+        "paintKit": 1483,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 500,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_bayonet:77",
+        "displayName": "Boreal Forest (Legacy)",
+        "displayNameZh": "北方森林（旧版）",
         "paintKit": 77,
         "seed": 0,
         "wear": 0.06,
@@ -79,9 +103,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_bayonet:44",
+        "id": "weapon_bayonet:1482",
         "displayName": "Case Hardened",
         "displayNameZh": "表面淬火",
+        "paintKit": 1482,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 500,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_bayonet:44",
+        "displayName": "Case Hardened (Legacy)",
+        "displayNameZh": "表面淬火（旧版）",
         "paintKit": 44,
         "seed": 0,
         "wear": 0.0001,
@@ -91,9 +127,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_bayonet:12",
+        "id": "weapon_bayonet:1479",
         "displayName": "Crimson Web",
         "displayNameZh": "深红之网",
+        "paintKit": 1479,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 500,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_bayonet:12",
+        "displayName": "Crimson Web (Legacy)",
+        "displayNameZh": "深红之网（旧版）",
         "paintKit": 12,
         "seed": 0,
         "wear": 0.06,
@@ -110,7 +158,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 500,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -211,9 +259,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_bayonet:5",
+        "id": "weapon_bayonet:1478",
         "displayName": "Forest DDPAT",
         "displayNameZh": "森林 DDPAT",
+        "paintKit": 1478,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 500,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_bayonet:5",
+        "displayName": "Forest DDPAT (Legacy)",
+        "displayNameZh": "森林 DDPAT（旧版）",
         "paintKit": 5,
         "seed": 0,
         "wear": 0.06,
@@ -314,7 +374,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 500,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -338,7 +398,7 @@
         "seed": 0,
         "wear": 0.4,
         "itemDefinitionIndex": 500,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -374,14 +434,26 @@
         "seed": 0,
         "wear": 0.01,
         "itemDefinitionIndex": 500,
-        "legacyModel": true,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_bayonet:1481",
+        "displayName": "Stained",
+        "displayNameZh": "人工染色",
+        "paintKit": 1481,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 500,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
       {
         "id": "weapon_bayonet:43",
-        "displayName": "Stained",
-        "displayNameZh": "人工染色",
+        "displayName": "Stained (Legacy)",
+        "displayNameZh": "人工染色（旧版）",
         "paintKit": 43,
         "seed": 0,
         "wear": 0.0001,
@@ -398,7 +470,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 500,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -472,9 +544,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_survival_bowie:42",
+        "id": "weapon_knife_survival_bowie:1480",
         "displayName": "Blue Steel",
         "displayNameZh": "蓝钢",
+        "paintKit": 1480,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 514,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_survival_bowie:42",
+        "displayName": "Blue Steel (Legacy)",
+        "displayNameZh": "蓝钢（旧版）",
         "paintKit": 42,
         "seed": 0,
         "wear": 0.0001,
@@ -484,9 +568,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_survival_bowie:77",
+        "id": "weapon_knife_survival_bowie:1483",
         "displayName": "Boreal Forest",
         "displayNameZh": "北方森林",
+        "paintKit": 1483,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 514,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_survival_bowie:77",
+        "displayName": "Boreal Forest (Legacy)",
+        "displayNameZh": "北方森林（旧版）",
         "paintKit": 77,
         "seed": 0,
         "wear": 0.06,
@@ -508,9 +604,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_survival_bowie:44",
+        "id": "weapon_knife_survival_bowie:1482",
         "displayName": "Case Hardened",
         "displayNameZh": "表面淬火",
+        "paintKit": 1482,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 514,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_survival_bowie:44",
+        "displayName": "Case Hardened (Legacy)",
+        "displayNameZh": "表面淬火（旧版）",
         "paintKit": 44,
         "seed": 0,
         "wear": 0.0001,
@@ -520,9 +628,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_survival_bowie:12",
+        "id": "weapon_knife_survival_bowie:1479",
         "displayName": "Crimson Web",
         "displayNameZh": "深红之网",
+        "paintKit": 1479,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 514,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_survival_bowie:12",
+        "displayName": "Crimson Web (Legacy)",
+        "displayNameZh": "深红之网（旧版）",
         "paintKit": 12,
         "seed": 0,
         "wear": 0.06,
@@ -640,9 +760,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_survival_bowie:5",
+        "id": "weapon_knife_survival_bowie:1478",
         "displayName": "Forest DDPAT",
         "displayNameZh": "森林 DDPAT",
+        "paintKit": 1478,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 514,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_survival_bowie:5",
+        "displayName": "Forest DDPAT (Legacy)",
+        "displayNameZh": "森林 DDPAT（旧版）",
         "paintKit": 5,
         "seed": 0,
         "wear": 0.06,
@@ -743,7 +875,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 514,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -767,7 +899,7 @@
         "seed": 0,
         "wear": 0.4,
         "itemDefinitionIndex": 514,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -803,14 +935,26 @@
         "seed": 0,
         "wear": 0.01,
         "itemDefinitionIndex": 514,
-        "legacyModel": true,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_survival_bowie:1481",
+        "displayName": "Stained",
+        "displayNameZh": "人工染色",
+        "paintKit": 1481,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 514,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
       {
         "id": "weapon_knife_survival_bowie:43",
-        "displayName": "Stained",
-        "displayNameZh": "人工染色",
+        "displayName": "Stained (Legacy)",
+        "displayNameZh": "人工染色（旧版）",
         "paintKit": 43,
         "seed": 0,
         "wear": 0.0001,
@@ -827,7 +971,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 514,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -901,9 +1045,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_butterfly:42",
+        "id": "weapon_knife_butterfly:1480",
         "displayName": "Blue Steel",
         "displayNameZh": "蓝钢",
+        "paintKit": 1480,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 515,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_butterfly:42",
+        "displayName": "Blue Steel (Legacy)",
+        "displayNameZh": "蓝钢（旧版）",
         "paintKit": 42,
         "seed": 0,
         "wear": 0.0001,
@@ -913,9 +1069,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_butterfly:77",
+        "id": "weapon_knife_butterfly:1483",
         "displayName": "Boreal Forest",
         "displayNameZh": "北方森林",
+        "paintKit": 1483,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 515,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_butterfly:77",
+        "displayName": "Boreal Forest (Legacy)",
+        "displayNameZh": "北方森林（旧版）",
         "paintKit": 77,
         "seed": 0,
         "wear": 0.06,
@@ -937,9 +1105,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_butterfly:44",
+        "id": "weapon_knife_butterfly:1482",
         "displayName": "Case Hardened",
         "displayNameZh": "表面淬火",
+        "paintKit": 1482,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 515,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_butterfly:44",
+        "displayName": "Case Hardened (Legacy)",
+        "displayNameZh": "表面淬火（旧版）",
         "paintKit": 44,
         "seed": 0,
         "wear": 0.0001,
@@ -949,9 +1129,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_butterfly:12",
+        "id": "weapon_knife_butterfly:1479",
         "displayName": "Crimson Web",
         "displayNameZh": "深红之网",
+        "paintKit": 1479,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 515,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_butterfly:12",
+        "displayName": "Crimson Web (Legacy)",
+        "displayNameZh": "深红之网（旧版）",
         "paintKit": 12,
         "seed": 0,
         "wear": 0.06,
@@ -1069,9 +1261,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_butterfly:5",
+        "id": "weapon_knife_butterfly:1478",
         "displayName": "Forest DDPAT",
         "displayNameZh": "森林 DDPAT",
+        "paintKit": 1478,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 515,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_butterfly:5",
+        "displayName": "Forest DDPAT (Legacy)",
+        "displayNameZh": "森林 DDPAT（旧版）",
         "paintKit": 5,
         "seed": 0,
         "wear": 0.06,
@@ -1172,7 +1376,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 515,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -1196,7 +1400,7 @@
         "seed": 0,
         "wear": 0.4,
         "itemDefinitionIndex": 515,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -1232,14 +1436,26 @@
         "seed": 0,
         "wear": 0.01,
         "itemDefinitionIndex": 515,
-        "legacyModel": true,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_butterfly:1481",
+        "displayName": "Stained",
+        "displayNameZh": "人工染色",
+        "paintKit": 1481,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 515,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
       {
         "id": "weapon_knife_butterfly:43",
-        "displayName": "Stained",
-        "displayNameZh": "人工染色",
+        "displayName": "Stained (Legacy)",
+        "displayNameZh": "人工染色（旧版）",
         "paintKit": 43,
         "seed": 0,
         "wear": 0.0001,
@@ -1256,7 +1472,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 515,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -1306,9 +1522,21 @@
         "enabled": true
       },
       {
-        "id": "weapon_knife_css:42",
+        "id": "weapon_knife_css:1480",
         "displayName": "Blue Steel",
         "displayNameZh": "蓝钢",
+        "paintKit": 1480,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 503,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_css:42",
+        "displayName": "Blue Steel (Legacy)",
+        "displayNameZh": "蓝钢（旧版）",
         "paintKit": 42,
         "seed": 0,
         "wear": 0.0001,
@@ -1318,9 +1546,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_css:77",
+        "id": "weapon_knife_css:1483",
         "displayName": "Boreal Forest",
         "displayNameZh": "北方森林",
+        "paintKit": 1483,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 503,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_css:77",
+        "displayName": "Boreal Forest (Legacy)",
+        "displayNameZh": "北方森林（旧版）",
         "paintKit": 77,
         "seed": 0,
         "wear": 0.06,
@@ -1330,9 +1570,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_css:44",
+        "id": "weapon_knife_css:1482",
         "displayName": "Case Hardened",
         "displayNameZh": "表面淬火",
+        "paintKit": 1482,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 503,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_css:44",
+        "displayName": "Case Hardened (Legacy)",
+        "displayNameZh": "表面淬火（旧版）",
         "paintKit": 44,
         "seed": 0,
         "wear": 0.0001,
@@ -1342,9 +1594,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_css:12",
+        "id": "weapon_knife_css:1479",
         "displayName": "Crimson Web",
         "displayNameZh": "深红之网",
+        "paintKit": 1479,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 503,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_css:12",
+        "displayName": "Crimson Web (Legacy)",
+        "displayNameZh": "深红之网（旧版）",
         "paintKit": 12,
         "seed": 0,
         "wear": 0.06,
@@ -1366,9 +1630,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_css:5",
+        "id": "weapon_knife_css:1478",
         "displayName": "Forest DDPAT",
         "displayNameZh": "森林 DDPAT",
+        "paintKit": 1478,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 503,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_css:5",
+        "displayName": "Forest DDPAT (Legacy)",
+        "displayNameZh": "森林 DDPAT（旧版）",
         "paintKit": 5,
         "seed": 0,
         "wear": 0.06,
@@ -1421,14 +1697,26 @@
         "seed": 0,
         "wear": 0.01,
         "itemDefinitionIndex": 503,
-        "legacyModel": true,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_css:1481",
+        "displayName": "Stained",
+        "displayNameZh": "人工染色",
+        "paintKit": 1481,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 503,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
       {
         "id": "weapon_knife_css:43",
-        "displayName": "Stained",
-        "displayNameZh": "人工染色",
+        "displayName": "Stained (Legacy)",
+        "displayNameZh": "人工染色（旧版）",
         "paintKit": 43,
         "seed": 0,
         "wear": 0.0001,
@@ -1495,9 +1783,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_falchion:42",
+        "id": "weapon_knife_falchion:1480",
         "displayName": "Blue Steel",
         "displayNameZh": "蓝钢",
+        "paintKit": 1480,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 512,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_falchion:42",
+        "displayName": "Blue Steel (Legacy)",
+        "displayNameZh": "蓝钢（旧版）",
         "paintKit": 42,
         "seed": 0,
         "wear": 0.0001,
@@ -1507,9 +1807,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_falchion:77",
+        "id": "weapon_knife_falchion:1483",
         "displayName": "Boreal Forest",
         "displayNameZh": "北方森林",
+        "paintKit": 1483,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 512,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_falchion:77",
+        "displayName": "Boreal Forest (Legacy)",
+        "displayNameZh": "北方森林（旧版）",
         "paintKit": 77,
         "seed": 0,
         "wear": 0.06,
@@ -1531,9 +1843,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_falchion:44",
+        "id": "weapon_knife_falchion:1482",
         "displayName": "Case Hardened",
         "displayNameZh": "表面淬火",
+        "paintKit": 1482,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 512,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_falchion:44",
+        "displayName": "Case Hardened (Legacy)",
+        "displayNameZh": "表面淬火（旧版）",
         "paintKit": 44,
         "seed": 0,
         "wear": 0.0001,
@@ -1543,9 +1867,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_falchion:12",
+        "id": "weapon_knife_falchion:1479",
         "displayName": "Crimson Web",
         "displayNameZh": "深红之网",
+        "paintKit": 1479,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 512,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_falchion:12",
+        "displayName": "Crimson Web (Legacy)",
+        "displayNameZh": "深红之网（旧版）",
         "paintKit": 12,
         "seed": 0,
         "wear": 0.06,
@@ -1663,9 +1999,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_falchion:5",
+        "id": "weapon_knife_falchion:1478",
         "displayName": "Forest DDPAT",
         "displayNameZh": "森林 DDPAT",
+        "paintKit": 1478,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 512,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_falchion:5",
+        "displayName": "Forest DDPAT (Legacy)",
+        "displayNameZh": "森林 DDPAT（旧版）",
         "paintKit": 5,
         "seed": 0,
         "wear": 0.06,
@@ -1766,7 +2114,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 512,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -1790,7 +2138,7 @@
         "seed": 0,
         "wear": 0.4,
         "itemDefinitionIndex": 512,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -1826,14 +2174,26 @@
         "seed": 0,
         "wear": 0.01,
         "itemDefinitionIndex": 512,
-        "legacyModel": true,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_falchion:1481",
+        "displayName": "Stained",
+        "displayNameZh": "人工染色",
+        "paintKit": 1481,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 512,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
       {
         "id": "weapon_knife_falchion:43",
-        "displayName": "Stained",
-        "displayNameZh": "人工染色",
+        "displayName": "Stained (Legacy)",
+        "displayNameZh": "人工染色（旧版）",
         "paintKit": 43,
         "seed": 0,
         "wear": 0.0001,
@@ -1850,7 +2210,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 512,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -1924,9 +2284,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_flip:42",
+        "id": "weapon_knife_flip:1480",
         "displayName": "Blue Steel",
         "displayNameZh": "蓝钢",
+        "paintKit": 1480,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 505,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_flip:42",
+        "displayName": "Blue Steel (Legacy)",
+        "displayNameZh": "蓝钢（旧版）",
         "paintKit": 42,
         "seed": 0,
         "wear": 0.0001,
@@ -1936,9 +2308,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_flip:77",
+        "id": "weapon_knife_flip:1483",
         "displayName": "Boreal Forest",
         "displayNameZh": "北方森林",
+        "paintKit": 1483,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 505,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_flip:77",
+        "displayName": "Boreal Forest (Legacy)",
+        "displayNameZh": "北方森林（旧版）",
         "paintKit": 77,
         "seed": 0,
         "wear": 0.06,
@@ -1960,9 +2344,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_flip:44",
+        "id": "weapon_knife_flip:1482",
         "displayName": "Case Hardened",
         "displayNameZh": "表面淬火",
+        "paintKit": 1482,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 505,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_flip:44",
+        "displayName": "Case Hardened (Legacy)",
+        "displayNameZh": "表面淬火（旧版）",
         "paintKit": 44,
         "seed": 0,
         "wear": 0.0001,
@@ -1972,9 +2368,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_flip:12",
+        "id": "weapon_knife_flip:1479",
         "displayName": "Crimson Web",
         "displayNameZh": "深红之网",
+        "paintKit": 1479,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 505,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_flip:12",
+        "displayName": "Crimson Web (Legacy)",
+        "displayNameZh": "深红之网（旧版）",
         "paintKit": 12,
         "seed": 0,
         "wear": 0.06,
@@ -1991,7 +2399,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 505,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -2092,9 +2500,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_flip:5",
+        "id": "weapon_knife_flip:1478",
         "displayName": "Forest DDPAT",
         "displayNameZh": "森林 DDPAT",
+        "paintKit": 1478,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 505,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_flip:5",
+        "displayName": "Forest DDPAT (Legacy)",
+        "displayNameZh": "森林 DDPAT（旧版）",
         "paintKit": 5,
         "seed": 0,
         "wear": 0.06,
@@ -2195,7 +2615,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 505,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -2219,7 +2639,7 @@
         "seed": 0,
         "wear": 0.4,
         "itemDefinitionIndex": 505,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -2255,14 +2675,26 @@
         "seed": 0,
         "wear": 0.01,
         "itemDefinitionIndex": 505,
-        "legacyModel": true,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_flip:1481",
+        "displayName": "Stained",
+        "displayNameZh": "人工染色",
+        "paintKit": 1481,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 505,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
       {
         "id": "weapon_knife_flip:43",
-        "displayName": "Stained",
-        "displayNameZh": "人工染色",
+        "displayName": "Stained (Legacy)",
+        "displayNameZh": "人工染色（旧版）",
         "paintKit": 43,
         "seed": 0,
         "wear": 0.0001,
@@ -2279,7 +2711,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 505,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -2353,9 +2785,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_gut:42",
+        "id": "weapon_knife_gut:1480",
         "displayName": "Blue Steel",
         "displayNameZh": "蓝钢",
+        "paintKit": 1480,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 506,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_gut:42",
+        "displayName": "Blue Steel (Legacy)",
+        "displayNameZh": "蓝钢（旧版）",
         "paintKit": 42,
         "seed": 0,
         "wear": 0.0001,
@@ -2365,9 +2809,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_gut:77",
+        "id": "weapon_knife_gut:1483",
         "displayName": "Boreal Forest",
         "displayNameZh": "北方森林",
+        "paintKit": 1483,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 506,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_gut:77",
+        "displayName": "Boreal Forest (Legacy)",
+        "displayNameZh": "北方森林（旧版）",
         "paintKit": 77,
         "seed": 0,
         "wear": 0.06,
@@ -2389,9 +2845,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_gut:44",
+        "id": "weapon_knife_gut:1482",
         "displayName": "Case Hardened",
         "displayNameZh": "表面淬火",
+        "paintKit": 1482,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 506,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_gut:44",
+        "displayName": "Case Hardened (Legacy)",
+        "displayNameZh": "表面淬火（旧版）",
         "paintKit": 44,
         "seed": 0,
         "wear": 0.0001,
@@ -2401,9 +2869,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_gut:12",
+        "id": "weapon_knife_gut:1479",
         "displayName": "Crimson Web",
         "displayNameZh": "深红之网",
+        "paintKit": 1479,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 506,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_gut:12",
+        "displayName": "Crimson Web (Legacy)",
+        "displayNameZh": "深红之网（旧版）",
         "paintKit": 12,
         "seed": 0,
         "wear": 0.06,
@@ -2420,7 +2900,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 506,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -2521,9 +3001,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_gut:5",
+        "id": "weapon_knife_gut:1478",
         "displayName": "Forest DDPAT",
         "displayNameZh": "森林 DDPAT",
+        "paintKit": 1478,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 506,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_gut:5",
+        "displayName": "Forest DDPAT (Legacy)",
+        "displayNameZh": "森林 DDPAT（旧版）",
         "paintKit": 5,
         "seed": 0,
         "wear": 0.06,
@@ -2624,7 +3116,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 506,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -2648,7 +3140,7 @@
         "seed": 0,
         "wear": 0.4,
         "itemDefinitionIndex": 506,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -2684,14 +3176,26 @@
         "seed": 0,
         "wear": 0.01,
         "itemDefinitionIndex": 506,
-        "legacyModel": true,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_gut:1481",
+        "displayName": "Stained",
+        "displayNameZh": "人工染色",
+        "paintKit": 1481,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 506,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
       {
         "id": "weapon_knife_gut:43",
-        "displayName": "Stained",
-        "displayNameZh": "人工染色",
+        "displayName": "Stained (Legacy)",
+        "displayNameZh": "人工染色（旧版）",
         "paintKit": 43,
         "seed": 0,
         "wear": 0.0001,
@@ -2708,7 +3212,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 506,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -2782,9 +3286,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_tactical:42",
+        "id": "weapon_knife_tactical:1480",
         "displayName": "Blue Steel",
         "displayNameZh": "蓝钢",
+        "paintKit": 1480,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 509,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_tactical:42",
+        "displayName": "Blue Steel (Legacy)",
+        "displayNameZh": "蓝钢（旧版）",
         "paintKit": 42,
         "seed": 0,
         "wear": 0.0001,
@@ -2794,9 +3310,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_tactical:77",
+        "id": "weapon_knife_tactical:1483",
         "displayName": "Boreal Forest",
         "displayNameZh": "北方森林",
+        "paintKit": 1483,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 509,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_tactical:77",
+        "displayName": "Boreal Forest (Legacy)",
+        "displayNameZh": "北方森林（旧版）",
         "paintKit": 77,
         "seed": 0,
         "wear": 0.06,
@@ -2818,9 +3346,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_tactical:44",
+        "id": "weapon_knife_tactical:1482",
         "displayName": "Case Hardened",
         "displayNameZh": "表面淬火",
+        "paintKit": 1482,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 509,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_tactical:44",
+        "displayName": "Case Hardened (Legacy)",
+        "displayNameZh": "表面淬火（旧版）",
         "paintKit": 44,
         "seed": 0,
         "wear": 0.0001,
@@ -2830,9 +3370,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_tactical:12",
+        "id": "weapon_knife_tactical:1479",
         "displayName": "Crimson Web",
         "displayNameZh": "深红之网",
+        "paintKit": 1479,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 509,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_tactical:12",
+        "displayName": "Crimson Web (Legacy)",
+        "displayNameZh": "深红之网（旧版）",
         "paintKit": 12,
         "seed": 0,
         "wear": 0.06,
@@ -2950,9 +3502,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_tactical:5",
+        "id": "weapon_knife_tactical:1478",
         "displayName": "Forest DDPAT",
         "displayNameZh": "森林 DDPAT",
+        "paintKit": 1478,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 509,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_tactical:5",
+        "displayName": "Forest DDPAT (Legacy)",
+        "displayNameZh": "森林 DDPAT（旧版）",
         "paintKit": 5,
         "seed": 0,
         "wear": 0.06,
@@ -3053,7 +3617,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 509,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -3077,7 +3641,7 @@
         "seed": 0,
         "wear": 0.4,
         "itemDefinitionIndex": 509,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -3113,14 +3677,26 @@
         "seed": 0,
         "wear": 0.01,
         "itemDefinitionIndex": 509,
-        "legacyModel": true,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_tactical:1481",
+        "displayName": "Stained",
+        "displayNameZh": "人工染色",
+        "paintKit": 1481,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 509,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
       {
         "id": "weapon_knife_tactical:43",
-        "displayName": "Stained",
-        "displayNameZh": "人工染色",
+        "displayName": "Stained (Legacy)",
+        "displayNameZh": "人工染色（旧版）",
         "paintKit": 43,
         "seed": 0,
         "wear": 0.0001,
@@ -3137,7 +3713,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 509,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -3149,7 +3725,7 @@
         "seed": 0,
         "wear": 0.06,
         "itemDefinitionIndex": 509,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -3211,9 +3787,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_karambit:42",
+        "id": "weapon_knife_karambit:1480",
         "displayName": "Blue Steel",
         "displayNameZh": "蓝钢",
+        "paintKit": 1480,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 507,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_karambit:42",
+        "displayName": "Blue Steel (Legacy)",
+        "displayNameZh": "蓝钢（旧版）",
         "paintKit": 42,
         "seed": 0,
         "wear": 0.0001,
@@ -3223,9 +3811,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_karambit:77",
+        "id": "weapon_knife_karambit:1483",
         "displayName": "Boreal Forest",
         "displayNameZh": "北方森林",
+        "paintKit": 1483,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 507,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_karambit:77",
+        "displayName": "Boreal Forest (Legacy)",
+        "displayNameZh": "北方森林（旧版）",
         "paintKit": 77,
         "seed": 0,
         "wear": 0.06,
@@ -3247,9 +3847,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_karambit:44",
+        "id": "weapon_knife_karambit:1482",
         "displayName": "Case Hardened",
         "displayNameZh": "表面淬火",
+        "paintKit": 1482,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 507,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_karambit:44",
+        "displayName": "Case Hardened (Legacy)",
+        "displayNameZh": "表面淬火（旧版）",
         "paintKit": 44,
         "seed": 0,
         "wear": 0.0001,
@@ -3259,9 +3871,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_karambit:12",
+        "id": "weapon_knife_karambit:1479",
         "displayName": "Crimson Web",
         "displayNameZh": "深红之网",
+        "paintKit": 1479,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 507,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_karambit:12",
+        "displayName": "Crimson Web (Legacy)",
+        "displayNameZh": "深红之网（旧版）",
         "paintKit": 12,
         "seed": 0,
         "wear": 0.06,
@@ -3278,7 +3902,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 507,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -3379,9 +4003,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_karambit:5",
+        "id": "weapon_knife_karambit:1478",
         "displayName": "Forest DDPAT",
         "displayNameZh": "森林 DDPAT",
+        "paintKit": 1478,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 507,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_karambit:5",
+        "displayName": "Forest DDPAT (Legacy)",
+        "displayNameZh": "森林 DDPAT（旧版）",
         "paintKit": 5,
         "seed": 0,
         "wear": 0.06,
@@ -3482,7 +4118,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 507,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -3506,7 +4142,7 @@
         "seed": 0,
         "wear": 0.4,
         "itemDefinitionIndex": 507,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -3542,14 +4178,26 @@
         "seed": 0,
         "wear": 0.01,
         "itemDefinitionIndex": 507,
-        "legacyModel": true,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_karambit:1481",
+        "displayName": "Stained",
+        "displayNameZh": "人工染色",
+        "paintKit": 1481,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 507,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
       {
         "id": "weapon_knife_karambit:43",
-        "displayName": "Stained",
-        "displayNameZh": "人工染色",
+        "displayName": "Stained (Legacy)",
+        "displayNameZh": "人工染色（旧版）",
         "paintKit": 43,
         "seed": 0,
         "wear": 0.0001,
@@ -3566,7 +4214,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 507,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -3616,9 +4264,21 @@
         "enabled": true
       },
       {
-        "id": "weapon_knife_kukri:42",
+        "id": "weapon_knife_kukri:1480",
         "displayName": "Blue Steel",
         "displayNameZh": "蓝钢",
+        "paintKit": 1480,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 526,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_kukri:42",
+        "displayName": "Blue Steel (Legacy)",
+        "displayNameZh": "蓝钢（旧版）",
         "paintKit": 42,
         "seed": 0,
         "wear": 0.0001,
@@ -3628,9 +4288,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_kukri:77",
+        "id": "weapon_knife_kukri:1483",
         "displayName": "Boreal Forest",
         "displayNameZh": "北方森林",
+        "paintKit": 1483,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 526,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_kukri:77",
+        "displayName": "Boreal Forest (Legacy)",
+        "displayNameZh": "北方森林（旧版）",
         "paintKit": 77,
         "seed": 0,
         "wear": 0.06,
@@ -3640,9 +4312,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_kukri:44",
+        "id": "weapon_knife_kukri:1482",
         "displayName": "Case Hardened",
         "displayNameZh": "表面淬火",
+        "paintKit": 1482,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 526,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_kukri:44",
+        "displayName": "Case Hardened (Legacy)",
+        "displayNameZh": "表面淬火（旧版）",
         "paintKit": 44,
         "seed": 0,
         "wear": 0.0001,
@@ -3652,9 +4336,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_kukri:12",
+        "id": "weapon_knife_kukri:1479",
         "displayName": "Crimson Web",
         "displayNameZh": "深红之网",
+        "paintKit": 1479,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 526,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_kukri:12",
+        "displayName": "Crimson Web (Legacy)",
+        "displayNameZh": "深红之网（旧版）",
         "paintKit": 12,
         "seed": 0,
         "wear": 0.06,
@@ -3676,9 +4372,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_kukri:5",
+        "id": "weapon_knife_kukri:1478",
         "displayName": "Forest DDPAT",
         "displayNameZh": "森林 DDPAT",
+        "paintKit": 1478,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 526,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_kukri:5",
+        "displayName": "Forest DDPAT (Legacy)",
+        "displayNameZh": "森林 DDPAT（旧版）",
         "paintKit": 5,
         "seed": 0,
         "wear": 0.06,
@@ -3731,14 +4439,26 @@
         "seed": 0,
         "wear": 0.01,
         "itemDefinitionIndex": 526,
-        "legacyModel": true,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_kukri:1481",
+        "displayName": "Stained",
+        "displayNameZh": "人工染色",
+        "paintKit": 1481,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 526,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
       {
         "id": "weapon_knife_kukri:43",
-        "displayName": "Stained",
-        "displayNameZh": "人工染色",
+        "displayName": "Stained (Legacy)",
+        "displayNameZh": "人工染色（旧版）",
         "paintKit": 43,
         "seed": 0,
         "wear": 0.0001,
@@ -3805,9 +4525,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_m9_bayonet:42",
+        "id": "weapon_knife_m9_bayonet:1480",
         "displayName": "Blue Steel",
         "displayNameZh": "蓝钢",
+        "paintKit": 1480,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 508,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_m9_bayonet:42",
+        "displayName": "Blue Steel (Legacy)",
+        "displayNameZh": "蓝钢（旧版）",
         "paintKit": 42,
         "seed": 0,
         "wear": 0.0001,
@@ -3817,9 +4549,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_m9_bayonet:77",
+        "id": "weapon_knife_m9_bayonet:1483",
         "displayName": "Boreal Forest",
         "displayNameZh": "北方森林",
+        "paintKit": 1483,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 508,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_m9_bayonet:77",
+        "displayName": "Boreal Forest (Legacy)",
+        "displayNameZh": "北方森林（旧版）",
         "paintKit": 77,
         "seed": 0,
         "wear": 0.06,
@@ -3841,9 +4585,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_m9_bayonet:44",
+        "id": "weapon_knife_m9_bayonet:1482",
         "displayName": "Case Hardened",
         "displayNameZh": "表面淬火",
+        "paintKit": 1482,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 508,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_m9_bayonet:44",
+        "displayName": "Case Hardened (Legacy)",
+        "displayNameZh": "表面淬火（旧版）",
         "paintKit": 44,
         "seed": 0,
         "wear": 0.0001,
@@ -3853,9 +4609,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_m9_bayonet:12",
+        "id": "weapon_knife_m9_bayonet:1479",
         "displayName": "Crimson Web",
         "displayNameZh": "深红之网",
+        "paintKit": 1479,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 508,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_m9_bayonet:12",
+        "displayName": "Crimson Web (Legacy)",
+        "displayNameZh": "深红之网（旧版）",
         "paintKit": 12,
         "seed": 0,
         "wear": 0.06,
@@ -3973,9 +4741,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_m9_bayonet:5",
+        "id": "weapon_knife_m9_bayonet:1478",
         "displayName": "Forest DDPAT",
         "displayNameZh": "森林 DDPAT",
+        "paintKit": 1478,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 508,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_m9_bayonet:5",
+        "displayName": "Forest DDPAT (Legacy)",
+        "displayNameZh": "森林 DDPAT（旧版）",
         "paintKit": 5,
         "seed": 0,
         "wear": 0.06,
@@ -4076,7 +4856,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 508,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -4100,7 +4880,7 @@
         "seed": 0,
         "wear": 0.4,
         "itemDefinitionIndex": 508,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -4136,14 +4916,26 @@
         "seed": 0,
         "wear": 0.01,
         "itemDefinitionIndex": 508,
-        "legacyModel": true,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_m9_bayonet:1481",
+        "displayName": "Stained",
+        "displayNameZh": "人工染色",
+        "paintKit": 1481,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 508,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
       {
         "id": "weapon_knife_m9_bayonet:43",
-        "displayName": "Stained",
-        "displayNameZh": "人工染色",
+        "displayName": "Stained (Legacy)",
+        "displayNameZh": "人工染色（旧版）",
         "paintKit": 43,
         "seed": 0,
         "wear": 0.0001,
@@ -4160,7 +4952,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 508,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -4210,9 +5002,21 @@
         "enabled": true
       },
       {
-        "id": "weapon_knife_gypsy_jackknife:42",
+        "id": "weapon_knife_gypsy_jackknife:1480",
         "displayName": "Blue Steel",
         "displayNameZh": "蓝钢",
+        "paintKit": 1480,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 520,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_gypsy_jackknife:42",
+        "displayName": "Blue Steel (Legacy)",
+        "displayNameZh": "蓝钢（旧版）",
         "paintKit": 42,
         "seed": 0,
         "wear": 0.0001,
@@ -4222,9 +5026,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_gypsy_jackknife:77",
+        "id": "weapon_knife_gypsy_jackknife:1483",
         "displayName": "Boreal Forest",
         "displayNameZh": "北方森林",
+        "paintKit": 1483,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 520,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_gypsy_jackknife:77",
+        "displayName": "Boreal Forest (Legacy)",
+        "displayNameZh": "北方森林（旧版）",
         "paintKit": 77,
         "seed": 0,
         "wear": 0.06,
@@ -4234,9 +5050,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_gypsy_jackknife:44",
+        "id": "weapon_knife_gypsy_jackknife:1482",
         "displayName": "Case Hardened",
         "displayNameZh": "表面淬火",
+        "paintKit": 1482,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 520,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_gypsy_jackknife:44",
+        "displayName": "Case Hardened (Legacy)",
+        "displayNameZh": "表面淬火（旧版）",
         "paintKit": 44,
         "seed": 0,
         "wear": 0.0001,
@@ -4246,9 +5074,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_gypsy_jackknife:12",
+        "id": "weapon_knife_gypsy_jackknife:1479",
         "displayName": "Crimson Web",
         "displayNameZh": "深红之网",
+        "paintKit": 1479,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 520,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_gypsy_jackknife:12",
+        "displayName": "Crimson Web (Legacy)",
+        "displayNameZh": "深红之网（旧版）",
         "paintKit": 12,
         "seed": 0,
         "wear": 0.06,
@@ -4366,9 +5206,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_gypsy_jackknife:5",
+        "id": "weapon_knife_gypsy_jackknife:1478",
         "displayName": "Forest DDPAT",
         "displayNameZh": "森林 DDPAT",
+        "paintKit": 1478,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 520,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_gypsy_jackknife:5",
+        "displayName": "Forest DDPAT (Legacy)",
+        "displayNameZh": "森林 DDPAT（旧版）",
         "paintKit": 5,
         "seed": 0,
         "wear": 0.06,
@@ -4385,7 +5237,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 520,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -4409,7 +5261,7 @@
         "seed": 0,
         "wear": 0.4,
         "itemDefinitionIndex": 520,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -4445,14 +5297,26 @@
         "seed": 0,
         "wear": 0.01,
         "itemDefinitionIndex": 520,
-        "legacyModel": true,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_gypsy_jackknife:1481",
+        "displayName": "Stained",
+        "displayNameZh": "人工染色",
+        "paintKit": 1481,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 520,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
       {
         "id": "weapon_knife_gypsy_jackknife:43",
-        "displayName": "Stained",
-        "displayNameZh": "人工染色",
+        "displayName": "Stained (Legacy)",
+        "displayNameZh": "人工染色（旧版）",
         "paintKit": 43,
         "seed": 0,
         "wear": 0.0001,
@@ -4469,7 +5333,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 520,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -4519,9 +5383,21 @@
         "enabled": true
       },
       {
-        "id": "weapon_knife_outdoor:42",
+        "id": "weapon_knife_outdoor:1480",
         "displayName": "Blue Steel",
         "displayNameZh": "蓝钢",
+        "paintKit": 1480,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 521,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_outdoor:42",
+        "displayName": "Blue Steel (Legacy)",
+        "displayNameZh": "蓝钢（旧版）",
         "paintKit": 42,
         "seed": 0,
         "wear": 0.0001,
@@ -4531,9 +5407,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_outdoor:77",
+        "id": "weapon_knife_outdoor:1483",
         "displayName": "Boreal Forest",
         "displayNameZh": "北方森林",
+        "paintKit": 1483,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 521,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_outdoor:77",
+        "displayName": "Boreal Forest (Legacy)",
+        "displayNameZh": "北方森林（旧版）",
         "paintKit": 77,
         "seed": 0,
         "wear": 0.06,
@@ -4543,9 +5431,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_outdoor:44",
+        "id": "weapon_knife_outdoor:1482",
         "displayName": "Case Hardened",
         "displayNameZh": "表面淬火",
+        "paintKit": 1482,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 521,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_outdoor:44",
+        "displayName": "Case Hardened (Legacy)",
+        "displayNameZh": "表面淬火（旧版）",
         "paintKit": 44,
         "seed": 0,
         "wear": 0.0001,
@@ -4555,9 +5455,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_outdoor:12",
+        "id": "weapon_knife_outdoor:1479",
         "displayName": "Crimson Web",
         "displayNameZh": "深红之网",
+        "paintKit": 1479,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 521,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_outdoor:12",
+        "displayName": "Crimson Web (Legacy)",
+        "displayNameZh": "深红之网（旧版）",
         "paintKit": 12,
         "seed": 0,
         "wear": 0.06,
@@ -4574,7 +5486,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 521,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -4675,9 +5587,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_outdoor:5",
+        "id": "weapon_knife_outdoor:1478",
         "displayName": "Forest DDPAT",
         "displayNameZh": "森林 DDPAT",
+        "paintKit": 1478,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 521,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_outdoor:5",
+        "displayName": "Forest DDPAT (Legacy)",
+        "displayNameZh": "森林 DDPAT（旧版）",
         "paintKit": 5,
         "seed": 0,
         "wear": 0.06,
@@ -4694,7 +5618,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 521,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -4718,7 +5642,7 @@
         "seed": 0,
         "wear": 0.4,
         "itemDefinitionIndex": 521,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -4754,14 +5678,26 @@
         "seed": 0,
         "wear": 0.01,
         "itemDefinitionIndex": 521,
-        "legacyModel": true,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_outdoor:1481",
+        "displayName": "Stained",
+        "displayNameZh": "人工染色",
+        "paintKit": 1481,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 521,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
       {
         "id": "weapon_knife_outdoor:43",
-        "displayName": "Stained",
-        "displayNameZh": "人工染色",
+        "displayName": "Stained (Legacy)",
+        "displayNameZh": "人工染色（旧版）",
         "paintKit": 43,
         "seed": 0,
         "wear": 0.0001,
@@ -4778,7 +5714,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 521,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -4828,9 +5764,21 @@
         "enabled": true
       },
       {
-        "id": "weapon_knife_cord:42",
+        "id": "weapon_knife_cord:1480",
         "displayName": "Blue Steel",
         "displayNameZh": "蓝钢",
+        "paintKit": 1480,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 517,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_cord:42",
+        "displayName": "Blue Steel (Legacy)",
+        "displayNameZh": "蓝钢（旧版）",
         "paintKit": 42,
         "seed": 0,
         "wear": 0.0001,
@@ -4840,9 +5788,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_cord:77",
+        "id": "weapon_knife_cord:1483",
         "displayName": "Boreal Forest",
         "displayNameZh": "北方森林",
+        "paintKit": 1483,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 517,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_cord:77",
+        "displayName": "Boreal Forest (Legacy)",
+        "displayNameZh": "北方森林（旧版）",
         "paintKit": 77,
         "seed": 0,
         "wear": 0.06,
@@ -4852,9 +5812,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_cord:44",
+        "id": "weapon_knife_cord:1482",
         "displayName": "Case Hardened",
         "displayNameZh": "表面淬火",
+        "paintKit": 1482,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 517,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_cord:44",
+        "displayName": "Case Hardened (Legacy)",
+        "displayNameZh": "表面淬火（旧版）",
         "paintKit": 44,
         "seed": 0,
         "wear": 0.0001,
@@ -4864,9 +5836,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_cord:12",
+        "id": "weapon_knife_cord:1479",
         "displayName": "Crimson Web",
         "displayNameZh": "深红之网",
+        "paintKit": 1479,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 517,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_cord:12",
+        "displayName": "Crimson Web (Legacy)",
+        "displayNameZh": "深红之网（旧版）",
         "paintKit": 12,
         "seed": 0,
         "wear": 0.06,
@@ -4883,7 +5867,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 517,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -4984,9 +5968,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_cord:5",
+        "id": "weapon_knife_cord:1478",
         "displayName": "Forest DDPAT",
         "displayNameZh": "森林 DDPAT",
+        "paintKit": 1478,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 517,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_cord:5",
+        "displayName": "Forest DDPAT (Legacy)",
+        "displayNameZh": "森林 DDPAT（旧版）",
         "paintKit": 5,
         "seed": 0,
         "wear": 0.06,
@@ -5003,7 +5999,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 517,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -5027,7 +6023,7 @@
         "seed": 0,
         "wear": 0.4,
         "itemDefinitionIndex": 517,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -5063,14 +6059,26 @@
         "seed": 0,
         "wear": 0.01,
         "itemDefinitionIndex": 517,
-        "legacyModel": true,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_cord:1481",
+        "displayName": "Stained",
+        "displayNameZh": "人工染色",
+        "paintKit": 1481,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 517,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
       {
         "id": "weapon_knife_cord:43",
-        "displayName": "Stained",
-        "displayNameZh": "人工染色",
+        "displayName": "Stained (Legacy)",
+        "displayNameZh": "人工染色（旧版）",
         "paintKit": 43,
         "seed": 0,
         "wear": 0.0001,
@@ -5087,7 +6095,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 517,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -5161,9 +6169,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_push:42",
+        "id": "weapon_knife_push:1480",
         "displayName": "Blue Steel",
         "displayNameZh": "蓝钢",
+        "paintKit": 1480,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 516,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_push:42",
+        "displayName": "Blue Steel (Legacy)",
+        "displayNameZh": "蓝钢（旧版）",
         "paintKit": 42,
         "seed": 0,
         "wear": 0.0001,
@@ -5173,9 +6193,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_push:77",
+        "id": "weapon_knife_push:1483",
         "displayName": "Boreal Forest",
         "displayNameZh": "北方森林",
+        "paintKit": 1483,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 516,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_push:77",
+        "displayName": "Boreal Forest (Legacy)",
+        "displayNameZh": "北方森林（旧版）",
         "paintKit": 77,
         "seed": 0,
         "wear": 0.06,
@@ -5197,9 +6229,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_push:44",
+        "id": "weapon_knife_push:1482",
         "displayName": "Case Hardened",
         "displayNameZh": "表面淬火",
+        "paintKit": 1482,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 516,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_push:44",
+        "displayName": "Case Hardened (Legacy)",
+        "displayNameZh": "表面淬火（旧版）",
         "paintKit": 44,
         "seed": 0,
         "wear": 0.0001,
@@ -5209,9 +6253,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_push:12",
+        "id": "weapon_knife_push:1479",
         "displayName": "Crimson Web",
         "displayNameZh": "深红之网",
+        "paintKit": 1479,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 516,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_push:12",
+        "displayName": "Crimson Web (Legacy)",
+        "displayNameZh": "深红之网（旧版）",
         "paintKit": 12,
         "seed": 0,
         "wear": 0.06,
@@ -5329,9 +6385,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_push:5",
+        "id": "weapon_knife_push:1478",
         "displayName": "Forest DDPAT",
         "displayNameZh": "森林 DDPAT",
+        "paintKit": 1478,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 516,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_push:5",
+        "displayName": "Forest DDPAT (Legacy)",
+        "displayNameZh": "森林 DDPAT（旧版）",
         "paintKit": 5,
         "seed": 0,
         "wear": 0.06,
@@ -5432,7 +6500,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 516,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -5456,7 +6524,7 @@
         "seed": 0,
         "wear": 0.4,
         "itemDefinitionIndex": 516,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -5492,14 +6560,26 @@
         "seed": 0,
         "wear": 0.01,
         "itemDefinitionIndex": 516,
-        "legacyModel": true,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_push:1481",
+        "displayName": "Stained",
+        "displayNameZh": "人工染色",
+        "paintKit": 1481,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 516,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
       {
         "id": "weapon_knife_push:43",
-        "displayName": "Stained",
-        "displayNameZh": "人工染色",
+        "displayName": "Stained (Legacy)",
+        "displayNameZh": "人工染色（旧版）",
         "paintKit": 43,
         "seed": 0,
         "wear": 0.0001,
@@ -5516,7 +6596,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 516,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -5566,9 +6646,21 @@
         "enabled": true
       },
       {
-        "id": "weapon_knife_skeleton:42",
+        "id": "weapon_knife_skeleton:1480",
         "displayName": "Blue Steel",
         "displayNameZh": "蓝钢",
+        "paintKit": 1480,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 525,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_skeleton:42",
+        "displayName": "Blue Steel (Legacy)",
+        "displayNameZh": "蓝钢（旧版）",
         "paintKit": 42,
         "seed": 0,
         "wear": 0.0001,
@@ -5578,9 +6670,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_skeleton:77",
+        "id": "weapon_knife_skeleton:1483",
         "displayName": "Boreal Forest",
         "displayNameZh": "北方森林",
+        "paintKit": 1483,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 525,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_skeleton:77",
+        "displayName": "Boreal Forest (Legacy)",
+        "displayNameZh": "北方森林（旧版）",
         "paintKit": 77,
         "seed": 0,
         "wear": 0.06,
@@ -5590,9 +6694,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_skeleton:44",
+        "id": "weapon_knife_skeleton:1482",
         "displayName": "Case Hardened",
         "displayNameZh": "表面淬火",
+        "paintKit": 1482,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 525,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_skeleton:44",
+        "displayName": "Case Hardened (Legacy)",
+        "displayNameZh": "表面淬火（旧版）",
         "paintKit": 44,
         "seed": 0,
         "wear": 0.0001,
@@ -5602,9 +6718,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_skeleton:12",
+        "id": "weapon_knife_skeleton:1479",
         "displayName": "Crimson Web",
         "displayNameZh": "深红之网",
+        "paintKit": 1479,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 525,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_skeleton:12",
+        "displayName": "Crimson Web (Legacy)",
+        "displayNameZh": "深红之网（旧版）",
         "paintKit": 12,
         "seed": 0,
         "wear": 0.06,
@@ -5621,7 +6749,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 525,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -5722,9 +6850,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_skeleton:5",
+        "id": "weapon_knife_skeleton:1478",
         "displayName": "Forest DDPAT",
         "displayNameZh": "森林 DDPAT",
+        "paintKit": 1478,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 525,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_skeleton:5",
+        "displayName": "Forest DDPAT (Legacy)",
+        "displayNameZh": "森林 DDPAT（旧版）",
         "paintKit": 5,
         "seed": 0,
         "wear": 0.06,
@@ -5741,7 +6881,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 525,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -5765,7 +6905,7 @@
         "seed": 0,
         "wear": 0.4,
         "itemDefinitionIndex": 525,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -5801,14 +6941,26 @@
         "seed": 0,
         "wear": 0.01,
         "itemDefinitionIndex": 525,
-        "legacyModel": true,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_skeleton:1481",
+        "displayName": "Stained",
+        "displayNameZh": "人工染色",
+        "paintKit": 1481,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 525,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
       {
         "id": "weapon_knife_skeleton:43",
-        "displayName": "Stained",
-        "displayNameZh": "人工染色",
+        "displayName": "Stained (Legacy)",
+        "displayNameZh": "人工染色（旧版）",
         "paintKit": 43,
         "seed": 0,
         "wear": 0.0001,
@@ -5825,7 +6977,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 525,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -5875,9 +7027,21 @@
         "enabled": true
       },
       {
-        "id": "weapon_knife_stiletto:42",
+        "id": "weapon_knife_stiletto:1480",
         "displayName": "Blue Steel",
         "displayNameZh": "蓝钢",
+        "paintKit": 1480,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 522,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_stiletto:42",
+        "displayName": "Blue Steel (Legacy)",
+        "displayNameZh": "蓝钢（旧版）",
         "paintKit": 42,
         "seed": 0,
         "wear": 0.0001,
@@ -5887,9 +7051,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_stiletto:77",
+        "id": "weapon_knife_stiletto:1483",
         "displayName": "Boreal Forest",
         "displayNameZh": "北方森林",
+        "paintKit": 1483,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 522,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_stiletto:77",
+        "displayName": "Boreal Forest (Legacy)",
+        "displayNameZh": "北方森林（旧版）",
         "paintKit": 77,
         "seed": 0,
         "wear": 0.06,
@@ -5899,9 +7075,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_stiletto:44",
+        "id": "weapon_knife_stiletto:1482",
         "displayName": "Case Hardened",
         "displayNameZh": "表面淬火",
+        "paintKit": 1482,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 522,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_stiletto:44",
+        "displayName": "Case Hardened (Legacy)",
+        "displayNameZh": "表面淬火（旧版）",
         "paintKit": 44,
         "seed": 0,
         "wear": 0.0001,
@@ -5911,9 +7099,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_stiletto:12",
+        "id": "weapon_knife_stiletto:1479",
         "displayName": "Crimson Web",
         "displayNameZh": "深红之网",
+        "paintKit": 1479,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 522,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_stiletto:12",
+        "displayName": "Crimson Web (Legacy)",
+        "displayNameZh": "深红之网（旧版）",
         "paintKit": 12,
         "seed": 0,
         "wear": 0.06,
@@ -6031,9 +7231,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_stiletto:5",
+        "id": "weapon_knife_stiletto:1478",
         "displayName": "Forest DDPAT",
         "displayNameZh": "森林 DDPAT",
+        "paintKit": 1478,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 522,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_stiletto:5",
+        "displayName": "Forest DDPAT (Legacy)",
+        "displayNameZh": "森林 DDPAT（旧版）",
         "paintKit": 5,
         "seed": 0,
         "wear": 0.06,
@@ -6050,7 +7262,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 522,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -6074,7 +7286,7 @@
         "seed": 0,
         "wear": 0.4,
         "itemDefinitionIndex": 522,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -6110,14 +7322,26 @@
         "seed": 0,
         "wear": 0.01,
         "itemDefinitionIndex": 522,
-        "legacyModel": true,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_stiletto:1481",
+        "displayName": "Stained",
+        "displayNameZh": "人工染色",
+        "paintKit": 1481,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 522,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
       {
         "id": "weapon_knife_stiletto:43",
-        "displayName": "Stained",
-        "displayNameZh": "人工染色",
+        "displayName": "Stained (Legacy)",
+        "displayNameZh": "人工染色（旧版）",
         "paintKit": 43,
         "seed": 0,
         "wear": 0.0001,
@@ -6134,7 +7358,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 522,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -6184,9 +7408,21 @@
         "enabled": true
       },
       {
-        "id": "weapon_knife_canis:42",
+        "id": "weapon_knife_canis:1480",
         "displayName": "Blue Steel",
         "displayNameZh": "蓝钢",
+        "paintKit": 1480,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 518,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_canis:42",
+        "displayName": "Blue Steel (Legacy)",
+        "displayNameZh": "蓝钢（旧版）",
         "paintKit": 42,
         "seed": 0,
         "wear": 0.0001,
@@ -6196,9 +7432,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_canis:77",
+        "id": "weapon_knife_canis:1483",
         "displayName": "Boreal Forest",
         "displayNameZh": "北方森林",
+        "paintKit": 1483,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 518,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_canis:77",
+        "displayName": "Boreal Forest (Legacy)",
+        "displayNameZh": "北方森林（旧版）",
         "paintKit": 77,
         "seed": 0,
         "wear": 0.06,
@@ -6208,9 +7456,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_canis:44",
+        "id": "weapon_knife_canis:1482",
         "displayName": "Case Hardened",
         "displayNameZh": "表面淬火",
+        "paintKit": 1482,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 518,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_canis:44",
+        "displayName": "Case Hardened (Legacy)",
+        "displayNameZh": "表面淬火（旧版）",
         "paintKit": 44,
         "seed": 0,
         "wear": 0.0001,
@@ -6220,9 +7480,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_canis:12",
+        "id": "weapon_knife_canis:1479",
         "displayName": "Crimson Web",
         "displayNameZh": "深红之网",
+        "paintKit": 1479,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 518,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_canis:12",
+        "displayName": "Crimson Web (Legacy)",
+        "displayNameZh": "深红之网（旧版）",
         "paintKit": 12,
         "seed": 0,
         "wear": 0.06,
@@ -6239,7 +7511,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 518,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -6340,9 +7612,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_canis:5",
+        "id": "weapon_knife_canis:1478",
         "displayName": "Forest DDPAT",
         "displayNameZh": "森林 DDPAT",
+        "paintKit": 1478,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 518,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_canis:5",
+        "displayName": "Forest DDPAT (Legacy)",
+        "displayNameZh": "森林 DDPAT（旧版）",
         "paintKit": 5,
         "seed": 0,
         "wear": 0.06,
@@ -6359,7 +7643,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 518,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -6383,7 +7667,7 @@
         "seed": 0,
         "wear": 0.4,
         "itemDefinitionIndex": 518,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -6419,14 +7703,26 @@
         "seed": 0,
         "wear": 0.01,
         "itemDefinitionIndex": 518,
-        "legacyModel": true,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_canis:1481",
+        "displayName": "Stained",
+        "displayNameZh": "人工染色",
+        "paintKit": 1481,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 518,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
       {
         "id": "weapon_knife_canis:43",
-        "displayName": "Stained",
-        "displayNameZh": "人工染色",
+        "displayName": "Stained (Legacy)",
+        "displayNameZh": "人工染色（旧版）",
         "paintKit": 43,
         "seed": 0,
         "wear": 0.0001,
@@ -6443,7 +7739,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 518,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -6493,9 +7789,21 @@
         "enabled": true
       },
       {
-        "id": "weapon_knife_widowmaker:42",
+        "id": "weapon_knife_widowmaker:1480",
         "displayName": "Blue Steel",
         "displayNameZh": "蓝钢",
+        "paintKit": 1480,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 523,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_widowmaker:42",
+        "displayName": "Blue Steel (Legacy)",
+        "displayNameZh": "蓝钢（旧版）",
         "paintKit": 42,
         "seed": 0,
         "wear": 0.0001,
@@ -6505,9 +7813,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_widowmaker:77",
+        "id": "weapon_knife_widowmaker:1483",
         "displayName": "Boreal Forest",
         "displayNameZh": "北方森林",
+        "paintKit": 1483,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 523,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_widowmaker:77",
+        "displayName": "Boreal Forest (Legacy)",
+        "displayNameZh": "北方森林（旧版）",
         "paintKit": 77,
         "seed": 0,
         "wear": 0.06,
@@ -6517,9 +7837,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_widowmaker:44",
+        "id": "weapon_knife_widowmaker:1482",
         "displayName": "Case Hardened",
         "displayNameZh": "表面淬火",
+        "paintKit": 1482,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 523,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_widowmaker:44",
+        "displayName": "Case Hardened (Legacy)",
+        "displayNameZh": "表面淬火（旧版）",
         "paintKit": 44,
         "seed": 0,
         "wear": 0.0001,
@@ -6529,9 +7861,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_widowmaker:12",
+        "id": "weapon_knife_widowmaker:1479",
         "displayName": "Crimson Web",
         "displayNameZh": "深红之网",
+        "paintKit": 1479,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 523,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_widowmaker:12",
+        "displayName": "Crimson Web (Legacy)",
+        "displayNameZh": "深红之网（旧版）",
         "paintKit": 12,
         "seed": 0,
         "wear": 0.06,
@@ -6649,9 +7993,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_widowmaker:5",
+        "id": "weapon_knife_widowmaker:1478",
         "displayName": "Forest DDPAT",
         "displayNameZh": "森林 DDPAT",
+        "paintKit": 1478,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 523,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_widowmaker:5",
+        "displayName": "Forest DDPAT (Legacy)",
+        "displayNameZh": "森林 DDPAT（旧版）",
         "paintKit": 5,
         "seed": 0,
         "wear": 0.06,
@@ -6668,7 +8024,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 523,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -6692,7 +8048,7 @@
         "seed": 0,
         "wear": 0.4,
         "itemDefinitionIndex": 523,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -6728,14 +8084,26 @@
         "seed": 0,
         "wear": 0.01,
         "itemDefinitionIndex": 523,
-        "legacyModel": true,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_widowmaker:1481",
+        "displayName": "Stained",
+        "displayNameZh": "人工染色",
+        "paintKit": 1481,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 523,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
       {
         "id": "weapon_knife_widowmaker:43",
-        "displayName": "Stained",
-        "displayNameZh": "人工染色",
+        "displayName": "Stained (Legacy)",
+        "displayNameZh": "人工染色（旧版）",
         "paintKit": 43,
         "seed": 0,
         "wear": 0.0001,
@@ -6752,7 +8120,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 523,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -6802,9 +8170,21 @@
         "enabled": true
       },
       {
-        "id": "weapon_knife_ursus:42",
+        "id": "weapon_knife_ursus:1480",
         "displayName": "Blue Steel",
         "displayNameZh": "蓝钢",
+        "paintKit": 1480,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 519,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_ursus:42",
+        "displayName": "Blue Steel (Legacy)",
+        "displayNameZh": "蓝钢（旧版）",
         "paintKit": 42,
         "seed": 0,
         "wear": 0.0001,
@@ -6814,9 +8194,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_ursus:77",
+        "id": "weapon_knife_ursus:1483",
         "displayName": "Boreal Forest",
         "displayNameZh": "北方森林",
+        "paintKit": 1483,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 519,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_ursus:77",
+        "displayName": "Boreal Forest (Legacy)",
+        "displayNameZh": "北方森林（旧版）",
         "paintKit": 77,
         "seed": 0,
         "wear": 0.06,
@@ -6826,9 +8218,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_ursus:44",
+        "id": "weapon_knife_ursus:1482",
         "displayName": "Case Hardened",
         "displayNameZh": "表面淬火",
+        "paintKit": 1482,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 519,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_ursus:44",
+        "displayName": "Case Hardened (Legacy)",
+        "displayNameZh": "表面淬火（旧版）",
         "paintKit": 44,
         "seed": 0,
         "wear": 0.0001,
@@ -6838,9 +8242,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_ursus:12",
+        "id": "weapon_knife_ursus:1479",
         "displayName": "Crimson Web",
         "displayNameZh": "深红之网",
+        "paintKit": 1479,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 519,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_ursus:12",
+        "displayName": "Crimson Web (Legacy)",
+        "displayNameZh": "深红之网（旧版）",
         "paintKit": 12,
         "seed": 0,
         "wear": 0.06,
@@ -6958,9 +8374,21 @@
         "rarity": "rarity_ancient_weapon"
       },
       {
-        "id": "weapon_knife_ursus:5",
+        "id": "weapon_knife_ursus:1478",
         "displayName": "Forest DDPAT",
         "displayNameZh": "森林 DDPAT",
+        "paintKit": 1478,
+        "seed": 0,
+        "wear": 0.06,
+        "itemDefinitionIndex": 519,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_ursus:5",
+        "displayName": "Forest DDPAT (Legacy)",
+        "displayNameZh": "森林 DDPAT（旧版）",
         "paintKit": 5,
         "seed": 0,
         "wear": 0.06,
@@ -6977,7 +8405,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 519,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -7001,7 +8429,7 @@
         "seed": 0,
         "wear": 0.4,
         "itemDefinitionIndex": 519,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
@@ -7037,14 +8465,26 @@
         "seed": 0,
         "wear": 0.01,
         "itemDefinitionIndex": 519,
-        "legacyModel": true,
+        "legacyModel": false,
+        "enabled": true,
+        "rarity": "rarity_ancient_weapon"
+      },
+      {
+        "id": "weapon_knife_ursus:1481",
+        "displayName": "Stained",
+        "displayNameZh": "人工染色",
+        "paintKit": 1481,
+        "seed": 0,
+        "wear": 0.0001,
+        "itemDefinitionIndex": 519,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },
       {
         "id": "weapon_knife_ursus:43",
-        "displayName": "Stained",
-        "displayNameZh": "人工染色",
+        "displayName": "Stained (Legacy)",
+        "displayNameZh": "人工染色（旧版）",
         "paintKit": 43,
         "seed": 0,
         "wear": 0.0001,
@@ -7061,7 +8501,7 @@
         "seed": 0,
         "wear": 0.0001,
         "itemDefinitionIndex": 519,
-        "legacyModel": true,
+        "legacyModel": false,
         "enabled": true,
         "rarity": "rarity_ancient_weapon"
       },

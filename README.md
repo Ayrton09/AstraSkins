@@ -17,12 +17,12 @@
 
 ## Features
 
-- 🎨 **1,400+ weapon skins, 20 knives with 576 finishes, 8 glove types, 63 agents, 100 music kits, 11,000+ stickers, 78 charms** — all data-driven from JSON, no datasets baked into the code.
+- 🎨 **1,400+ weapon skins, 20 knives with 696 finishes, 8 glove types, 63 agents, 108 music kits, 11,000+ stickers, 78 charms** — all data-driven from JSON, no datasets baked into the code.
 - 🕹️ **Built-in WASD menu** — navigate with `W`/`S`, select with `E`, go back with `Shift` or `A`. No external menu plugin required.
 - 🔧 **Per-player customization** — custom paint seed, wear/float, name tags, and StatTrak counters via `!seed`, `!wear`, `!nametag`, and `!stattrak`; name tags and StatTrak work on the default skin too.
 - 🔎 **Search** — `!ws <text>` finds any skin, knife, glove, agent, or music kit without scrolling through pages.
 - 🏷️ **Stickers and charms** — up to five stickers and a charm on every gun, with or without a skin, browsed by tournament and capsule or found with `!stickers <text>` and `!charms <text>`.
-- 🎵 **Music kits** — pick any of 100 kits from the menu, with an optional per-kit MVP counter shown on the scoreboard.
+- 🎵 **Music kits** — pick any of 108 kits from the menu, with an optional per-kit MVP counter shown on the scoreboard.
 - 💾 **Persistent selections** — SQLite or MySQL, keyed by SteamID64. Selections survive reconnects, map changes, and restarts.
 - 🌍 **7 languages** — per-player localization (English, Spanish, Chinese, Portuguese, German, French, Russian). Chinese players also get skin, knife, glove, agent, category, and music kit names in Chinese, and can search in either language.
 - 🎬 **Team intro** shows your agent, gloves, and weapon skins on the match intro and on the team select screen once you are on a team (the very first team select after connecting has no owner assigned by the engine, so it keeps the defaults).
@@ -308,7 +308,7 @@ Stickers use the game's stock placement, size and wear for each slot; there is n
 | `EnableStatTrakByDefault` | Every weapon and knife with a selected skin starts with a StatTrak counter at 0; players can still turn it off per item with `!stattrak reset`. That counter belongs to the selection: while the selection is not applied (module off, flag lost) it stays hidden, and it comes back with it |
 | `EnableMusicKitMvpCounter` | Track per-player MVP counts for selected music kits |
 | `RandomSkins.TopTierOnly` | `!randomskins` (and `on`) rolls only the best grades: Covert and Contraband guns, Master agents, gold stickers, the rarest charms. Where fewer than three such choices exist it goes down a grade at a time until there are three, so every gun still varies (a gun with one Covert also gets its Classified finishes). Knives only roll a real finish, never the stock one |
-| `RandomSkins.SkipNames` | Names `!randomskins` never picks, matched whole and case-insensitively against finishes, knife and glove types, stickers, charms, agents and music kits, e.g. `["Safari Mesh", "Boreal Forest", "Forest DDPAT", "Urban Masked", "Scorched", "Stained", "Rust Coat"]` for no dull knife finishes. Every knife finish has the same grade (Covert), so `TopTierOnly` alone cannot rank them; for premium knives only (Dopplers, Gamma Dopplers, Fade, Marble Fade, Tiger Tooth, Lore, Autotronic, Slaughter) also add `"Black Laminate", "Blue Steel", "Bright Water", "Case Hardened", "Crimson Web", "Damascus Steel", "Freehand", "Night", "Night Stripe", "Ultraviolet"` (these names also match a few low-grade gun skins and Hydra Gloves \| Case Hardened). Knife and glove types are names too, so `"Gut Knife"` or `"Bloodhound Gloves"` drops a whole type, and `"Doppler (Phase 1)"` a single phase (Glock-18 shares the Gamma Doppler phase names). Ignored for a slot where it would leave nothing |
+| `RandomSkins.SkipNames` | Names `!randomskins` never picks, matched whole and case-insensitively against finishes, knife and glove types, stickers, charms, agents and music kits, e.g. `["Safari Mesh", "Boreal Forest", "Forest DDPAT", "Urban Masked", "Scorched", "Stained", "Rust Coat"]` for no dull knife finishes. Every knife finish has the same grade (Covert), so `TopTierOnly` alone cannot rank them; for premium knives only (Dopplers, Gamma Dopplers, Fade, Marble Fade, Tiger Tooth, Lore, Autotronic, Slaughter) also add `"Black Laminate", "Blue Steel", "Bright Water", "Case Hardened", "Crimson Web", "Damascus Steel", "Freehand", "Night", "Night Stripe", "Ultraviolet"` (these names also match a few low-grade gun skins and Hydra Gloves \| Case Hardened). Knife and glove types are names too, so `"Gut Knife"` or `"Bloodhound Gloves"` drops a whole type, and `"Doppler (Phase 1)"` a single phase (Glock-18 shares the Gamma Doppler phase names). Knife finishes Valve remade for the CS2 models keep their name and the old versions read `"Case Hardened (Legacy)"`, `"Crimson Web (Legacy)"` and so on, so list both to skip both. Ignored for a slot where it would leave nothing |
 
 ### SQLite
 
@@ -345,12 +345,12 @@ Currently packaged:
 | Weapons | 34 |
 | Weapon skins | 1,449 |
 | Knives | 20 |
-| Knife skins | 576 |
+| Knife skins | 696 |
 | Glove types | 8 |
 | Glove skins | 94 |
 | Agents | 63 |
-| Music kits | 100 |
-| Stickers | 11,134 |
+| Music kits | 108 |
+| Stickers | 11,907 |
 | Charms | 78 |
 
 To regenerate the data after a CS2 update, run the included generator — it pulls the latest `items_game.txt` and translation data automatically:

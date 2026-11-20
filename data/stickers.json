@@ -1,5 +1,6953 @@
 [
   {
+    "id": "sticker-11902",
+    "stickerId": 11902,
+    "displayName": "100 Thieves",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11903",
+    "stickerId": 11903,
+    "displayName": "100 Thieves (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11905",
+    "stickerId": 11905,
+    "displayName": "100 Thieves (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11904",
+    "stickerId": 11904,
+    "displayName": "100 Thieves (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11906",
+    "stickerId": 11906,
+    "displayName": "9z Team",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11907",
+    "stickerId": 11907,
+    "displayName": "9z Team (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11909",
+    "stickerId": 11909,
+    "displayName": "9z Team (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11908",
+    "stickerId": 11908,
+    "displayName": "9z Team (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11866",
+    "stickerId": 11866,
+    "displayName": "Astralis",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11867",
+    "stickerId": 11867,
+    "displayName": "Astralis (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11869",
+    "stickerId": 11869,
+    "displayName": "Astralis (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11868",
+    "stickerId": 11868,
+    "displayName": "Astralis (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11826",
+    "stickerId": 11826,
+    "displayName": "Aurora",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11827",
+    "stickerId": 11827,
+    "displayName": "Aurora (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11829",
+    "stickerId": 11829,
+    "displayName": "Aurora (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11828",
+    "stickerId": 11828,
+    "displayName": "Aurora (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11834",
+    "stickerId": 11834,
+    "displayName": "BB Team",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11835",
+    "stickerId": 11835,
+    "displayName": "BB Team (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11837",
+    "stickerId": 11837,
+    "displayName": "BB Team (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11836",
+    "stickerId": 11836,
+    "displayName": "BB Team (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11934",
+    "stickerId": 11934,
+    "displayName": "Chinggis Warriors",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11935",
+    "stickerId": 11935,
+    "displayName": "Chinggis Warriors (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11937",
+    "stickerId": 11937,
+    "displayName": "Chinggis Warriors (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11936",
+    "stickerId": 11936,
+    "displayName": "Chinggis Warriors (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11914",
+    "stickerId": 11914,
+    "displayName": "DENDELE",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11915",
+    "stickerId": 11915,
+    "displayName": "DENDELE (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11917",
+    "stickerId": 11917,
+    "displayName": "DENDELE (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11916",
+    "stickerId": 11916,
+    "displayName": "DENDELE (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11898",
+    "stickerId": 11898,
+    "displayName": "Eternal Fire",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11899",
+    "stickerId": 11899,
+    "displayName": "Eternal Fire (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11901",
+    "stickerId": 11901,
+    "displayName": "Eternal Fire (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11900",
+    "stickerId": 11900,
+    "displayName": "Eternal Fire (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11838",
+    "stickerId": 11838,
+    "displayName": "Falcons",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11839",
+    "stickerId": 11839,
+    "displayName": "Falcons (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11841",
+    "stickerId": 11841,
+    "displayName": "Falcons (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11840",
+    "stickerId": 11840,
+    "displayName": "Falcons (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11890",
+    "stickerId": 11890,
+    "displayName": "FaZe Clan",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11891",
+    "stickerId": 11891,
+    "displayName": "FaZe Clan (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11893",
+    "stickerId": 11893,
+    "displayName": "FaZe Clan (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11892",
+    "stickerId": 11892,
+    "displayName": "FaZe Clan (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11930",
+    "stickerId": 11930,
+    "displayName": "FlyQuest",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11931",
+    "stickerId": 11931,
+    "displayName": "FlyQuest (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11933",
+    "stickerId": 11933,
+    "displayName": "FlyQuest (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11932",
+    "stickerId": 11932,
+    "displayName": "FlyQuest (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11822",
+    "stickerId": 11822,
+    "displayName": "FURIA",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11823",
+    "stickerId": 11823,
+    "displayName": "FURIA (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11825",
+    "stickerId": 11825,
+    "displayName": "FURIA (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11824",
+    "stickerId": 11824,
+    "displayName": "FURIA (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11842",
+    "stickerId": 11842,
+    "displayName": "FUT",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11843",
+    "stickerId": 11843,
+    "displayName": "FUT (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11845",
+    "stickerId": 11845,
+    "displayName": "FUT (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11844",
+    "stickerId": 11844,
+    "displayName": "FUT (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11854",
+    "stickerId": 11854,
+    "displayName": "G2 esports",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11855",
+    "stickerId": 11855,
+    "displayName": "G2 esports (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11857",
+    "stickerId": 11857,
+    "displayName": "G2 esports (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11856",
+    "stickerId": 11856,
+    "displayName": "G2 esports (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11926",
+    "stickerId": 11926,
+    "displayName": "GOSH",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11927",
+    "stickerId": 11927,
+    "displayName": "GOSH (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11929",
+    "stickerId": 11929,
+    "displayName": "GOSH (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11928",
+    "stickerId": 11928,
+    "displayName": "GOSH (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11882",
+    "stickerId": 11882,
+    "displayName": "HEROIC",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11883",
+    "stickerId": 11883,
+    "displayName": "HEROIC (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11885",
+    "stickerId": 11885,
+    "displayName": "HEROIC (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11884",
+    "stickerId": 11884,
+    "displayName": "HEROIC (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11918",
+    "stickerId": 11918,
+    "displayName": "Imperial Esports",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11919",
+    "stickerId": 11919,
+    "displayName": "Imperial Esports (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11921",
+    "stickerId": 11921,
+    "displayName": "Imperial Esports (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11920",
+    "stickerId": 11920,
+    "displayName": "Imperial Esports (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11846",
+    "stickerId": 11846,
+    "displayName": "Legacy",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11847",
+    "stickerId": 11847,
+    "displayName": "Legacy (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11849",
+    "stickerId": 11849,
+    "displayName": "Legacy (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11848",
+    "stickerId": 11848,
+    "displayName": "Legacy (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11938",
+    "stickerId": 11938,
+    "displayName": "Lynn Vision",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11939",
+    "stickerId": 11939,
+    "displayName": "Lynn Vision (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11941",
+    "stickerId": 11941,
+    "displayName": "Lynn Vision (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11940",
+    "stickerId": 11940,
+    "displayName": "Lynn Vision (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11910",
+    "stickerId": 11910,
+    "displayName": "M80",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11911",
+    "stickerId": 11911,
+    "displayName": "M80 (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11913",
+    "stickerId": 11913,
+    "displayName": "M80 (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11912",
+    "stickerId": 11912,
+    "displayName": "M80 (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11886",
+    "stickerId": 11886,
+    "displayName": "MIBR",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11887",
+    "stickerId": 11887,
+    "displayName": "MIBR (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11889",
+    "stickerId": 11889,
+    "displayName": "MIBR (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11888",
+    "stickerId": 11888,
+    "displayName": "MIBR (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11814",
+    "stickerId": 11814,
+    "displayName": "MOUZ",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11815",
+    "stickerId": 11815,
+    "displayName": "MOUZ (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11817",
+    "stickerId": 11817,
+    "displayName": "MOUZ (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11816",
+    "stickerId": 11816,
+    "displayName": "MOUZ (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11862",
+    "stickerId": 11862,
+    "displayName": "Natus Vincere",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11863",
+    "stickerId": 11863,
+    "displayName": "Natus Vincere (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11865",
+    "stickerId": 11865,
+    "displayName": "Natus Vincere (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11864",
+    "stickerId": 11864,
+    "displayName": "Natus Vincere (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11850",
+    "stickerId": 11850,
+    "displayName": "Nemiga",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11851",
+    "stickerId": 11851,
+    "displayName": "Nemiga (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11853",
+    "stickerId": 11853,
+    "displayName": "Nemiga (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11852",
+    "stickerId": 11852,
+    "displayName": "Nemiga (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11870",
+    "stickerId": 11870,
+    "displayName": "Ninjas in Pyjamas",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11871",
+    "stickerId": 11871,
+    "displayName": "Ninjas in Pyjamas (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11873",
+    "stickerId": 11873,
+    "displayName": "Ninjas in Pyjamas (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11872",
+    "stickerId": 11872,
+    "displayName": "Ninjas in Pyjamas (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11942",
+    "stickerId": 11942,
+    "displayName": "PGL",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11943",
+    "stickerId": 11943,
+    "displayName": "PGL (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11945",
+    "stickerId": 11945,
+    "displayName": "PGL (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11944",
+    "stickerId": 11944,
+    "displayName": "PGL (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11878",
+    "stickerId": 11878,
+    "displayName": "PVISION",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11879",
+    "stickerId": 11879,
+    "displayName": "PVISION (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11881",
+    "stickerId": 11881,
+    "displayName": "PVISION (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11880",
+    "stickerId": 11880,
+    "displayName": "PVISION (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11894",
+    "stickerId": 11894,
+    "displayName": "Team Liquid",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11895",
+    "stickerId": 11895,
+    "displayName": "Team Liquid (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11897",
+    "stickerId": 11897,
+    "displayName": "Team Liquid (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11896",
+    "stickerId": 11896,
+    "displayName": "Team Liquid (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11830",
+    "stickerId": 11830,
+    "displayName": "Team Spirit",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11831",
+    "stickerId": 11831,
+    "displayName": "Team Spirit (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11833",
+    "stickerId": 11833,
+    "displayName": "Team Spirit (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11832",
+    "stickerId": 11832,
+    "displayName": "Team Spirit (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11874",
+    "stickerId": 11874,
+    "displayName": "The Mongolz",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11875",
+    "stickerId": 11875,
+    "displayName": "The Mongolz (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11877",
+    "stickerId": 11877,
+    "displayName": "The Mongolz (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11876",
+    "stickerId": 11876,
+    "displayName": "The Mongolz (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11858",
+    "stickerId": 11858,
+    "displayName": "The One",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11859",
+    "stickerId": 11859,
+    "displayName": "The One (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11861",
+    "stickerId": 11861,
+    "displayName": "The One (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11860",
+    "stickerId": 11860,
+    "displayName": "The One (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11818",
+    "stickerId": 11818,
+    "displayName": "Vitality",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11819",
+    "stickerId": 11819,
+    "displayName": "Vitality (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11821",
+    "stickerId": 11821,
+    "displayName": "Vitality (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11820",
+    "stickerId": 11820,
+    "displayName": "Vitality (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11922",
+    "stickerId": 11922,
+    "displayName": "Wildcard",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11923",
+    "stickerId": 11923,
+    "displayName": "Wildcard (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11925",
+    "stickerId": 11925,
+    "displayName": "Wildcard (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11924",
+    "stickerId": 11924,
+    "displayName": "Wildcard (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Team Sticker Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12279",
+    "stickerId": 12279,
+    "displayName": "910",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12280",
+    "stickerId": 12280,
+    "displayName": "910 (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12282",
+    "stickerId": 12282,
+    "displayName": "910 (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12281",
+    "stickerId": 12281,
+    "displayName": "910 (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12259",
+    "stickerId": 12259,
+    "displayName": "adamb",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12260",
+    "stickerId": 12260,
+    "displayName": "adamb (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12262",
+    "stickerId": 12262,
+    "displayName": "adamb (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12261",
+    "stickerId": 12261,
+    "displayName": "adamb (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12219",
+    "stickerId": 12219,
+    "displayName": "Aleksib",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12220",
+    "stickerId": 12220,
+    "displayName": "Aleksib (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12222",
+    "stickerId": 12222,
+    "displayName": "Aleksib (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12221",
+    "stickerId": 12221,
+    "displayName": "Aleksib (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12559",
+    "stickerId": 12559,
+    "displayName": "aliStair",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12560",
+    "stickerId": 12560,
+    "displayName": "aliStair (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12562",
+    "stickerId": 12562,
+    "displayName": "aliStair (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12561",
+    "stickerId": 12561,
+    "displayName": "aliStair (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12139",
+    "stickerId": 12139,
+    "displayName": "arT",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12140",
+    "stickerId": 12140,
+    "displayName": "arT (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12142",
+    "stickerId": 12142,
+    "displayName": "arT (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12141",
+    "stickerId": 12141,
+    "displayName": "arT (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12199",
+    "stickerId": 12199,
+    "displayName": "ArtFr0st",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12200",
+    "stickerId": 12200,
+    "displayName": "ArtFr0st (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12202",
+    "stickerId": 12202,
+    "displayName": "ArtFr0st (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12201",
+    "stickerId": 12201,
+    "displayName": "ArtFr0st (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12539",
+    "stickerId": 12539,
+    "displayName": "asap",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12540",
+    "stickerId": 12540,
+    "displayName": "asap (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12542",
+    "stickerId": 12542,
+    "displayName": "asap (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12541",
+    "stickerId": 12541,
+    "displayName": "asap (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12203",
+    "stickerId": 12203,
+    "displayName": "Ax1Le",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12204",
+    "stickerId": 12204,
+    "displayName": "Ax1Le (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12206",
+    "stickerId": 12206,
+    "displayName": "Ax1Le (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12205",
+    "stickerId": 12205,
+    "displayName": "Ax1Le (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12223",
+    "stickerId": 12223,
+    "displayName": "b1t",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12224",
+    "stickerId": 12224,
+    "displayName": "b1t (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12226",
+    "stickerId": 12226,
+    "displayName": "b1t (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12225",
+    "stickerId": 12225,
+    "displayName": "b1t (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12207",
+    "stickerId": 12207,
+    "displayName": "BELCHONOKK",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12208",
+    "stickerId": 12208,
+    "displayName": "BELCHONOKK (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12210",
+    "stickerId": 12210,
+    "displayName": "BELCHONOKK (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12209",
+    "stickerId": 12209,
+    "displayName": "BELCHONOKK (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12283",
+    "stickerId": 12283,
+    "displayName": "bLitz",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12284",
+    "stickerId": 12284,
+    "displayName": "bLitz (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12286",
+    "stickerId": 12286,
+    "displayName": "bLitz (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12285",
+    "stickerId": 12285,
+    "displayName": "bLitz (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12079",
+    "stickerId": 12079,
+    "displayName": "Boombl4",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12080",
+    "stickerId": 12080,
+    "displayName": "Boombl4 (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12082",
+    "stickerId": 12082,
+    "displayName": "Boombl4 (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12081",
+    "stickerId": 12081,
+    "displayName": "Boombl4 (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12319",
+    "stickerId": 12319,
+    "displayName": "Brollan",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12320",
+    "stickerId": 12320,
+    "displayName": "Brollan (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12322",
+    "stickerId": 12322,
+    "displayName": "Brollan (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12321",
+    "stickerId": 12321,
+    "displayName": "Brollan (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12599",
+    "stickerId": 12599,
+    "displayName": "C4LLM3SU3",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12600",
+    "stickerId": 12600,
+    "displayName": "C4LLM3SU3 (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12602",
+    "stickerId": 12602,
+    "displayName": "C4LLM3SU3 (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12601",
+    "stickerId": 12601,
+    "displayName": "C4LLM3SU3 (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12499",
+    "stickerId": 12499,
+    "displayName": "chelo",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12500",
+    "stickerId": 12500,
+    "displayName": "chelo (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12502",
+    "stickerId": 12502,
+    "displayName": "chelo (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12501",
+    "stickerId": 12501,
+    "displayName": "chelo (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12323",
+    "stickerId": 12323,
+    "displayName": "Chr1zN",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12324",
+    "stickerId": 12324,
+    "displayName": "Chr1zN (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12326",
+    "stickerId": 12326,
+    "displayName": "Chr1zN (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12325",
+    "stickerId": 12325,
+    "displayName": "Chr1zN (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12119",
+    "stickerId": 12119,
+    "displayName": "cmtry",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12120",
+    "stickerId": 12120,
+    "displayName": "cmtry (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12122",
+    "stickerId": 12122,
+    "displayName": "cmtry (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12121",
+    "stickerId": 12121,
+    "displayName": "cmtry (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12287",
+    "stickerId": 12287,
+    "displayName": "cobra",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12288",
+    "stickerId": 12288,
+    "displayName": "cobra (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12290",
+    "stickerId": 12290,
+    "displayName": "cobra (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12289",
+    "stickerId": 12289,
+    "displayName": "cobra (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12579",
+    "stickerId": 12579,
+    "displayName": "cool4st",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12580",
+    "stickerId": 12580,
+    "displayName": "cool4st (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12582",
+    "stickerId": 12582,
+    "displayName": "cool4st (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12581",
+    "stickerId": 12581,
+    "displayName": "cool4st (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12519",
+    "stickerId": 12519,
+    "displayName": "Cxzi",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12520",
+    "stickerId": 12520,
+    "displayName": "Cxzi (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12522",
+    "stickerId": 12522,
+    "displayName": "Cxzi (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12521",
+    "stickerId": 12521,
+    "displayName": "Cxzi (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12083",
+    "stickerId": 12083,
+    "displayName": "d1Ledez",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12084",
+    "stickerId": 12084,
+    "displayName": "d1Ledez (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12086",
+    "stickerId": 12086,
+    "displayName": "d1Ledez (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12085",
+    "stickerId": 12085,
+    "displayName": "d1Ledez (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12503",
+    "stickerId": 12503,
+    "displayName": "decenty",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12504",
+    "stickerId": 12504,
+    "displayName": "decenty (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12506",
+    "stickerId": 12506,
+    "displayName": "decenty (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12505",
+    "stickerId": 12505,
+    "displayName": "decenty (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12123",
+    "stickerId": 12123,
+    "displayName": "dem0n",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12124",
+    "stickerId": 12124,
+    "displayName": "dem0n (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12126",
+    "stickerId": 12126,
+    "displayName": "dem0n (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12125",
+    "stickerId": 12125,
+    "displayName": "dem0n (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12419",
+    "stickerId": 12419,
+    "displayName": "device",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12420",
+    "stickerId": 12420,
+    "displayName": "device (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12422",
+    "stickerId": 12422,
+    "displayName": "device (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12421",
+    "stickerId": 12421,
+    "displayName": "device (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12439",
+    "stickerId": 12439,
+    "displayName": "dgt",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12440",
+    "stickerId": 12440,
+    "displayName": "dgt (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12442",
+    "stickerId": 12442,
+    "displayName": "dgt (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12441",
+    "stickerId": 12441,
+    "displayName": "dgt (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12479",
+    "stickerId": 12479,
+    "displayName": "doc",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12480",
+    "stickerId": 12480,
+    "displayName": "doc (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12482",
+    "stickerId": 12482,
+    "displayName": "doc (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12481",
+    "stickerId": 12481,
+    "displayName": "doc (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12059",
+    "stickerId": 12059,
+    "displayName": "donk",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12060",
+    "stickerId": 12060,
+    "displayName": "donk (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12062",
+    "stickerId": 12062,
+    "displayName": "donk (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12061",
+    "stickerId": 12061,
+    "displayName": "donk (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12143",
+    "stickerId": 12143,
+    "displayName": "dumau",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12144",
+    "stickerId": 12144,
+    "displayName": "dumau (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12146",
+    "stickerId": 12146,
+    "displayName": "dumau (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12145",
+    "stickerId": 12145,
+    "displayName": "dumau (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12127",
+    "stickerId": 12127,
+    "displayName": "dziugss",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12128",
+    "stickerId": 12128,
+    "displayName": "dziugss (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12130",
+    "stickerId": 12130,
+    "displayName": "dziugss (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12129",
+    "stickerId": 12129,
+    "displayName": "dziugss (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12379",
+    "stickerId": 12379,
+    "displayName": "EliGE",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12380",
+    "stickerId": 12380,
+    "displayName": "EliGE (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12382",
+    "stickerId": 12382,
+    "displayName": "EliGE (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12381",
+    "stickerId": 12381,
+    "displayName": "EliGE (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12603",
+    "stickerId": 12603,
+    "displayName": "EmiliaQAQ",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12604",
+    "stickerId": 12604,
+    "displayName": "EmiliaQAQ (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12606",
+    "stickerId": 12606,
+    "displayName": "EmiliaQAQ (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12605",
+    "stickerId": 12605,
+    "displayName": "EmiliaQAQ (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12019",
+    "stickerId": 12019,
+    "displayName": "FalleN",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12020",
+    "stickerId": 12020,
+    "displayName": "FalleN (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12022",
+    "stickerId": 12022,
+    "displayName": "FalleN (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12021",
+    "stickerId": 12021,
+    "displayName": "FalleN (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12211",
+    "stickerId": 12211,
+    "displayName": "fame",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12212",
+    "stickerId": 12212,
+    "displayName": "fame (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12214",
+    "stickerId": 12214,
+    "displayName": "fame (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12213",
+    "stickerId": 12213,
+    "displayName": "fame (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12299",
+    "stickerId": 12299,
+    "displayName": "FL1T",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12300",
+    "stickerId": 12300,
+    "displayName": "FL1T (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12302",
+    "stickerId": 12302,
+    "displayName": "FL1T (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12301",
+    "stickerId": 12301,
+    "displayName": "FL1T (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11999",
+    "stickerId": 11999,
+    "displayName": "FlameZ",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12000",
+    "stickerId": 12000,
+    "displayName": "FlameZ (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12002",
+    "stickerId": 12002,
+    "displayName": "FlameZ (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12001",
+    "stickerId": 12001,
+    "displayName": "FlameZ (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12523",
+    "stickerId": 12523,
+    "displayName": "fr3nd",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12524",
+    "stickerId": 12524,
+    "displayName": "fr3nd (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12526",
+    "stickerId": 12526,
+    "displayName": "fr3nd (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12525",
+    "stickerId": 12525,
+    "displayName": "fr3nd (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12359",
+    "stickerId": 12359,
+    "displayName": "frozen",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12360",
+    "stickerId": 12360,
+    "displayName": "frozen (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12362",
+    "stickerId": 12362,
+    "displayName": "frozen (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12361",
+    "stickerId": 12361,
+    "displayName": "frozen (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12583",
+    "stickerId": 12583,
+    "displayName": "fury5k",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12584",
+    "stickerId": 12584,
+    "displayName": "fury5k (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12586",
+    "stickerId": 12586,
+    "displayName": "fury5k (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12585",
+    "stickerId": 12585,
+    "displayName": "fury5k (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12483",
+    "stickerId": 12483,
+    "displayName": "gafolo",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12484",
+    "stickerId": 12484,
+    "displayName": "gafolo (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12486",
+    "stickerId": 12486,
+    "displayName": "gafolo (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12485",
+    "stickerId": 12485,
+    "displayName": "gafolo (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12423",
+    "stickerId": 12423,
+    "displayName": "Gizmy",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12424",
+    "stickerId": 12424,
+    "displayName": "Gizmy (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12426",
+    "stickerId": 12426,
+    "displayName": "Gizmy (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12425",
+    "stickerId": 12425,
+    "displayName": "Gizmy (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12179",
+    "stickerId": 12179,
+    "displayName": "Heavygod",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12180",
+    "stickerId": 12180,
+    "displayName": "Heavygod (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12182",
+    "stickerId": 12182,
+    "displayName": "Heavygod (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12181",
+    "stickerId": 12181,
+    "displayName": "Heavygod (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12527",
+    "stickerId": 12527,
+    "displayName": "HexT",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12528",
+    "stickerId": 12528,
+    "displayName": "HexT (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12530",
+    "stickerId": 12530,
+    "displayName": "HexT (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12529",
+    "stickerId": 12529,
+    "displayName": "HexT (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12303",
+    "stickerId": 12303,
+    "displayName": "Hobbit",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12304",
+    "stickerId": 12304,
+    "displayName": "Hobbit (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12306",
+    "stickerId": 12306,
+    "displayName": "Hobbit (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12305",
+    "stickerId": 12305,
+    "displayName": "Hobbit (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12443",
+    "stickerId": 12443,
+    "displayName": "HUASOPEEK",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12444",
+    "stickerId": 12444,
+    "displayName": "HUASOPEEK (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12446",
+    "stickerId": 12446,
+    "displayName": "HUASOPEEK (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12445",
+    "stickerId": 12445,
+    "displayName": "HUASOPEEK (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12183",
+    "stickerId": 12183,
+    "displayName": "huNter-",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12184",
+    "stickerId": 12184,
+    "displayName": "huNter- (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12186",
+    "stickerId": 12186,
+    "displayName": "huNter- (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12185",
+    "stickerId": 12185,
+    "displayName": "huNter- (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12227",
+    "stickerId": 12227,
+    "displayName": "iM",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12228",
+    "stickerId": 12228,
+    "displayName": "iM (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12230",
+    "stickerId": 12230,
+    "displayName": "iM (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12229",
+    "stickerId": 12229,
+    "displayName": "iM (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12563",
+    "stickerId": 12563,
+    "displayName": "INS",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12564",
+    "stickerId": 12564,
+    "displayName": "INS (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12566",
+    "stickerId": 12566,
+    "displayName": "INS (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12565",
+    "stickerId": 12565,
+    "displayName": "INS (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12339",
+    "stickerId": 12339,
+    "displayName": "insani",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12340",
+    "stickerId": 12340,
+    "displayName": "insani (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12342",
+    "stickerId": 12342,
+    "displayName": "insani (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12341",
+    "stickerId": 12341,
+    "displayName": "insani (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12239",
+    "stickerId": 12239,
+    "displayName": "jabbi",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12240",
+    "stickerId": 12240,
+    "displayName": "jabbi (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12242",
+    "stickerId": 12242,
+    "displayName": "jabbi (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12241",
+    "stickerId": 12241,
+    "displayName": "jabbi (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12307",
+    "stickerId": 12307,
+    "displayName": "Jame",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12308",
+    "stickerId": 12308,
+    "displayName": "Jame (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12310",
+    "stickerId": 12310,
+    "displayName": "Jame (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12309",
+    "stickerId": 12309,
+    "displayName": "Jame (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12459",
+    "stickerId": 12459,
+    "displayName": "JBa",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12460",
+    "stickerId": 12460,
+    "displayName": "JBa (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12462",
+    "stickerId": 12462,
+    "displayName": "JBa (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12461",
+    "stickerId": 12461,
+    "displayName": "JBa (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12363",
+    "stickerId": 12363,
+    "displayName": "JBOEN",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12364",
+    "stickerId": 12364,
+    "displayName": "JBOEN (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12366",
+    "stickerId": 12366,
+    "displayName": "JBOEN (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12365",
+    "stickerId": 12365,
+    "displayName": "JBOEN (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12367",
+    "stickerId": 12367,
+    "displayName": "jcobbb",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12368",
+    "stickerId": 12368,
+    "displayName": "jcobbb (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12370",
+    "stickerId": 12370,
+    "displayName": "jcobbb (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12369",
+    "stickerId": 12369,
+    "displayName": "jcobbb (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12039",
+    "stickerId": 12039,
+    "displayName": "Jimpphat",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12040",
+    "stickerId": 12040,
+    "displayName": "Jimpphat (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12042",
+    "stickerId": 12042,
+    "displayName": "Jimpphat (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12041",
+    "stickerId": 12041,
+    "displayName": "Jimpphat (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12567",
+    "stickerId": 12567,
+    "displayName": "jks",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12568",
+    "stickerId": 12568,
+    "displayName": "jks (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12570",
+    "stickerId": 12570,
+    "displayName": "jks (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12569",
+    "stickerId": 12569,
+    "displayName": "jks (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12003",
+    "stickerId": 12003,
+    "displayName": "jL",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12004",
+    "stickerId": 12004,
+    "displayName": "jL (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12006",
+    "stickerId": 12006,
+    "displayName": "jL (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12005",
+    "stickerId": 12005,
+    "displayName": "jL (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12383",
+    "stickerId": 12383,
+    "displayName": "Jorko",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12384",
+    "stickerId": 12384,
+    "displayName": "Jorko (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12386",
+    "stickerId": 12386,
+    "displayName": "Jorko (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12385",
+    "stickerId": 12385,
+    "displayName": "Jorko (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12399",
+    "stickerId": 12399,
+    "displayName": "jottAAA",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12400",
+    "stickerId": 12400,
+    "displayName": "jottAAA (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12402",
+    "stickerId": 12402,
+    "displayName": "jottAAA (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12401",
+    "stickerId": 12401,
+    "displayName": "jottAAA (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12387",
+    "stickerId": 12387,
+    "displayName": "JT",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12388",
+    "stickerId": 12388,
+    "displayName": "JT (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12390",
+    "stickerId": 12390,
+    "displayName": "JT (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12389",
+    "stickerId": 12389,
+    "displayName": "JT (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12159",
+    "stickerId": 12159,
+    "displayName": "KaiR0N-",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12160",
+    "stickerId": 12160,
+    "displayName": "KaiR0N- (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12162",
+    "stickerId": 12162,
+    "displayName": "KaiR0N- (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12161",
+    "stickerId": 12161,
+    "displayName": "KaiR0N- (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12099",
+    "stickerId": 12099,
+    "displayName": "karrigan",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12100",
+    "stickerId": 12100,
+    "displayName": "karrigan (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12102",
+    "stickerId": 12102,
+    "displayName": "karrigan (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12101",
+    "stickerId": 12101,
+    "displayName": "karrigan (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12163",
+    "stickerId": 12163,
+    "displayName": "khaN",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12164",
+    "stickerId": 12164,
+    "displayName": "khaN (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12166",
+    "stickerId": 12166,
+    "displayName": "khaN (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12165",
+    "stickerId": 12165,
+    "displayName": "khaN (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12487",
+    "stickerId": 12487,
+    "displayName": "koala",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12488",
+    "stickerId": 12488,
+    "displayName": "koala (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12490",
+    "stickerId": 12490,
+    "displayName": "koala (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12489",
+    "stickerId": 12489,
+    "displayName": "koala (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12131",
+    "stickerId": 12131,
+    "displayName": "Krabeni",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12132",
+    "stickerId": 12132,
+    "displayName": "Krabeni (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12134",
+    "stickerId": 12134,
+    "displayName": "Krabeni (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12133",
+    "stickerId": 12133,
+    "displayName": "Krabeni (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12263",
+    "stickerId": 12263,
+    "displayName": "Krimbo",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12264",
+    "stickerId": 12264,
+    "displayName": "Krimbo (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12266",
+    "stickerId": 12266,
+    "displayName": "Krimbo (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12265",
+    "stickerId": 12265,
+    "displayName": "Krimbo (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12023",
+    "stickerId": 12023,
+    "displayName": "KSCERATO",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12024",
+    "stickerId": 12024,
+    "displayName": "KSCERATO (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12026",
+    "stickerId": 12026,
+    "displayName": "KSCERATO (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12025",
+    "stickerId": 12025,
+    "displayName": "KSCERATO (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12403",
+    "stickerId": 12403,
+    "displayName": "Kvem",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12404",
+    "stickerId": 12404,
+    "displayName": "Kvem (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12406",
+    "stickerId": 12406,
+    "displayName": "Kvem (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12405",
+    "stickerId": 12405,
+    "displayName": "Kvem (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12103",
+    "stickerId": 12103,
+    "displayName": "kyousuke",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12104",
+    "stickerId": 12104,
+    "displayName": "kyousuke (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12106",
+    "stickerId": 12106,
+    "displayName": "kyousuke (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12105",
+    "stickerId": 12105,
+    "displayName": "kyousuke (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12043",
+    "stickerId": 12043,
+    "displayName": "kyxsan",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12044",
+    "stickerId": 12044,
+    "displayName": "kyxsan (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12046",
+    "stickerId": 12046,
+    "displayName": "kyxsan (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12045",
+    "stickerId": 12045,
+    "displayName": "kyxsan (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12463",
+    "stickerId": 12463,
+    "displayName": "Lake",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12464",
+    "stickerId": 12464,
+    "displayName": "Lake (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12466",
+    "stickerId": 12466,
+    "displayName": "Lake (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12465",
+    "stickerId": 12465,
+    "displayName": "Lake (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12147",
+    "stickerId": 12147,
+    "displayName": "latto",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12148",
+    "stickerId": 12148,
+    "displayName": "latto (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12150",
+    "stickerId": 12150,
+    "displayName": "latto (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12149",
+    "stickerId": 12149,
+    "displayName": "latto (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12343",
+    "stickerId": 12343,
+    "displayName": "LNZ",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12344",
+    "stickerId": 12344,
+    "displayName": "LNZ (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12346",
+    "stickerId": 12346,
+    "displayName": "LNZ (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12345",
+    "stickerId": 12345,
+    "displayName": "LNZ (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12447",
+    "stickerId": 12447,
+    "displayName": "luchov",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12448",
+    "stickerId": 12448,
+    "displayName": "luchov (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12450",
+    "stickerId": 12450,
+    "displayName": "luchov (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12449",
+    "stickerId": 12449,
+    "displayName": "luchov (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12107",
+    "stickerId": 12107,
+    "displayName": "m0NESY",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12108",
+    "stickerId": 12108,
+    "displayName": "m0NESY (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12110",
+    "stickerId": 12110,
+    "displayName": "m0NESY (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12109",
+    "stickerId": 12109,
+    "displayName": "m0NESY (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12543",
+    "stickerId": 12543,
+    "displayName": "Magisk",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12544",
+    "stickerId": 12544,
+    "displayName": "Magisk (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12546",
+    "stickerId": 12546,
+    "displayName": "Magisk (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12545",
+    "stickerId": 12545,
+    "displayName": "Magisk (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12063",
+    "stickerId": 12063,
+    "displayName": "magixx",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12064",
+    "stickerId": 12064,
+    "displayName": "magixx (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12066",
+    "stickerId": 12066,
+    "displayName": "magixx (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12065",
+    "stickerId": 12065,
+    "displayName": "magixx (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12087",
+    "stickerId": 12087,
+    "displayName": "Magnojez",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12088",
+    "stickerId": 12088,
+    "displayName": "Magnojez (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12090",
+    "stickerId": 12090,
+    "displayName": "Magnojez (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12089",
+    "stickerId": 12089,
+    "displayName": "Magnojez (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12231",
+    "stickerId": 12231,
+    "displayName": "makazze",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12232",
+    "stickerId": 12232,
+    "displayName": "makazze (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12234",
+    "stickerId": 12234,
+    "displayName": "makazze (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12233",
+    "stickerId": 12233,
+    "displayName": "makazze (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12391",
+    "stickerId": 12391,
+    "displayName": "malbsMd",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12392",
+    "stickerId": 12392,
+    "displayName": "malbsMd (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12394",
+    "stickerId": 12394,
+    "displayName": "malbsMd (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12393",
+    "stickerId": 12393,
+    "displayName": "malbsMd (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12327",
+    "stickerId": 12327,
+    "displayName": "MartinezSa",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12328",
+    "stickerId": 12328,
+    "displayName": "MartinezSa (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12330",
+    "stickerId": 12330,
+    "displayName": "MartinezSa (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12329",
+    "stickerId": 12329,
+    "displayName": "MartinezSa (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12187",
+    "stickerId": 12187,
+    "displayName": "MATYS",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12188",
+    "stickerId": 12188,
+    "displayName": "MATYS (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12190",
+    "stickerId": 12190,
+    "displayName": "MATYS (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12189",
+    "stickerId": 12189,
+    "displayName": "MATYS (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12451",
+    "stickerId": 12451,
+    "displayName": "max",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12452",
+    "stickerId": 12452,
+    "displayName": "max (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12454",
+    "stickerId": 12454,
+    "displayName": "max (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12453",
+    "stickerId": 12453,
+    "displayName": "max (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12491",
+    "stickerId": 12491,
+    "displayName": "maxxkor",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12492",
+    "stickerId": 12492,
+    "displayName": "maxxkor (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12494",
+    "stickerId": 12494,
+    "displayName": "maxxkor (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12493",
+    "stickerId": 12493,
+    "displayName": "maxxkor (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12455",
+    "stickerId": 12455,
+    "displayName": "meyern",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12456",
+    "stickerId": 12456,
+    "displayName": "meyern (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12458",
+    "stickerId": 12458,
+    "displayName": "meyern (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12457",
+    "stickerId": 12457,
+    "displayName": "meyern (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12007",
+    "stickerId": 12007,
+    "displayName": "mezii",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12008",
+    "stickerId": 12008,
+    "displayName": "mezii (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12010",
+    "stickerId": 12010,
+    "displayName": "mezii (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12009",
+    "stickerId": 12009,
+    "displayName": "mezii (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12407",
+    "stickerId": 12407,
+    "displayName": "MisteM",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12408",
+    "stickerId": 12408,
+    "displayName": "MisteM (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12410",
+    "stickerId": 12410,
+    "displayName": "MisteM (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12409",
+    "stickerId": 12409,
+    "displayName": "MisteM (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12027",
+    "stickerId": 12027,
+    "displayName": "molodoy",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12028",
+    "stickerId": 12028,
+    "displayName": "molodoy (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12030",
+    "stickerId": 12030,
+    "displayName": "molodoy (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12029",
+    "stickerId": 12029,
+    "displayName": "molodoy (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12547",
+    "stickerId": 12547,
+    "displayName": "mzinho",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12548",
+    "stickerId": 12548,
+    "displayName": "mzinho (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12550",
+    "stickerId": 12550,
+    "displayName": "mzinho (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12549",
+    "stickerId": 12549,
+    "displayName": "mzinho (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12151",
+    "stickerId": 12151,
+    "displayName": "n1ssim",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12152",
+    "stickerId": 12152,
+    "displayName": "n1ssim (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12154",
+    "stickerId": 12154,
+    "displayName": "n1ssim (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12153",
+    "stickerId": 12153,
+    "displayName": "n1ssim (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12395",
+    "stickerId": 12395,
+    "displayName": "NAF",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12396",
+    "stickerId": 12396,
+    "displayName": "NAF (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12398",
+    "stickerId": 12398,
+    "displayName": "NAF (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12397",
+    "stickerId": 12397,
+    "displayName": "NAF (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12215",
+    "stickerId": 12215,
+    "displayName": "nafany",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12216",
+    "stickerId": 12216,
+    "displayName": "nafany (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12218",
+    "stickerId": 12218,
+    "displayName": "nafany (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12217",
+    "stickerId": 12217,
+    "displayName": "nafany (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12371",
+    "stickerId": 12371,
+    "displayName": "Neityu",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12372",
+    "stickerId": 12372,
+    "displayName": "Neityu (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12374",
+    "stickerId": 12374,
+    "displayName": "Neityu (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12373",
+    "stickerId": 12373,
+    "displayName": "Neityu (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12531",
+    "stickerId": 12531,
+    "displayName": "nEMANHA",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12532",
+    "stickerId": 12532,
+    "displayName": "nEMANHA (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12534",
+    "stickerId": 12534,
+    "displayName": "nEMANHA (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12533",
+    "stickerId": 12533,
+    "displayName": "nEMANHA (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12191",
+    "stickerId": 12191,
+    "displayName": "NertZ",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12192",
+    "stickerId": 12192,
+    "displayName": "NertZ (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12194",
+    "stickerId": 12194,
+    "displayName": "NertZ (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12193",
+    "stickerId": 12193,
+    "displayName": "NertZ (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12571",
+    "stickerId": 12571,
+    "displayName": "nettik",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12572",
+    "stickerId": 12572,
+    "displayName": "nettik (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12574",
+    "stickerId": 12574,
+    "displayName": "nettik (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12573",
+    "stickerId": 12573,
+    "displayName": "nettik (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12111",
+    "stickerId": 12111,
+    "displayName": "NiKo",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12112",
+    "stickerId": 12112,
+    "displayName": "NiKo (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12114",
+    "stickerId": 12114,
+    "displayName": "NiKo (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12113",
+    "stickerId": 12113,
+    "displayName": "NiKo (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12331",
+    "stickerId": 12331,
+    "displayName": "nilo",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12332",
+    "stickerId": 12332,
+    "displayName": "nilo (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12334",
+    "stickerId": 12334,
+    "displayName": "nilo (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12333",
+    "stickerId": 12333,
+    "displayName": "nilo (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12291",
+    "stickerId": 12291,
+    "displayName": "nin9",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12292",
+    "stickerId": 12292,
+    "displayName": "nin9 (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12294",
+    "stickerId": 12294,
+    "displayName": "nin9 (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12293",
+    "stickerId": 12293,
+    "displayName": "nin9 (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12507",
+    "stickerId": 12507,
+    "displayName": "noway",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12508",
+    "stickerId": 12508,
+    "displayName": "noway (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12510",
+    "stickerId": 12510,
+    "displayName": "noway (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12509",
+    "stickerId": 12509,
+    "displayName": "noway (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12347",
+    "stickerId": 12347,
+    "displayName": "NQZ",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12348",
+    "stickerId": 12348,
+    "displayName": "NQZ (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12350",
+    "stickerId": 12350,
+    "displayName": "NQZ (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12349",
+    "stickerId": 12349,
+    "displayName": "NQZ (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12243",
+    "stickerId": 12243,
+    "displayName": "phzy",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12244",
+    "stickerId": 12244,
+    "displayName": "phzy (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12246",
+    "stickerId": 12246,
+    "displayName": "phzy (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12245",
+    "stickerId": 12245,
+    "displayName": "phzy (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12427",
+    "stickerId": 12427,
+    "displayName": "poiii",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12428",
+    "stickerId": 12428,
+    "displayName": "poiii (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12430",
+    "stickerId": 12430,
+    "displayName": "poiii (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12429",
+    "stickerId": 12429,
+    "displayName": "poiii (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11979",
+    "stickerId": 11979,
+    "displayName": "PR",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11980",
+    "stickerId": 11980,
+    "displayName": "PR (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11982",
+    "stickerId": 11982,
+    "displayName": "PR (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11981",
+    "stickerId": 11981,
+    "displayName": "PR (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12195",
+    "stickerId": 12195,
+    "displayName": "r1nkle",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12196",
+    "stickerId": 12196,
+    "displayName": "r1nkle (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12198",
+    "stickerId": 12198,
+    "displayName": "r1nkle (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12197",
+    "stickerId": 12197,
+    "displayName": "r1nkle (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12431",
+    "stickerId": 12431,
+    "displayName": "rain",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12432",
+    "stickerId": 12432,
+    "displayName": "rain (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12434",
+    "stickerId": 12434,
+    "displayName": "rain (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12433",
+    "stickerId": 12433,
+    "displayName": "rain (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12495",
+    "stickerId": 12495,
+    "displayName": "rdnzao",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12496",
+    "stickerId": 12496,
+    "displayName": "rdnzao (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12498",
+    "stickerId": 12498,
+    "displayName": "rdnzao (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12497",
+    "stickerId": 12497,
+    "displayName": "rdnzao (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12535",
+    "stickerId": 12535,
+    "displayName": "reck",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12536",
+    "stickerId": 12536,
+    "displayName": "reck (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12538",
+    "stickerId": 12538,
+    "displayName": "reck (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12537",
+    "stickerId": 12537,
+    "displayName": "reck (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12411",
+    "stickerId": 12411,
+    "displayName": "regali",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12412",
+    "stickerId": 12412,
+    "displayName": "regali (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12414",
+    "stickerId": 12414,
+    "displayName": "regali (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12413",
+    "stickerId": 12413,
+    "displayName": "regali (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12167",
+    "stickerId": 12167,
+    "displayName": "robo",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12168",
+    "stickerId": 12168,
+    "displayName": "robo (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12170",
+    "stickerId": 12170,
+    "displayName": "robo (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12169",
+    "stickerId": 12169,
+    "displayName": "robo (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12011",
+    "stickerId": 12011,
+    "displayName": "ropz",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12012",
+    "stickerId": 12012,
+    "displayName": "ropz (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12014",
+    "stickerId": 12014,
+    "displayName": "ropz (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12013",
+    "stickerId": 12013,
+    "displayName": "ropz (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12587",
+    "stickerId": 12587,
+    "displayName": "ROUX",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12588",
+    "stickerId": 12588,
+    "displayName": "ROUX (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12590",
+    "stickerId": 12590,
+    "displayName": "ROUX (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12589",
+    "stickerId": 12589,
+    "displayName": "ROUX (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12247",
+    "stickerId": 12247,
+    "displayName": "ryu",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12248",
+    "stickerId": 12248,
+    "displayName": "ryu (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12250",
+    "stickerId": 12250,
+    "displayName": "ryu (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12249",
+    "stickerId": 12249,
+    "displayName": "ryu (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12551",
+    "stickerId": 12551,
+    "displayName": "s1mple",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12552",
+    "stickerId": 12552,
+    "displayName": "s1mple (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12554",
+    "stickerId": 12554,
+    "displayName": "s1mple (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12553",
+    "stickerId": 12553,
+    "displayName": "s1mple (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12467",
+    "stickerId": 12467,
+    "displayName": "s1n",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12468",
+    "stickerId": 12468,
+    "displayName": "s1n (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12470",
+    "stickerId": 12470,
+    "displayName": "s1n (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12469",
+    "stickerId": 12469,
+    "displayName": "s1n (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12091",
+    "stickerId": 12091,
+    "displayName": "S1ren",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12092",
+    "stickerId": 12092,
+    "displayName": "S1ren (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12094",
+    "stickerId": 12094,
+    "displayName": "S1ren (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12093",
+    "stickerId": 12093,
+    "displayName": "S1ren (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12511",
+    "stickerId": 12511,
+    "displayName": "saadzin",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12512",
+    "stickerId": 12512,
+    "displayName": "saadzin (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12514",
+    "stickerId": 12514,
+    "displayName": "saadzin (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12513",
+    "stickerId": 12513,
+    "displayName": "saadzin (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12555",
+    "stickerId": 12555,
+    "displayName": "Senzu",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12556",
+    "stickerId": 12556,
+    "displayName": "Senzu (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12558",
+    "stickerId": 12558,
+    "displayName": "Senzu (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12557",
+    "stickerId": 12557,
+    "displayName": "Senzu (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12067",
+    "stickerId": 12067,
+    "displayName": "sh1ro",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12068",
+    "stickerId": 12068,
+    "displayName": "sh1ro (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12070",
+    "stickerId": 12070,
+    "displayName": "sh1ro (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12069",
+    "stickerId": 12069,
+    "displayName": "sh1ro (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12435",
+    "stickerId": 12435,
+    "displayName": "sirah",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12436",
+    "stickerId": 12436,
+    "displayName": "sirah (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12438",
+    "stickerId": 12438,
+    "displayName": "sirah (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12437",
+    "stickerId": 12437,
+    "displayName": "sirah (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12251",
+    "stickerId": 12251,
+    "displayName": "siuhy",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12252",
+    "stickerId": 12252,
+    "displayName": "siuhy (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12254",
+    "stickerId": 12254,
+    "displayName": "siuhy (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12253",
+    "stickerId": 12253,
+    "displayName": "siuhy (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12267",
+    "stickerId": 12267,
+    "displayName": "sjuush",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12268",
+    "stickerId": 12268,
+    "displayName": "sjuush (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12270",
+    "stickerId": 12270,
+    "displayName": "sjuush (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12269",
+    "stickerId": 12269,
+    "displayName": "sjuush (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12591",
+    "stickerId": 12591,
+    "displayName": "sk0R",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12592",
+    "stickerId": 12592,
+    "displayName": "sk0R (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12594",
+    "stickerId": 12594,
+    "displayName": "sk0R (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12593",
+    "stickerId": 12593,
+    "displayName": "sk0R (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12471",
+    "stickerId": 12471,
+    "displayName": "slaxz-",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12472",
+    "stickerId": 12472,
+    "displayName": "slaxz- (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12474",
+    "stickerId": 12474,
+    "displayName": "slaxz- (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12473",
+    "stickerId": 12473,
+    "displayName": "slaxz- (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12415",
+    "stickerId": 12415,
+    "displayName": "soulfly",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12416",
+    "stickerId": 12416,
+    "displayName": "soulfly (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12418",
+    "stickerId": 12418,
+    "displayName": "soulfly (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12417",
+    "stickerId": 12417,
+    "displayName": "soulfly (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11983",
+    "stickerId": 11983,
+    "displayName": "Spinx",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11984",
+    "stickerId": 11984,
+    "displayName": "Spinx (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11986",
+    "stickerId": 11986,
+    "displayName": "Spinx (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11985",
+    "stickerId": 11985,
+    "displayName": "Spinx (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12255",
+    "stickerId": 12255,
+    "displayName": "Staehr",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12256",
+    "stickerId": 12256,
+    "displayName": "Staehr (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12258",
+    "stickerId": 12258,
+    "displayName": "Staehr (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12257",
+    "stickerId": 12257,
+    "displayName": "Staehr (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12607",
+    "stickerId": 12607,
+    "displayName": "Starry",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12608",
+    "stickerId": 12608,
+    "displayName": "Starry (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12610",
+    "stickerId": 12610,
+    "displayName": "Starry (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12609",
+    "stickerId": 12609,
+    "displayName": "Starry (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12271",
+    "stickerId": 12271,
+    "displayName": "stavn",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12272",
+    "stickerId": 12272,
+    "displayName": "stavn (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12274",
+    "stickerId": 12274,
+    "displayName": "stavn (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12273",
+    "stickerId": 12273,
+    "displayName": "stavn (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12335",
+    "stickerId": 12335,
+    "displayName": "susp",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12336",
+    "stickerId": 12336,
+    "displayName": "susp (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12338",
+    "stickerId": 12338,
+    "displayName": "susp (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12337",
+    "stickerId": 12337,
+    "displayName": "susp (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12475",
+    "stickerId": 12475,
+    "displayName": "Swisher",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12476",
+    "stickerId": 12476,
+    "displayName": "Swisher (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12478",
+    "stickerId": 12478,
+    "displayName": "Swisher (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12477",
+    "stickerId": 12477,
+    "displayName": "Swisher (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12171",
+    "stickerId": 12171,
+    "displayName": "syph0",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12172",
+    "stickerId": 12172,
+    "displayName": "syph0 (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12174",
+    "stickerId": 12174,
+    "displayName": "syph0 (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12173",
+    "stickerId": 12173,
+    "displayName": "syph0 (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12295",
+    "stickerId": 12295,
+    "displayName": "Techno4K",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12296",
+    "stickerId": 12296,
+    "displayName": "Techno4K (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12298",
+    "stickerId": 12298,
+    "displayName": "Techno4K (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12297",
+    "stickerId": 12297,
+    "displayName": "Techno4K (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12115",
+    "stickerId": 12115,
+    "displayName": "TeSeS",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12116",
+    "stickerId": 12116,
+    "displayName": "TeSeS (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12118",
+    "stickerId": 12118,
+    "displayName": "TeSeS (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12117",
+    "stickerId": 12117,
+    "displayName": "TeSeS (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12595",
+    "stickerId": 12595,
+    "displayName": "tikuak",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12596",
+    "stickerId": 12596,
+    "displayName": "tikuak (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12598",
+    "stickerId": 12598,
+    "displayName": "tikuak (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12597",
+    "stickerId": 12597,
+    "displayName": "tikuak (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12071",
+    "stickerId": 12071,
+    "displayName": "tN1R",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12072",
+    "stickerId": 12072,
+    "displayName": "tN1R (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12074",
+    "stickerId": 12074,
+    "displayName": "tN1R (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12073",
+    "stickerId": 12073,
+    "displayName": "tN1R (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12351",
+    "stickerId": 12351,
+    "displayName": "tomaszin",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12352",
+    "stickerId": 12352,
+    "displayName": "tomaszin (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12354",
+    "stickerId": 12354,
+    "displayName": "tomaszin (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12353",
+    "stickerId": 12353,
+    "displayName": "tomaszin (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11987",
+    "stickerId": 11987,
+    "displayName": "torzsi",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11988",
+    "stickerId": 11988,
+    "displayName": "torzsi (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11990",
+    "stickerId": 11990,
+    "displayName": "torzsi (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11989",
+    "stickerId": 11989,
+    "displayName": "torzsi (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12155",
+    "stickerId": 12155,
+    "displayName": "TRY",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12156",
+    "stickerId": 12156,
+    "displayName": "TRY (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12158",
+    "stickerId": 12158,
+    "displayName": "TRY (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12157",
+    "stickerId": 12157,
+    "displayName": "TRY (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12375",
+    "stickerId": 12375,
+    "displayName": "Twistzz",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12376",
+    "stickerId": 12376,
+    "displayName": "Twistzz (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12378",
+    "stickerId": 12378,
+    "displayName": "Twistzz (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12377",
+    "stickerId": 12377,
+    "displayName": "Twistzz (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12355",
+    "stickerId": 12355,
+    "displayName": "venomzera",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12356",
+    "stickerId": 12356,
+    "displayName": "venomzera (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12358",
+    "stickerId": 12358,
+    "displayName": "venomzera (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12357",
+    "stickerId": 12357,
+    "displayName": "venomzera (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12575",
+    "stickerId": 12575,
+    "displayName": "vexite",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12576",
+    "stickerId": 12576,
+    "displayName": "vexite (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12578",
+    "stickerId": 12578,
+    "displayName": "vexite (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12577",
+    "stickerId": 12577,
+    "displayName": "vexite (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12515",
+    "stickerId": 12515,
+    "displayName": "VINI",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12516",
+    "stickerId": 12516,
+    "displayName": "VINI (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12518",
+    "stickerId": 12518,
+    "displayName": "VINI (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12517",
+    "stickerId": 12517,
+    "displayName": "VINI (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12235",
+    "stickerId": 12235,
+    "displayName": "w0nderful",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12236",
+    "stickerId": 12236,
+    "displayName": "w0nderful (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12238",
+    "stickerId": 12238,
+    "displayName": "w0nderful (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12237",
+    "stickerId": 12237,
+    "displayName": "w0nderful (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12611",
+    "stickerId": 12611,
+    "displayName": "westmelon",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12612",
+    "stickerId": 12612,
+    "displayName": "westmelon (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12614",
+    "stickerId": 12614,
+    "displayName": "westmelon (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12613",
+    "stickerId": 12613,
+    "displayName": "westmelon (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12047",
+    "stickerId": 12047,
+    "displayName": "Wicadia",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12048",
+    "stickerId": 12048,
+    "displayName": "Wicadia (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12050",
+    "stickerId": 12050,
+    "displayName": "Wicadia (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12049",
+    "stickerId": 12049,
+    "displayName": "Wicadia (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12051",
+    "stickerId": 12051,
+    "displayName": "woxic",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12052",
+    "stickerId": 12052,
+    "displayName": "woxic (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12054",
+    "stickerId": 12054,
+    "displayName": "woxic (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12053",
+    "stickerId": 12053,
+    "displayName": "woxic (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12175",
+    "stickerId": 12175,
+    "displayName": "Xant3r",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12176",
+    "stickerId": 12176,
+    "displayName": "Xant3r (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12178",
+    "stickerId": 12178,
+    "displayName": "Xant3r (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12177",
+    "stickerId": 12177,
+    "displayName": "Xant3r (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12055",
+    "stickerId": 12055,
+    "displayName": "XANTARES",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12056",
+    "stickerId": 12056,
+    "displayName": "XANTARES (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12058",
+    "stickerId": 12058,
+    "displayName": "XANTARES (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12057",
+    "stickerId": 12057,
+    "displayName": "XANTARES (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11991",
+    "stickerId": 11991,
+    "displayName": "xelex",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11992",
+    "stickerId": 11992,
+    "displayName": "xelex (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11994",
+    "stickerId": 11994,
+    "displayName": "xelex (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11993",
+    "stickerId": 11993,
+    "displayName": "xelex (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-11995",
+    "stickerId": 11995,
+    "displayName": "xertioN",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-11996",
+    "stickerId": 11996,
+    "displayName": "xertioN (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-11998",
+    "stickerId": 11998,
+    "displayName": "xertioN (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-11997",
+    "stickerId": 11997,
+    "displayName": "xertioN (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12135",
+    "stickerId": 12135,
+    "displayName": "xfl0ud",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12136",
+    "stickerId": 12136,
+    "displayName": "xfl0ud (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12138",
+    "stickerId": 12138,
+    "displayName": "xfl0ud (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12137",
+    "stickerId": 12137,
+    "displayName": "xfl0ud (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12311",
+    "stickerId": 12311,
+    "displayName": "xiELO",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12312",
+    "stickerId": 12312,
+    "displayName": "xiELO (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12314",
+    "stickerId": 12314,
+    "displayName": "xiELO (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12313",
+    "stickerId": 12313,
+    "displayName": "xiELO (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12275",
+    "stickerId": 12275,
+    "displayName": "xKacpersky",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12276",
+    "stickerId": 12276,
+    "displayName": "xKacpersky (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12278",
+    "stickerId": 12278,
+    "displayName": "xKacpersky (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12277",
+    "stickerId": 12277,
+    "displayName": "xKacpersky (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12031",
+    "stickerId": 12031,
+    "displayName": "YEKINDAR",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12032",
+    "stickerId": 12032,
+    "displayName": "YEKINDAR (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12034",
+    "stickerId": 12034,
+    "displayName": "YEKINDAR (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12033",
+    "stickerId": 12033,
+    "displayName": "YEKINDAR (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12035",
+    "stickerId": 12035,
+    "displayName": "yuurih",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12036",
+    "stickerId": 12036,
+    "displayName": "yuurih (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12038",
+    "stickerId": 12038,
+    "displayName": "yuurih (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12037",
+    "stickerId": 12037,
+    "displayName": "yuurih (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12615",
+    "stickerId": 12615,
+    "displayName": "z4KR",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12616",
+    "stickerId": 12616,
+    "displayName": "z4KR (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12618",
+    "stickerId": 12618,
+    "displayName": "z4KR (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12617",
+    "stickerId": 12617,
+    "displayName": "z4KR (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12075",
+    "stickerId": 12075,
+    "displayName": "zont1x",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12076",
+    "stickerId": 12076,
+    "displayName": "zont1x (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12078",
+    "stickerId": 12078,
+    "displayName": "zont1x (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12077",
+    "stickerId": 12077,
+    "displayName": "zont1x (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12095",
+    "stickerId": 12095,
+    "displayName": "zorte",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12096",
+    "stickerId": 12096,
+    "displayName": "zorte (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12098",
+    "stickerId": 12098,
+    "displayName": "zorte (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12097",
+    "stickerId": 12097,
+    "displayName": "zorte (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12315",
+    "stickerId": 12315,
+    "displayName": "zweih",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12316",
+    "stickerId": 12316,
+    "displayName": "zweih (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12318",
+    "stickerId": 12318,
+    "displayName": "zweih (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12317",
+    "stickerId": 12317,
+    "displayName": "zweih (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
+    "id": "sticker-12015",
+    "stickerId": 12015,
+    "displayName": "ZywOo",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-12016",
+    "stickerId": 12016,
+    "displayName": "ZywOo (Foil)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_mythical"
+  },
+  {
+    "id": "sticker-12018",
+    "stickerId": 12018,
+    "displayName": "ZywOo (Gold)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_ancient"
+  },
+  {
+    "id": "sticker-12017",
+    "stickerId": 12017,
+    "displayName": "ZywOo (Holo)",
+    "group": "PGL Singapore 2026",
+    "groupZh": "2026年PGL新加坡",
+    "capsule": "Singapore 2026 Autograph Capsule",
+    "rarity": "rarity_legendary"
+  },
+  {
     "id": "sticker-10429",
     "stickerId": 10429,
     "displayName": "9z Team",
@@ -115336,6 +122284,13 @@
     "displayName": "Bossy Burger",
     "displayNameZh": "超牛汉堡",
     "rarity": "rarity_rare"
+  },
+  {
+    "id": "sticker-1696",
+    "stickerId": 1696,
+    "displayName": "Cache (Gold)",
+    "displayNameZh": "死城之谜（金色）",
+    "rarity": "rarity_legendary"
   },
   {
     "id": "sticker-174",
