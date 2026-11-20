@@ -1338,7 +1338,7 @@ public sealed class SkinManager : IDisposable
         {
             var held = heldPawn.WeaponServices.MyWeapons
                 .Select(handle => handle.Value)
-                .Where(weapon => weapon is { IsValid: true })
+                .Where(weapon => weapon is { IsValid: true } && !IsForeignWeapon(player, weapon))
                 .Select(weapon => ResolveWeaponEntityName(weapon!))
                 .Where(name => Catalog.WeaponsByEntity.ContainsKey(name))
                 .Distinct(StringComparer.OrdinalIgnoreCase);
@@ -2457,7 +2457,8 @@ public sealed class SkinManager : IDisposable
             .ToList();
         foreach (var weapon in weapons)
         {
-            if (ResolveWeaponEntityName(weapon!).Equals(weaponEntity, StringComparison.OrdinalIgnoreCase))
+            if (ResolveWeaponEntityName(weapon!).Equals(weaponEntity, StringComparison.OrdinalIgnoreCase) &&
+                !IsForeignWeapon(player, weapon!))
             {
                 ReplaceWeaponWithStock(player, weapon!, weaponEntity);
                 return;
@@ -2619,6 +2620,11 @@ public sealed class SkinManager : IDisposable
             return HasVisibleCustomization(profile, KnifeTarget) && ApplyStockKnifeCustomization(player, weapon, logFailures);
         }
 
+        if (IsForeignWeapon(player, weapon))
+        {
+            return false;
+        }
+
         var skin = ResolveWeaponPaint(player, profile, weaponName);
         return skin is not null && ApplyCosmeticToWeapon(player, weapon, skin, isKnife: false, logFailures, weaponName);
     }
@@ -2653,6 +2659,11 @@ public sealed class SkinManager : IDisposable
             if (!string.IsNullOrWhiteSpace(weaponName) &&
                 weaponName.Equals(weaponEntity, StringComparison.OrdinalIgnoreCase))
             {
+                if (IsForeignWeapon(player, weapon))
+                {
+                    return false;
+                }
+
                 return RefreshOwnedWeaponWithSelection(player, weapon, weaponEntity, skin, logFailures);
             }
         }
@@ -3385,6 +3396,12 @@ public sealed class SkinManager : IDisposable
                     continue;
                 }
 
+                // A gun picked up from another player keeps its own skin.
+                if (IsForeignWeapon(player, weapon))
+                {
+                    continue;
+                }
+
                 // Same for guns: a paint cleared in place stays visible until
                 // the entity is re-created. Only catalog weapons that carry a
                 // paint (or attachments on the stock finish, kit 0) are
@@ -3919,6 +3936,39 @@ public sealed class SkinManager : IDisposable
 
         var knife = Catalog.Knives.FirstOrDefault(k => k.Id.Equals(profile.KnifeId, StringComparison.OrdinalIgnoreCase));
         return knife is not null && knifeSkin.ItemDefinitionIndex == knife.ItemDefinitionIndex;
+    }
+
+    // A gun picked up from another player still carries that player's skin,
+    // name tag and owner stamp (every paint we apply stamps the owner). It
+    // stays theirs: re-painting it at the next round start would swap their
+    // skin for the picker's picks. Unstamped guns count as the player's unless dropped by someone else.
+    // Compares the account id only, the part every stamp format has.
+    private static bool IsForeignWeapon(CCSPlayerController player, CBasePlayerWeapon weapon)
+    {
+        try
+        {
+            var owner = weapon.OriginalOwnerXuidLow;
+            if (owner != 0)
+            {
+                return owner != (uint)(player.SteamID & 0xFFFFFFFF);
+            }
+
+            // Bot guns are never painted, so they carry no stamp. The engine
+            // records who dropped a weapon last: anyone but this player marks
+            // a pickup.
+            var prev = weapon.As<CCSWeaponBase>().PrevOwner;
+            if (!prev.IsValid)
+            {
+                return false;
+            }
+
+            var prevPawn = prev.Value;
+            return prevPawn is null || prevPawn.Controller.Index != player.Index;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private static string ResolveWeaponEntityName(CBasePlayerWeapon weapon)
