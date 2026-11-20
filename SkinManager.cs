@@ -401,7 +401,7 @@ public sealed class SkinManager : IDisposable
         var profile = GetProfile(player);
         profile.WeaponSkins[weaponEntity] = cosmeticId;
         QueueStorageWrite($"weapon skin {cosmeticId} ({weaponEntity}) for {steamId}", () => _storage.SaveWeaponSkin(steamId, weaponEntity, cosmeticId));
-        ApplyWeaponSelection(player, weaponEntity, skin, logFailures: true);
+        ApplyWeaponSelection(player, weaponEntity, skin, logFailures: true, takeOver: true);
         return true;
     }
 
@@ -551,7 +551,7 @@ public sealed class SkinManager : IDisposable
             return false;
         }
 
-        ReapplyTarget(player, profile, weaponEntity, clearWhenBare: true);
+        ReapplyTarget(player, profile, weaponEntity, clearWhenBare: true, takeOver: true);
         return true;
     }
 
@@ -685,7 +685,7 @@ public sealed class SkinManager : IDisposable
         var target = StickerTarget(weaponEntity, slot);
         QueueStorageWrite($"sticker {stickerId} ({target}) for {steamId}", () => _storage.SaveCustomization(steamId, "sticker", target, stickerId));
         BumpStickerWear(steamId, profile, weaponEntity);
-        ReapplyTarget(player, profile, weaponEntity);
+        ReapplyTarget(player, profile, weaponEntity, takeOver: true);
         return true;
     }
 
@@ -707,7 +707,7 @@ public sealed class SkinManager : IDisposable
         var target = StickerTarget(weaponEntity, slot);
         QueueStorageWrite($"sticker reset ({target}) for {steamId}", () => _storage.ClearCustomization(steamId, "sticker", target));
         BumpStickerWear(steamId, profile, weaponEntity);
-        ReapplyTarget(player, profile, weaponEntity, clearWhenBare: true);
+        ReapplyTarget(player, profile, weaponEntity, clearWhenBare: true, takeOver: true);
         return true;
     }
 
@@ -725,7 +725,7 @@ public sealed class SkinManager : IDisposable
         var profile = GetProfile(player);
         profile.Keychains[weaponEntity] = keychainId;
         QueueStorageWrite($"keychain {keychainId} ({weaponEntity}) for {steamId}", () => _storage.SaveCustomization(steamId, "keychain", weaponEntity, keychainId));
-        ReapplyTarget(player, profile, weaponEntity);
+        ReapplyTarget(player, profile, weaponEntity, takeOver: true);
         return true;
     }
 
@@ -739,7 +739,7 @@ public sealed class SkinManager : IDisposable
 
         var steamId = GetSteamId64(player);
         QueueStorageWrite($"keychain reset ({weaponEntity}) for {steamId}", () => _storage.ClearCustomization(steamId, "keychain", weaponEntity));
-        ReapplyTarget(player, profile, weaponEntity, clearWhenBare: true);
+        ReapplyTarget(player, profile, weaponEntity, clearWhenBare: true, takeOver: true);
         return true;
     }
 
@@ -2240,6 +2240,13 @@ public sealed class SkinManager : IDisposable
             return;
         }
 
+        // A gun picked up from someone else counts for nobody, as in the game:
+        // it shows its owner's counter, not the picker's.
+        if (!IsKnife(weaponName) && IsForeignWeapon(player, weapon))
+        {
+            return;
+        }
+
         var target = IsKnife(weaponName) ? KnifeTarget : weaponName;
         profile.Customizations.TryGetValue(target, out var customization);
         if (ResolveStatTrakForHeldItem(player, profile, target, customization) is not int current)
@@ -2341,7 +2348,7 @@ public sealed class SkinManager : IDisposable
         // one from an item painted on the stock finish has to re-create it,
         // since a name cleared in place stays visible until then. With a
         // usable skin the normal reapply handles it and the flag is moot.
-        ReapplyTarget(player, profile, target, clearWhenBare: !requiresPaintKit);
+        ReapplyTarget(player, profile, target, clearWhenBare: !requiresPaintKit, takeOver: true);
         return true;
     }
 
@@ -2381,7 +2388,10 @@ public sealed class SkinManager : IDisposable
     // a counter, or the skin itself, so an item left with nothing to paint
     // gets the stock entity back. Seed and wear never set it: they need a
     // paint kit, and a gun whose saved skin is unusable must stay as it is.
-    private void ReapplyTarget(CCSPlayerController player, PlayerSkinProfile profile, string target, bool logFailures = true, bool clearWhenBare = false)
+    // takeOver: the player asked for this item in hand (menu or command), so a
+    // gun picked up from someone else is painted too; the automatic paths
+    // (round start, random rolls, resets) leave such a gun alone.
+    private void ReapplyTarget(CCSPlayerController player, PlayerSkinProfile profile, string target, bool logFailures = true, bool clearWhenBare = false, bool takeOver = false)
     {
         switch (target)
         {
@@ -2424,13 +2434,13 @@ public sealed class SkinManager : IDisposable
                 var skin = ResolveWeaponPaint(player, profile, target);
                 if (skin is not null)
                 {
-                    ApplyWeaponSelection(player, target, skin, logFailures);
+                    ApplyWeaponSelection(player, target, skin, logFailures, takeOver);
                 }
                 else if (clearWhenBare)
                 {
                     // The last sticker or charm left a gun without a skin:
                     // hand out the stock gun so the attachment goes away now.
-                    ClearWeaponSelection(player, target);
+                    ClearWeaponSelection(player, target, takeOver);
                 }
                 break;
         }
@@ -2444,7 +2454,7 @@ public sealed class SkinManager : IDisposable
         }
     }
 
-    private void ClearWeaponSelection(CCSPlayerController player, string weaponEntity)
+    private void ClearWeaponSelection(CCSPlayerController player, string weaponEntity, bool takeOver = false)
     {
         if (!TryGetPawn(player, out var pawn, logFailures: false) || pawn!.WeaponServices is null)
         {
@@ -2458,7 +2468,7 @@ public sealed class SkinManager : IDisposable
         foreach (var weapon in weapons)
         {
             if (ResolveWeaponEntityName(weapon!).Equals(weaponEntity, StringComparison.OrdinalIgnoreCase) &&
-                !IsForeignWeapon(player, weapon!))
+                (takeOver || !IsForeignWeapon(player, weapon!)))
             {
                 ReplaceWeaponWithStock(player, weapon!, weaponEntity);
                 return;
@@ -2629,7 +2639,7 @@ public sealed class SkinManager : IDisposable
         return skin is not null && ApplyCosmeticToWeapon(player, weapon, skin, isKnife: false, logFailures, weaponName);
     }
 
-    private bool ApplyWeaponSelection(CCSPlayerController player, string weaponEntity, CosmeticEntry skin, bool logFailures)
+    private bool ApplyWeaponSelection(CCSPlayerController player, string weaponEntity, CosmeticEntry skin, bool logFailures, bool takeOver = false)
     {
         if (!TryGetPawn(player, out var pawn, logFailures))
         {
@@ -2659,7 +2669,7 @@ public sealed class SkinManager : IDisposable
             if (!string.IsNullOrWhiteSpace(weaponName) &&
                 weaponName.Equals(weaponEntity, StringComparison.OrdinalIgnoreCase))
             {
-                if (IsForeignWeapon(player, weapon))
+                if (!takeOver && IsForeignWeapon(player, weapon))
                 {
                     return false;
                 }
@@ -3941,7 +3951,8 @@ public sealed class SkinManager : IDisposable
     // A gun picked up from another player still carries that player's skin,
     // name tag and owner stamp (every paint we apply stamps the owner). It
     // stays theirs: re-painting it at the next round start would swap their
-    // skin for the picker's picks. Unstamped guns count as the player's unless dropped by someone else.
+    // skin for the picker's picks. Unstamped guns count as the player's
+    // unless someone else dropped them.
     // Compares the account id only, the part every stamp format has.
     private static bool IsForeignWeapon(CCSPlayerController player, CBasePlayerWeapon weapon)
     {
